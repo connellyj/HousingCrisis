@@ -28,10 +28,10 @@ UI:
 - building UI
 
 Game Design Questions:
-- Exact Store funtion
-- Exact factory function
-- How to beat a level
-- How do buildings take damage
+- exact store funtion
+- exact factory function
+- how to beat a level
+- how do buildings take damage
 
 Overall notes:
 - maybe the levels are all different cities in the US
