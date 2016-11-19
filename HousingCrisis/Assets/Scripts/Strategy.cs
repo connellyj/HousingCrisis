@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 
 public abstract class Strategy {
+
     private List<Node> explored;
 
     public Strategy() {
@@ -29,8 +30,10 @@ public abstract class Strategy {
 
     public abstract bool frontierIsEmpty();
 
+
     public class Greedy : Strategy {
-        protected PriorityQueue<Node> frontier;
+
+        private PriorityQueue<Node> frontier;
 
         public Greedy() : base() {
             frontier = new PriorityQueue<Node>();
@@ -57,8 +60,10 @@ public abstract class Strategy {
         }
     }
 
+
     public class DFS : Strategy {
-        protected Stack<Node> frontier;
+
+        private Stack<Node> frontier;
 
         public DFS() : base() {
             frontier = new Stack<Node>();
@@ -85,8 +90,10 @@ public abstract class Strategy {
         }
     }
 
+
     public class BFS : Strategy {
-        protected Queue<Node> frontier;
+
+        private Queue<Node> frontier;
 
         public BFS() : base() {
             frontier = new Queue<Node>();

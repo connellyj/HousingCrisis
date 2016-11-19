@@ -22,7 +22,7 @@ public class Search : MonoBehaviour {
 
     void Update() {
         if(Input.GetKeyDown(KeyCode.S)) {
-            Debug.Log(DoSearch(new Strategy.Greedy(), new Node(Node.Direction.WEST, 1, 4, Heuristic.HeuristicType.EXIT)).Count);
+            Debug.Log(DoSearch(new Strategy.Greedy(), new Node(Node.Direction.WEST, 1, 1, Heuristic.HeuristicType.EXIT)).Count);
         }
     }
 

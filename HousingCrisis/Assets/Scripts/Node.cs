@@ -13,8 +13,8 @@ public class Node : IComparable<Node> {
     public int personRow;
     public int personColumn;
     public Direction direction;
-    Node parent;
-    Heuristic.HeuristicType hType;
+    private Node parent;
+    private Heuristic.HeuristicType hType;
 
     public Node(Direction direction, int row, int column, Heuristic.HeuristicType hType) {
         this.parent = null;
