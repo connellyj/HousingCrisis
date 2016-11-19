@@ -19,14 +19,12 @@ public class GridManager : MonoBehaviour {
 
     void Start() {
         ParseGrid();
-        foreach(int i in exits) {
-            Debug.Log(i);
-        }
+        Debug.Log(paths.Contains(45));
     }
 
     void Update() {
         if(Input.GetKeyDown(KeyCode.S)) {
-            Debug.Log(Search.DoSearch(new Strategy.Greedy(), new Node(7, Heuristic.HeuristicType.EXIT)).Count);
+            Debug.Log(Search.DoSearch(new Strategy.DFS(), new Node(45, Heuristic.HeuristicType.EXIT)).Count);
         }
     }
 

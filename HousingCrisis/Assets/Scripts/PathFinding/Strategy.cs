@@ -2,18 +2,18 @@
 
 public abstract class Strategy {
 
-    private List<Node> explored;
+    private List<int> explored;
 
     public Strategy() {
-        explored = new List<Node>();
+        explored = new List<int>();
     }
 
     public void addToExplored(Node n) {
-        explored.Add(n);
+        explored.Add(n.personLoc);
     }
 
     public bool isExplored(Node n) {
-        return explored.Contains(n);
+        return explored.Contains(n.personLoc);
     }
 
     public int countExplored() {

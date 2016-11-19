@@ -17,13 +17,7 @@ public class Heuristic {
         CreateDistanceMap(GridManager.exits);
         CreateDistanceMap(GridManager.houses);
 
-        for(int i = 0; i < GridManager.MAX_ROW * GridManager.MAX_COL; i += GridManager.MAX_COL) {
-            string toPrint = "";
-            for(int j = i; j < GridManager.MAX_COL + i; j++) {
-                toPrint += exitDistanceMap[j] + "  ";
-            }
-            Debug.Log(toPrint);
-        }
+        print(exitDistanceMap);
     }
 
     private static void CreateDistanceMap(List<int> startingLocations) {
@@ -57,4 +51,14 @@ public class Heuristic {
     }
 
     public enum HeuristicType { EXIT, HOUSE, NONE }
+
+    private static void print(int[] lst) {
+        for(int i = 0; i < GridManager.MAX_ROW * GridManager.MAX_COL; i += GridManager.MAX_COL) {
+            string toPrint = "";
+            for(int j = i; j < GridManager.MAX_COL + i; j++) {
+                toPrint += lst[j] + "  ";
+            }
+            Debug.Log(toPrint);
+        }
+    }
 }
