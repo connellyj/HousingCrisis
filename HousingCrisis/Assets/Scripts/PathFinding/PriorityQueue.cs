@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 
-public class PriorityQueue<T> where T : System.IComparable<T> {
+public class PriorityQueue<T> where T : IComparable<T> {
     private List<T> data;
 
     public PriorityQueue() {
-        this.data = new List<T>();
+        data = new List<T>();
     }
 
     public void Enqueue(T item) {

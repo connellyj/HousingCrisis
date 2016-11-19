@@ -19,6 +19,15 @@ public class GridManager : MonoBehaviour {
 
     void Start() {
         ParseGrid();
+        foreach(int i in exits) {
+            Debug.Log(i);
+        }
+    }
+
+    void Update() {
+        if(Input.GetKeyDown(KeyCode.S)) {
+            Debug.Log(Search.DoSearch(new Strategy.Greedy(), new Node(7, Heuristic.HeuristicType.EXIT)).Count);
+        }
     }
 
     void ParseGrid() {
@@ -26,8 +35,10 @@ public class GridManager : MonoBehaviour {
         foreach(string str in gridAsString) {
             foreach(char ch in str) {
                 if(ch == 'o' || ch == 'O') paths.Add(idx);
-                else if(ch == 'e' || ch == 'E') exits.Add(idx);
-                else if(ch == 'h' || ch == 'H') houses.Add(idx);
+                else if(ch == 'e' || ch == 'E') {
+                    exits.Add(idx);
+                    paths.Add(idx);
+                } else if(ch == 'h' || ch == 'H') houses.Add(idx);
                 idx++;
             }
         }
