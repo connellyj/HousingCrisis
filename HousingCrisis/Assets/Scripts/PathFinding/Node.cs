@@ -1,47 +1,58 @@
-﻿using System;
+﻿/* Written by Julia Connelly, 11/22/2016
+ * 
+ * Nodes used to represent the graph during search
+ */
+
+using System;
 using System.Collections.Generic;
 
 public class Node : IComparable<Node> {
 
-    public int personLoc;
-    public Direction direction;
+    public int data;
+    public Heuristic.HeuristicType hType;
+    private Direction direction;
     private Node parent;
-    private Heuristic.HeuristicType hType;
     private Random rng = new Random();
 
     public Node(int personLoc, Heuristic.HeuristicType hType) {
         this.parent = null;
         this.direction = Direction.NONE;
-        this.personLoc = personLoc;
+        this.data = personLoc;
         this.hType = hType;
     }
 
     public Node(Node parent, Direction direction, int personLoc) {
         this.parent = parent;
         this.direction = direction;
-        this.personLoc = personLoc;
+        this.data = personLoc;
         this.hType = parent.hType;
     }
 
-    public bool isExit() {
-        return GridManager.exits.Contains(personLoc);
+    // Depending on the heuristic, returns whether or not the current node is a goal state
+    public bool isGoal() {
+        if(hType == Heuristic.HeuristicType.EXIT) return GridManager.exits.Contains(data);
+        return GridManager.houses.Contains(data + 1) || GridManager.houses.Contains(data - 1) || 
+            GridManager.houses.Contains(data + GridManager.MAX_COL) || GridManager.houses.Contains(data - GridManager.MAX_COL);
     }
 
+    // Returns all the path nodes that are adjacent to this node in a random order
     public List<Node> GetExpandedNodes() {
         List<Node> expandedNodes = new List<Node>();
-        if(CellIsPath(personLoc + 1)) expandedNodes.Add(new Node(this, Direction.EAST, personLoc + 1));
-        if(CellIsPath(personLoc - 1)) expandedNodes.Add(new Node(this, Direction.WEST, personLoc - 1));
-        if(CellIsPath(personLoc + GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.SOUTH, personLoc + GridManager.MAX_COL));
-        if(CellIsPath(personLoc - GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.NORTH, personLoc - GridManager.MAX_COL));
+        if(CellIsPath(data + 1)) expandedNodes.Add(new Node(this, Direction.EAST, data + 1));
+        if(CellIsPath(data - 1)) expandedNodes.Add(new Node(this, Direction.WEST, data - 1));
+        if(CellIsPath(data + GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.SOUTH, data + GridManager.MAX_COL));
+        if(CellIsPath(data - GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.NORTH, data - GridManager.MAX_COL));
         return Shuffle(expandedNodes);
     }
 
+    // Returns true if the given node is a path
     public static bool CellIsPath(int idx) {
         if(idx < 0 || idx >= GridManager.MAX_COL * GridManager.MAX_ROW) return false;
         if(GridManager.paths.Contains(idx)) return true;
         return false;
     }
 
+    // Returns the list of directions, aka the path solution
     public List<Direction> extractPlan() {
         List<Direction> plan = new List<Direction>();
         Node n = this;
@@ -49,9 +60,11 @@ public class Node : IComparable<Node> {
             plan.Add(n.direction);
             n = n.parent;
         }
+        plan.Reverse();
         return plan;
     }
 
+    // Helper method to shuffle a list
     private List<Node> Shuffle(List<Node> list) {
         int n = list.Count;
         while(n > 1) {
@@ -64,9 +77,8 @@ public class Node : IComparable<Node> {
         return list;
     }
 
+    // Compares nodes using their heuristic value
     public int CompareTo(Node n) {
-        return Heuristic.H(this, hType) - Heuristic.H(n, hType);
+        return Heuristic.H(this) - Heuristic.H(n);
     }
-
-    public enum Direction { NORTH, SOUTH, WEST, EAST, NONE }
 }

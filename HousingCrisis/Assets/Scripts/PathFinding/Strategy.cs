@@ -1,4 +1,9 @@
-﻿using System.Collections.Generic;
+﻿/* Written by Julia Connelly, 11/22/2016
+ * 
+ * Different search strategies
+ */
+
+using System.Collections.Generic;
 
 public abstract class Strategy {
 
@@ -9,11 +14,11 @@ public abstract class Strategy {
     }
 
     public void addToExplored(Node n) {
-        explored.Add(n.personLoc);
+        explored.Add(n.data);
     }
 
     public bool isExplored(Node n) {
-        return explored.Contains(n.personLoc);
+        return explored.Contains(n.data);
     }
 
     public int countExplored() {
@@ -31,6 +36,7 @@ public abstract class Strategy {
     public abstract bool frontierIsEmpty();
 
 
+    // Used when shortest path required
     public class Greedy : Strategy {
 
         private PriorityQueue<Node> frontier;
@@ -61,6 +67,7 @@ public abstract class Strategy {
     }
 
 
+    // Used for wandering across the map
     public class DFS : Strategy {
 
         private Stack<Node> frontier;
@@ -75,36 +82,6 @@ public abstract class Strategy {
         
         public override void addToFrontier(Node n) {
             frontier.Push(n);
-        }
-
-        public override int countFrontier() {
-            return frontier.Count;
-        }
-
-        public override bool frontierIsEmpty() {
-            return frontier.Count == 0;
-        }
-
-        public override bool inFrontier(Node n) {
-            return frontier.Contains(n);
-        }
-    }
-
-
-    public class BFS : Strategy {
-
-        private Queue<Node> frontier;
-
-        public BFS() : base() {
-            frontier = new Queue<Node>();
-        }
-
-        public override Node getAndRemoveLeaf() {
-            return frontier.Dequeue();
-        }
-
-        public override void addToFrontier(Node n) {
-            frontier.Enqueue(n);
         }
 
         public override int countFrontier() {

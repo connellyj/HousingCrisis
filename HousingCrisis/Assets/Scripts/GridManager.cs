@@ -1,4 +1,9 @@
-﻿using UnityEngine;
+﻿/* Written by Julia Connelly, 11/22/2016
+ * 
+ * Contains information about the grid
+ */
+
+using UnityEngine;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
@@ -19,12 +24,17 @@ public class GridManager : MonoBehaviour {
 
     void Start() {
         ParseGrid();
-        Debug.Log(paths.Contains(45));
     }
 
     void Update() {
         if(Input.GetKeyDown(KeyCode.S)) {
-            Debug.Log(Search.DoSearch(new Strategy.DFS(), new Node(45, Heuristic.HeuristicType.EXIT)).Count);
+            List<Direction> lst = Search.DoSearch(new Strategy.DFS(), new Node(45, Heuristic.HeuristicType.EXIT));
+            Debug.Log("solution length: " + lst.Count);
+            string toPrint = "";
+            foreach(Direction d in lst) {
+                toPrint += d.ToString() + "  ";
+            }
+            Debug.Log(toPrint);
         }
     }
 

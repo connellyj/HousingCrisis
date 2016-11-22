@@ -1,10 +1,15 @@
-﻿using System.Collections.Generic;
+﻿/* Written by Julia Connelly, 11/22/2016
+ * 
+ * Searches through a graph using the given strategy
+ */
+
+using System.Collections.Generic;
 
 public class Search {
 
-    public static List<Node.Direction> DoSearch(Strategy strategy, Node initialState) {
+    public static List<Direction> DoSearch(Strategy strategy, Node initialState) {
         Heuristic.InitDistanceMap();
-        if(initialState.isExit()) {
+        if(initialState.isGoal()) {
             return initialState.extractPlan();
         }
         strategy.addToFrontier(initialState);
@@ -19,7 +24,7 @@ public class Search {
             strategy.addToExplored(leafNode);
                 foreach (Node n in leafNode.GetExpandedNodes()) {
                     if (!strategy.isExplored(n) && !strategy.inFrontier(n)) {
-                        if (n.isExit()) {
+                        if (n.isGoal()) {
                             return n.extractPlan();
                         }
                         strategy.addToFrontier(n);
