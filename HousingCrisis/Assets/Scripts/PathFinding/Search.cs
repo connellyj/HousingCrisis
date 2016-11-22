@@ -9,7 +9,7 @@ public class Search {
 
     public static List<Direction> DoSearch(Strategy strategy, Node initialState) {
         Heuristic.InitDistanceMap();
-        if(initialState.isGoal()) {
+        if(!strategy.ignoreFirstGoal && initialState.isGoal()) {
             return initialState.extractPlan();
         }
         strategy.addToFrontier(initialState);

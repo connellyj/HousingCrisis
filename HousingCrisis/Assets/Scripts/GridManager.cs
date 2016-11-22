@@ -28,7 +28,7 @@ public class GridManager : MonoBehaviour {
 
     void Update() {
         if(Input.GetKeyDown(KeyCode.S)) {
-            List<Direction> lst = Search.DoSearch(new Strategy.DFS(), new Node(45, Heuristic.HeuristicType.EXIT));
+            List<Direction> lst = Search.DoSearch(new Strategy.DFS(), new Node(1, Heuristic.HeuristicType.EXIT));
             Debug.Log("solution length: " + lst.Count);
             string toPrint = "";
             foreach(Direction d in lst) {

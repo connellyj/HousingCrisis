@@ -8,6 +8,7 @@ using System.Collections.Generic;
 public abstract class Strategy {
 
     private List<int> explored;
+    public bool ignoreFirstGoal;
 
     public Strategy() {
         explored = new List<int>();
@@ -43,6 +44,7 @@ public abstract class Strategy {
 
         public Greedy() : base() {
             frontier = new PriorityQueue<Node>();
+            ignoreFirstGoal = false;
         }
         
         public override Node getAndRemoveLeaf() {
@@ -74,6 +76,7 @@ public abstract class Strategy {
 
         public DFS() : base() {
             frontier = new Stack<Node>();
+            ignoreFirstGoal = true;
         }
         
         public override Node getAndRemoveLeaf() {
