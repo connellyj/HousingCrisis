@@ -26,18 +26,6 @@ public class GridManager : MonoBehaviour {
         ParseGrid();
     }
 
-    void Update() {
-        if(Input.GetKeyDown(KeyCode.S)) {
-            List<Direction> lst = Search.DoSearch(new Strategy.DFS(), new Node(1, Heuristic.HeuristicType.EXIT));
-            Debug.Log("solution length: " + lst.Count);
-            string toPrint = "";
-            foreach(Direction d in lst) {
-                toPrint += d.ToString() + "  ";
-            }
-            Debug.Log(toPrint);
-        }
-    }
-
     void ParseGrid() {
         int idx = 0;
         foreach(string str in gridAsString) {
@@ -52,5 +40,6 @@ public class GridManager : MonoBehaviour {
         }
         MAX_ROW = gridAsString.Length;
         MAX_COL = idx / MAX_ROW;
+        Heuristic.InitDistanceMap();
     }
 }
