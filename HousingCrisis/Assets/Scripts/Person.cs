@@ -53,6 +53,7 @@ public class Person : MonoBehaviour {
 		spritesByDirection = new Sprite[][] {northSprites, southSprites, westSprites, eastSprites};
 		spriteRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(PlayAnimation());
+        PopulationManager.AddPerson(GetComponent<Person>());
 	}
 	
 	void Update () {
@@ -178,5 +179,29 @@ public class Person : MonoBehaviour {
 			frameIndex = (frameIndex + 1) % 2;
         	yield return new WaitForSeconds(1f/framesPerSecond);
         }
+    }
+
+    public void Highlight() {
+        spriteRenderer.color = Color.red;
+    }
+
+    public void UnHighlight() {
+        spriteRenderer.color = Color.white;
+    }
+
+    public void OnEaten() {
+        Destroy(gameObject);
+    }
+
+    public void OnSeeHouse() {
+        Debug.Log("WTF did that house just eat that dude? OH SHIT");
+    }
+
+    public int X() {
+        return (int)gridXY[0];
+    }
+
+    public int Y() {
+        return (int) gridXY[1];
     }
 }

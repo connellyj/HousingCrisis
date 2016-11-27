@@ -33,8 +33,8 @@ public class Heuristic {
         CreateDistanceMap(GridManager.exits, exitDistanceMap);
         CreateDistanceMap(GridManager.houses, houseDistanceMap);
 
-        Debug.Log("exit map");
-        print(exitDistanceMap);
+        //Debug.Log("exit map");
+        //print(exitDistanceMap);
         //Debug.Log("==============================================================================");
         //Debug.Log("house map");
         //print(houseDistanceMap);
