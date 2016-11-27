@@ -242,7 +242,7 @@ public class Person : MonoBehaviour {
     }
 
     public void OnSeeHouse() {
-        Debug.Log("WTF did that house just eat that dude? OH SHIT");
+        Panic();
     }
 
     public int X() {
