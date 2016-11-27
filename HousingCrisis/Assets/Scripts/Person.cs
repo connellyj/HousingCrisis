@@ -8,7 +8,9 @@ public class Person : MonoBehaviour {
 	// script component variables
 	public Direction direction;
 	public float speed;
-	public float framesPerSecond;
+	public float alertSpeed;
+	public float animationFPS;
+	private float motionFPS = 30;
 	// component references
 	SpriteRenderer spriteRenderer;
 	// directional sprites
@@ -31,7 +33,7 @@ public class Person : MonoBehaviour {
 	public PersonState state = PersonState.WANDER;
 	private List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
-	private Vector3 gridXY;
+	public Vector3 gridXY;
 	private Vector3 positionOffset = new Vector3(0,0.25f,0);
 
 
@@ -43,8 +45,8 @@ public class Person : MonoBehaviour {
         SetPath();
         LogPath();
         direction = path[0];
-		Vector3 dVector = DirectionToVector(direction);
-        StartCoroutine(FollowPath(dVector));
+        Vector3 v = DirectionToVector(direction);
+        StartCoroutine(FollowPath(v));
         // create sprite arrays and start animation
 		northSprites = new Sprite[] {spriteNorthA, spriteNorthB};
 		southSprites = new Sprite[] {spriteSouthA, spriteSouthB};
@@ -64,23 +66,38 @@ public class Person : MonoBehaviour {
 
 	public void Panic()
 	{
-		speed *= 2;
-		ChangeState(PersonState.PANIC);
+		if (state != PersonState.PANIC)
+		{
+			Debug.Log("Panic!");
+			speed = alertSpeed;
+			ChangeState(PersonState.PANIC);
+		}
 	}
 
 	private void ChangeState(PersonState newState)
 	{
-		StopCoroutine("FollowPath");
+		StopAllCoroutines();
+		StartCoroutine(PlayAnimation());
 		state = newState;
 		SetPath();
-		// transition to new path
-		Direction firstDirection = path[0];
+		if (path == null)
+		{
+			CompletePath();
+		} else {
+			FollowNewPath(path[0]);
+			LogPath();
+		}
+	}
+
+	private void FollowNewPath(Direction newDirection)
+	{
 		Vector3 targetTile = gridXY;
-		if (direction == firstDirection)
+		if (direction == newDirection)
 		{
 			targetTile += DirectionToVector(direction);
 			pathIndex = 0; // replaces first pathing direction
 		} else {
+			direction = Opposite(direction);
 			pathIndex = -1; // does not replace first pathing direction
 		}
 		Vector3 tileAdjust = targetTile + positionOffset - transform.position;
@@ -89,21 +106,52 @@ public class Person : MonoBehaviour {
 
 	private IEnumerator FollowPath(Vector3 v)
 	{
-		float moveFrames = 30;
 		float walkTime = 1f / speed;
-		for (int i = 0; i < moveFrames; i++)
+		int totalFrames = Mathf.CeilToInt(walkTime * motionFPS);
+		for (int i = 0; i < totalFrames; i++)
 		{
-			transform.position += (v / moveFrames);
-			yield return new WaitForSeconds(walkTime / moveFrames);
+			transform.position += (v / totalFrames);
+			yield return new WaitForSeconds(walkTime / totalFrames);
 		}
-		gridXY += v;
-		transform.position = gridXY + positionOffset;
+		SnapPositionToGrid();
 		pathIndex++;
 		if (pathIndex < path.Count)
 		{
 			direction = path[pathIndex];
-			Vector3 dVector = DirectionToVector(direction);
-			StartCoroutine(FollowPath(dVector));
+			Vector3 newV = DirectionToVector(direction);
+			StartCoroutine(FollowPath(newV));
+		} else {
+			CompletePath();
+		}
+	}
+
+	private void CompletePath()
+	{
+		StopAllCoroutines();
+		Debug.Log("Path is complete");
+	}
+
+	private void SnapPositionToGrid()
+	{
+		gridXY[0] = (int)Math.Round(transform.position.x);
+    	gridXY[1] = (int)Math.Round(transform.position.y);
+    	gridXY[2] = 0;
+		transform.position = gridXY + positionOffset;
+	}
+
+	private Direction Opposite(Direction d)
+	{
+		switch (d) {
+			case Direction.NORTH:
+				return Direction.SOUTH;
+			case Direction.SOUTH:
+				return Direction.NORTH;
+			case Direction.WEST:
+				return Direction.EAST;
+			case Direction.EAST:
+				return Direction.WEST;
+			default:
+				throw new System.InvalidOperationException("Direction cannot be converted to opposite");
 		}
 	}
 
@@ -177,7 +225,7 @@ public class Person : MonoBehaviour {
         while (true) {
         	spriteRenderer.sprite = spritesByDirection[(int)direction][frameIndex];
 			frameIndex = (frameIndex + 1) % 2;
-        	yield return new WaitForSeconds(1f/framesPerSecond);
+        	yield return new WaitForSeconds(1f/animationFPS);
         }
     }
 

@@ -6,12 +6,9 @@ public class PlotController : MonoBehaviour {
 
     private bool open;
     private Vector2 mousePos;
-    private Vector3 screenPos;
-    private Rect menuRect;
 
     void Awake() {
         open = false;
-        screenPos = Camera.main.WorldToScreenPoint(transform.position);
     }
 
     void OnMouseDown() {
