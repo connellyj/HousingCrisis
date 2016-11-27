@@ -37,3 +37,19 @@ Overall notes:
 - maybe the levels are all different cities in the US
 - houses take damage by setting on fire, you tap them to put it out
 - take over the city via poliical power and the town hall
+
+To Finish Core
+- house eating and chewing animations
+- chewing implementation
+- cost $ to build house, get $ for eating people
+- $ and escaped people displayed in upper right
+- center build menu
+
+Beyond Core
+- building upgrades
+- people with varying speeds
+- enemies: robbers, police, army
+- burning houses and putting them out
+- main and pause menu ui
+- info tooltips
+- levels
