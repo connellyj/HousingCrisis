@@ -34,7 +34,7 @@ public class Person : MonoBehaviour {
 	private List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
 	public Vector3 gridXY;
-	private Vector3 positionOffset = new Vector3(0,0.25f,0);
+	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
 
 
 	void Start () {
@@ -128,7 +128,7 @@ public class Person : MonoBehaviour {
 	private void CompletePath()
 	{
 		StopAllCoroutines();
-		Debug.Log("Path is complete");
+		Destroy(gameObject);
 	}
 
 	private void SnapPositionToGrid()
@@ -250,6 +250,6 @@ public class Person : MonoBehaviour {
     }
 
     public int Y() {
-        return (int) gridXY[1];
+        return (int)gridXY[1];
     }
 }
