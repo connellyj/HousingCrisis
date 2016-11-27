@@ -56,16 +56,44 @@ public class Person : MonoBehaviour {
 	}
 	
 	void Update () {
-		
+		if(Input.GetKeyDown(KeyCode.P)) {
+			Panic();
+		}
+	}
+
+	public void Panic()
+	{
+		speed *= 2;
+		ChangeState(PersonState.PANIC);
+	}
+
+	private void ChangeState(PersonState newState)
+	{
+		StopCoroutine("FollowPath");
+		state = newState;
+		SetPath();
+		// transition to new path
+		Direction firstDirection = path[0];
+		Vector3 targetTile = gridXY;
+		if (direction == firstDirection)
+		{
+			targetTile += DirectionToVector(direction);
+			pathIndex = 0; // replaces first pathing direction
+		} else {
+			pathIndex = -1; // does not replace first pathing direction
+		}
+		Vector3 tileAdjust = targetTile + positionOffset - transform.position;
+		StartCoroutine(FollowPath(tileAdjust));
 	}
 
 	private IEnumerator FollowPath(Vector3 v)
 	{
-		float moveFrames = 30 / speed;
+		float moveFrames = 30;
+		float walkTime = 1f / speed;
 		for (int i = 0; i < moveFrames; i++)
 		{
 			transform.position += (v / moveFrames);
-			yield return new WaitForSeconds(1f/moveFrames);
+			yield return new WaitForSeconds(walkTime / moveFrames);
 		}
 		gridXY += v;
 		transform.position = gridXY + positionOffset;
@@ -109,7 +137,7 @@ public class Person : MonoBehaviour {
     		case PersonState.WANDER:
     			return new Strategy.DFS();
     		case PersonState.PANIC:
-    			return new Strategy.DFS();
+    			return new Strategy.Greedy();
     		case PersonState.TARGET:
     			return new Strategy.DFS();
     		case PersonState.NONE:
