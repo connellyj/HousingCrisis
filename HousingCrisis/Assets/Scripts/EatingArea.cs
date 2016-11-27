@@ -33,6 +33,7 @@ public class EatingArea : MonoBehaviour {
         house.Eat(direction);
         foreach(Person p in peopleInArea) {
             PopulationManager.RemovePerson(p);
+            peopleInArea.Remove(p);
             p.OnEaten();
         }
     }
