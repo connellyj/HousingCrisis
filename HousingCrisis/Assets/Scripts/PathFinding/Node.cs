@@ -13,12 +13,16 @@ public class Node : IComparable<Node> {
     private Direction direction;
     private Node parent;
     private Random rng = new Random();
+    private int goal;
 
     public Node(int personLoc, Heuristic.HeuristicType hType) {
         this.parent = null;
         this.direction = Direction.NONE;
         this.data = personLoc;
         this.hType = hType;
+        if(hType == Heuristic.HeuristicType.RANDOM_HOUSE) {
+            this.goal = GridManager.houses[rng.Next(0, GridManager.houses.Count)];
+        }
     }
 
     public Node(Node parent, Direction direction, int personLoc) {
@@ -26,13 +30,14 @@ public class Node : IComparable<Node> {
         this.direction = direction;
         this.data = personLoc;
         this.hType = parent.hType;
+        this.goal = 0;
     }
 
     // Depending on the heuristic, returns whether or not the current node is a goal state
     public bool isGoal() {
         if(hType == Heuristic.HeuristicType.EXIT) return GridManager.exits.Contains(data);
-        return GridManager.houses.Contains(data + 1) || GridManager.houses.Contains(data - 1) || 
-            GridManager.houses.Contains(data + GridManager.MAX_COL) || GridManager.houses.Contains(data - GridManager.MAX_COL);
+        if(hType == Heuristic.HeuristicType.RANDOM_HOUSE) return data == goal;
+        return false;
     }
 
     // Returns all the path nodes that are adjacent to this node in a random order
