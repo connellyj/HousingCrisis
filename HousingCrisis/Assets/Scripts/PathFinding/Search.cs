@@ -8,7 +8,6 @@ using System.Collections.Generic;
 public class Search {
 
     public static List<Direction> DoSearch(Strategy strategy, Node initialState) {
-        Heuristic.InitDistanceMap();
         if(!strategy.ignoreFirstGoal && initialState.isGoal()) {
             return initialState.extractPlan();
         }

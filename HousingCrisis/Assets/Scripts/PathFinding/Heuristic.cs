@@ -35,9 +35,9 @@ public class Heuristic {
 
         Debug.Log("exit map");
         print(exitDistanceMap);
-        Debug.Log("==============================================================================");
-        Debug.Log("house map");
-        print(houseDistanceMap);
+        //Debug.Log("==============================================================================");
+        //Debug.Log("house map");
+        //print(houseDistanceMap);
     }
 
     // Helper method for creating distance maps
