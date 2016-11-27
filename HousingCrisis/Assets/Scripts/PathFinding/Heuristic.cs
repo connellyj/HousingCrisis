@@ -9,7 +9,6 @@ using System.Collections.Generic;
 public class Heuristic {
 
     private static int[] exitDistanceMap;
-    private static int[] houseDistanceMap;
     private static List<int> visited;
 
     // Returns the heuristic value of the given node
@@ -17,10 +16,6 @@ public class Heuristic {
         switch(n.hType) {
             case HeuristicType.EXIT:
                 return exitDistanceMap[n.data];
-            case HeuristicType.HOUSE:
-                return houseDistanceMap[n.data];
-            case HeuristicType.NONE:
-                return 0;
             default:
                 return 0;
         }
@@ -29,15 +24,7 @@ public class Heuristic {
     // Creates the arrays where each location in the path contains the distance to the closest goal
     public static void InitDistanceMap() {
         exitDistanceMap = new int[GridManager.MAX_ROW * GridManager.MAX_COL];
-        houseDistanceMap = new int[GridManager.MAX_ROW * GridManager.MAX_COL];
         CreateDistanceMap(GridManager.exits, exitDistanceMap);
-        CreateDistanceMap(GridManager.houses, houseDistanceMap);
-
-        //Debug.Log("exit map");
-        //print(exitDistanceMap);
-        //Debug.Log("==============================================================================");
-        //Debug.Log("house map");
-        //print(houseDistanceMap);
     }
 
     // Helper method for creating distance maps
@@ -73,7 +60,7 @@ public class Heuristic {
         return adj;
     }
 
-    public enum HeuristicType { EXIT, HOUSE, NONE }
+    public enum HeuristicType { EXIT, RANDOM_HOUSE, NONE }
 
     private static void print(int[] lst) {
         for(int i = 0; i < GridManager.MAX_ROW * GridManager.MAX_COL; i += GridManager.MAX_COL) {
