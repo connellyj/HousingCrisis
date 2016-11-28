@@ -37,7 +37,6 @@ public class GridManager : MonoBehaviour {
         }
         MAX_ROW = gridAsString.Length;
         MAX_COL = idx / MAX_ROW;
-        foreach(int i in paths) Debug.Log(i);
     }
 
     // Returns true if the given node is a path

@@ -18,7 +18,7 @@ public class Plot : MonoBehaviour {
     void Start() {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
         screenPos[0] -= WIDTH / 2;
-        screenPos[1] += HEIGHT / 2;
+        screenPos[1] = Screen.height - (screenPos[1] + HEIGHT / 2);
         backgroundRect = new Rect(screenPos, new Vector2(WIDTH, HEIGHT));
         buildRect = new Rect(screenPos, new Vector2(WIDTH, HEIGHT / 2));
         closeRect = new Rect(screenPos[0], screenPos[1] + HEIGHT / 2, WIDTH, HEIGHT / 2);
@@ -28,7 +28,11 @@ public class Plot : MonoBehaviour {
         adjacentPaths = GridManager.GetAdjacentPaths((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y), gameObject);
     }
 
-    void OnMouseDown() {
+    void Update() {
+        if(open && Input.GetMouseButtonDown(0)) open = false;
+    }
+
+    void OnMouseUp() {
         open = true;
     }
 

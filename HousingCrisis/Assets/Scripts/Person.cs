@@ -39,7 +39,11 @@ public class Person : MonoBehaviour {
 
     private Population population;
 
-
+    // HEY CONNOR!!
+    // You have to account for the case where the person is on an exit when they panic
+    // Because in that case the path will be an empty list
+    // This causes problems with at least line 95
+    // I didn't wanna try and fix it because I don't entirely know what's going on
 	void Start () {
         // set and start path
         gridXY[0] = (int)Math.Round(transform.position.x);
@@ -186,7 +190,7 @@ public class Person : MonoBehaviour {
 
     private int PersonLocFromPosition()
     {
-    	return (int)(gridXY[1] * GridManager.MAX_COL + gridXY[0]);
+    	return (int)((GridManager.MAX_ROW - 1 - gridXY[1]) * GridManager.MAX_COL + gridXY[0]);
     }
 
     private void LogPath()
