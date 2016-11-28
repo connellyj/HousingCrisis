@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class Plot : MonoBehaviour {
 
@@ -12,6 +13,7 @@ public class Plot : MonoBehaviour {
     private Rect buildRect;
     private Rect closeRect;
     private GUIStyle textStyle;
+    private List<Direction> adjacentPaths; 
 
     void Start() {
         screenPos = Camera.main.WorldToScreenPoint(transform.position);
@@ -22,6 +24,8 @@ public class Plot : MonoBehaviour {
         closeRect = new Rect(screenPos[0], screenPos[1] + HEIGHT / 2, WIDTH, HEIGHT / 2);
         textStyle = new GUIStyle();
         textStyle.alignment = TextAnchor.MiddleCenter;
+
+        adjacentPaths = GridManager.GetAdjacentPaths((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y), gameObject);
     }
 
     void OnMouseDown() {
@@ -33,7 +37,7 @@ public class Plot : MonoBehaviour {
             GUI.Box(backgroundRect, "");
             if(HouseManager.CanBuildHouse(HouseManager.HouseType.HOUSE1)) {
                 if(GUI.Button(buildRect, "Build House")) {
-                    HouseManager.BuildHouse(transform.position, HouseManager.HouseType.HOUSE1);
+                    HouseManager.BuildHouse(transform.position, HouseManager.HouseType.HOUSE1, adjacentPaths);
                     Destroy(gameObject);
                 }
             }else GUI.Box(buildRect, "Not enough $$", textStyle);

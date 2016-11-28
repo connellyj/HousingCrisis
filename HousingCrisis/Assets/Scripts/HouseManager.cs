@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 
 public class HouseManager : MonoBehaviour {
 
@@ -33,33 +34,35 @@ public class HouseManager : MonoBehaviour {
         storeCost = instance.store.GetComponent<House>().cost;
     }
 
-    public static void BuildHouse(Vector3 position, HouseType type) {
+    public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
+        GameObject house = null;
         switch(type) {
             case HouseType.HOUSE1:
-                Instantiate(instance.house1, position, Quaternion.identity);
+                house = Instantiate(instance.house1, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.house1Cost);
                 break;
             case HouseType.HOUSE2:
-                Instantiate(instance.house2, position, Quaternion.identity);
+                house = Instantiate(instance.house2, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.house2Cost);
                 break;
             case HouseType.OFFICE:
-                Instantiate(instance.office, position, Quaternion.identity);
+                house = Instantiate(instance.office, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.officeCost);
                 break;
             case HouseType.DONUT:
-                Instantiate(instance.donut, position, Quaternion.identity);
+                house = Instantiate(instance.donut, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.donutCost);
                 break;
             case HouseType.ATTACK:
-                Instantiate(instance.attack, position, Quaternion.identity);
+                house = Instantiate(instance.attack, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.attackCost);
                 break;
             case HouseType.STORE:
-                Instantiate(instance.store, position, Quaternion.identity);
+                house = Instantiate(instance.store, position, Quaternion.identity) as GameObject;
                 GameManager.UpdateMoney(-1 * instance.storeCost);
                 break;
         }
+        RemoveTriggers(adjacentPaths, house);
     }
 
     public static bool CanBuildHouse(HouseType type) {
@@ -79,6 +82,12 @@ public class HouseManager : MonoBehaviour {
                 return money >= instance.storeCost;
             default:
                 return false;
+        }
+    }
+
+    public static void RemoveTriggers(List<Direction> adjacent, GameObject house) {
+        foreach(Transform t in house.transform) {
+            if(!adjacent.Contains(t.GetComponent<EatingArea>().direction)) Destroy(t.gameObject);
         }
     }
 }

@@ -88,21 +88,12 @@ public class Pathfinder {
     // Returns all the locations adjacent to the given location that are paths
     private List<int> FindAdjacent(int idx) {
         List<int> adj = new List<int>();
-        if(CellIsPath(idx + 1) && !visited.Contains(idx + 1)) adj.Add(idx + 1);
-        if(CellIsPath(idx - 1) && !visited.Contains(idx - 1)) adj.Add(idx - 1);
-        if(CellIsPath(idx + GridManager.MAX_COL) && !visited.Contains(idx + GridManager.MAX_COL)) adj.Add(idx + GridManager.MAX_COL);
-        if(CellIsPath(idx - GridManager.MAX_COL) && !visited.Contains(idx - GridManager.MAX_COL)) adj.Add(idx - GridManager.MAX_COL);
+        if(GridManager.CellIsPath(idx + 1) && !visited.Contains(idx + 1)) adj.Add(idx + 1);
+        if(GridManager.CellIsPath(idx - 1) && !visited.Contains(idx - 1)) adj.Add(idx - 1);
+        if(GridManager.CellIsPath(idx + GridManager.MAX_COL) && !visited.Contains(idx + GridManager.MAX_COL)) adj.Add(idx + GridManager.MAX_COL);
+        if(GridManager.CellIsPath(idx - GridManager.MAX_COL) && !visited.Contains(idx - GridManager.MAX_COL)) adj.Add(idx - GridManager.MAX_COL);
         return adj;
     }
-
-    // Returns true if the given node is a path
-    public static bool CellIsPath(int idx) {
-        if(idx < 0 || idx >= GridManager.MAX_COL * GridManager.MAX_ROW) return false;
-        if(GridManager.paths.Contains(idx)) return true;
-        return false;
-    }
-
-
 
     // Used to conduct searches and find paths
     public class Node : IComparable<Node> {
@@ -143,10 +134,10 @@ public class Pathfinder {
         // Returns all the path nodes that are adjacent to this node in a random order
         public List<Node> GetExpandedNodes() {
             List<Node> expandedNodes = new List<Node>();
-            if(CellIsPath(data + 1)) expandedNodes.Add(new Node(this, Direction.EAST, data + 1));
-            if(CellIsPath(data - 1)) expandedNodes.Add(new Node(this, Direction.WEST, data - 1));
-            if(CellIsPath(data + GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.SOUTH, data + GridManager.MAX_COL));
-            if(CellIsPath(data - GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.NORTH, data - GridManager.MAX_COL));
+            if(GridManager.CellIsPath(data + 1)) expandedNodes.Add(new Node(this, Direction.EAST, data + 1));
+            if(GridManager.CellIsPath(data - 1)) expandedNodes.Add(new Node(this, Direction.WEST, data - 1));
+            if(GridManager.CellIsPath(data + GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.SOUTH, data + GridManager.MAX_COL));
+            if(GridManager.CellIsPath(data - GridManager.MAX_COL)) expandedNodes.Add(new Node(this, Direction.NORTH, data - GridManager.MAX_COL));
             return Shuffle(expandedNodes);
         }
 
