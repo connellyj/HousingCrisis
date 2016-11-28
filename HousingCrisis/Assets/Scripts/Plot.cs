@@ -3,6 +3,8 @@ using System.Collections.Generic;
 
 public class Plot : MonoBehaviour {
 
+    private static Plot currentlyOpen;
+
     private readonly int HEIGHT = 100;
     private readonly int WIDTH = 100;
 
@@ -29,7 +31,9 @@ public class Plot : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        if(currentlyOpen != null) currentlyOpen.open = false;
         open = true;
+        currentlyOpen = this;
     }
 
     void OnGUI() {
