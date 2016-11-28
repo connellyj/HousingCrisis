@@ -20,11 +20,8 @@ public class GridManager : MonoBehaviour {
         exits = new List<int>();
         houses = new List<int>();
         paths = new List<int>();
-    }	
-
-    void Start() {
         ParseGrid();
-    }
+    }	
 
     void ParseGrid() {
         int idx = 0;
@@ -40,6 +37,5 @@ public class GridManager : MonoBehaviour {
         }
         MAX_ROW = gridAsString.Length;
         MAX_COL = idx / MAX_ROW;
-        Heuristic.InitDistanceMap();
     }
 }

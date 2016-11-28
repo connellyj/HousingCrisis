@@ -4,17 +4,19 @@ using System.Collections.Generic;
 public class House : MonoBehaviour {
 
     public int noticeThreshold;
+    public int cost;
 
     private List<Person> allPeople;
+    private Population population;
     private int[] gridPos;
 
     void Awake() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
+        population = GameManager.GetPopulation();
     }
 
     public void Eat(Direction d) {
-        Debug.Log("OMNOMNOMNOMNOMNOM");
-        allPeople = PopulationManager.GetAllPeople();
+        allPeople = population.GetAllPeople();
         foreach(Person p in allPeople) {
             if(PersonInRange(p, d)) p.OnSeeHouse();
         }

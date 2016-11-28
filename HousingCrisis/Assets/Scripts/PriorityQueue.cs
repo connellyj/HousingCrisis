@@ -51,8 +51,8 @@ public class PriorityQueue<T> where T : IComparable<T> {
         return data.Count;
     }
 
-    public bool Contains(Node n) {
-        return data.Contains((T) Convert.ChangeType(n, typeof(T)));
+    public bool Contains(T obj) {
+        return data.Contains(obj);
     }
 
     public override string ToString() {

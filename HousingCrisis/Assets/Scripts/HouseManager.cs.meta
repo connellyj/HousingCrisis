@@ -1,0 +1,18 @@
+fileFormatVersion: 2
+guid: 099dae65cef3c7047afd4c0e8a624782
+timeCreated: 1480349749
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - house1: {fileID: 1000011073369258, guid: 1e4d1d14407a3ae49b2cbcbc5252f507, type: 2}
+  - house2: {instanceID: 0}
+  - office: {instanceID: 0}
+  - donut: {instanceID: 0}
+  - attack: {instanceID: 0}
+  - store: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

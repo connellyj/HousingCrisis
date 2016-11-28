@@ -7,6 +7,7 @@ public class Person : MonoBehaviour {
 
 	// script component variables
 	public Direction direction;
+    public int value;
 	public float speed;
 	public float alertSpeed;
 	public float animationFPS;
@@ -36,6 +37,8 @@ public class Person : MonoBehaviour {
 	public Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
 
+    private Population population;
+
 
 	void Start () {
         // set and start path
@@ -55,7 +58,9 @@ public class Person : MonoBehaviour {
 		spritesByDirection = new Sprite[][] {northSprites, southSprites, westSprites, eastSprites};
 		spriteRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(PlayAnimation());
-        PopulationManager.AddPerson(GetComponent<Person>());
+
+        population = GameManager.GetPopulation();
+        population.AddPerson(GetComponent<Person>());
 	}
 	
 	void Update () {
@@ -68,7 +73,6 @@ public class Person : MonoBehaviour {
 	{
 		if (state != PersonState.PANIC)
 		{
-			Debug.Log("Panic!");
 			speed = alertSpeed;
 			ChangeState(PersonState.PANIC);
 		}
@@ -128,7 +132,9 @@ public class Person : MonoBehaviour {
 	private void CompletePath()
 	{
 		StopAllCoroutines();
-		Destroy(gameObject);
+        population.RemovePerson(GetComponent<Person>());
+        if(state == PersonState.PANIC) GameManager.UpdateWantedLevel(1);
+        Destroy(gameObject);
 	}
 
 	private void SnapPositionToGrid()
@@ -173,27 +179,9 @@ public class Person : MonoBehaviour {
 
     private void SetPath()
     {
-    	Strategy strategy = StrategyFromState();
     	int personLoc = PersonLocFromPosition();
-    	Heuristic.HeuristicType heuristic = Heuristic.HeuristicType.EXIT;
-    	Node start = new Node(personLoc, heuristic);
-    	path = Search.DoSearch(strategy, start);
-    }
-
-    private Strategy StrategyFromState()
-    {
-    	switch(state) {
-    		case PersonState.WANDER:
-    			return new Strategy.DFS();
-    		case PersonState.PANIC:
-    			return new Strategy.Greedy();
-    		case PersonState.TARGET:
-    			return new Strategy.DFS();
-    		case PersonState.NONE:
-    			return new Strategy.DFS();
-    		default:
-    			return new Strategy.DFS();
-    	}
+    	Pathfinder.GoalType goal = Pathfinder.GoalType.EXIT;
+    	path = GameManager.FindPath(state, personLoc, goal);
     }
 
     private int PersonLocFromPosition()
@@ -203,21 +191,21 @@ public class Person : MonoBehaviour {
 
     private void LogPath()
     {
-    	Debug.Log("PATH =");
-    	Direction last = path[0];
+        //Debug.Log("PATH =");
+        Direction last = path[0];
     	int c = 0;
     	for (int i = 0; i < path.Count; i++)
     	{
     		Direction next = path[i];
     		if (next != last)
     		{
-    			Debug.LogFormat("   {0} {1}", last, c);
+    			//Debug.LogFormat("   {0} {1}", last, c);
     			last = next;
     			c = 0;
     		}
     		c++;
     	}
-    	Debug.LogFormat("   {0} {1}", path[path.Count - 1], c);
+    	//Debug.LogFormat("   {0} {1}", path[path.Count - 1], c);
     }
 
     private IEnumerator PlayAnimation(){
@@ -238,6 +226,7 @@ public class Person : MonoBehaviour {
     }
 
     public void OnEaten() {
+        GameManager.UpdateMoney(value);
         Destroy(gameObject);
     }
 
