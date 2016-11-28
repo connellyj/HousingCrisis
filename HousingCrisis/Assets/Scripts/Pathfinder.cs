@@ -95,9 +95,10 @@ public class Pathfinder {
         return adj;
     }
 
+
+
     // Used to conduct searches and find paths
     public class Node : IComparable<Node> {
-
 
         private int goal;
         public int data;

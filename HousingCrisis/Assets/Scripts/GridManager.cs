@@ -1,13 +1,8 @@
-﻿/* Written by Julia Connelly, 11/22/2016
- * 
- * Contains information about the grid
- */
-
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
-    
+
     public GameObject[] pathTiles;
     public int gridHeight;
     public int gridWidth;
@@ -39,8 +34,7 @@ public class GridManager : MonoBehaviour {
             if(x == 0 || y == 0 || x == MAX_COL - 1 || y == MAX_ROW - 1) exits.Add(index);
         }
     }
-
-    // Returns true if the given node is a path
+    
     public static bool CellIsPath(int idx) {
         if(idx < 0 || idx >= MAX_COL * MAX_ROW) return false;
         if(paths.Contains(idx)) return true;
