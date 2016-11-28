@@ -28,11 +28,7 @@ public class Plot : MonoBehaviour {
         adjacentPaths = GridManager.GetAdjacentPaths((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y), gameObject);
     }
 
-    void Update() {
-        if(open && Input.GetMouseButtonDown(0)) open = false;
-    }
-
-    void OnMouseUp() {
+    void OnMouseDown() {
         open = true;
     }
 

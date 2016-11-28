@@ -63,6 +63,7 @@ public class HouseManager : MonoBehaviour {
                 break;
         }
         RemoveTriggers(adjacentPaths, house);
+        AddHouseToGrid(position);
     }
 
     public static bool CanBuildHouse(HouseType type) {
@@ -89,5 +90,9 @@ public class HouseManager : MonoBehaviour {
         foreach(Transform t in house.transform) {
             if(!adjacent.Contains(t.GetComponent<EatingArea>().direction)) Destroy(t.gameObject);
         }
+    }
+
+    public static void AddHouseToGrid(Vector3 pos) {
+        GridManager.houses.Add((GridManager.MAX_ROW - 1 - (int)Mathf.Round(pos.y)) * GridManager.MAX_COL + (int)Mathf.Round(pos.x));
     }
 }
