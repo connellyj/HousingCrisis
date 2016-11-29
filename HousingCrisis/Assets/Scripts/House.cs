@@ -19,12 +19,11 @@ public class House : MonoBehaviour {
     private List<Person> toRemove;
     private Population population;
     private int[] gridPos;
-    private float eatRadius;
-    private bool isChewing = false;
+    private float eatRadius = 0.4f;
+    public bool isChewing = false;
 
     void Start() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
-        eatRadius = transform.GetChild(0).GetComponent<CircleCollider2D>().radius;
         population = GameManager.GetPopulation();
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
     }
@@ -33,6 +32,7 @@ public class House : MonoBehaviour {
         if (!isChewing)
         {
             isChewing = true;
+            DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
             toRemove = new List<Person>();
             allPeople = population.GetAllPeople();
@@ -117,6 +117,7 @@ public class House : MonoBehaviour {
         isChewing = false;
         StopCoroutine("ChewingAnimation");
         spriteRenderer.sprite = defaultSprite;
+        EnableEatingAreas();
     }
 
     private IEnumerator ChewAnimation()
@@ -127,6 +128,24 @@ public class House : MonoBehaviour {
             spriteRenderer.sprite = chewingSprites[frameIndex];
             frameIndex = (frameIndex + 1) % chewingSprites.Length;
             yield return new WaitForSeconds(1f/chewingFPS);
+        }
+    }
+
+    private void EnableEatingAreas()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            GameObject eatingArea = transform.GetChild(i).gameObject;
+            eatingArea.SetActive(true);
+        }
+    }
+
+    private void DisableEatingAreas()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            GameObject eatingArea = transform.GetChild(i).gameObject;
+            eatingArea.SetActive(false);
         }
     }
 }
