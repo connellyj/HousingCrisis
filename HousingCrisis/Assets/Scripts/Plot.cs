@@ -36,6 +36,15 @@ public class Plot : MonoBehaviour {
         currentlyOpen = this;
     }
 
+    void Update() {
+        if(Input.GetMouseButtonDown(0) && open) {
+            Vector2 mouse = Input.mousePosition;
+            if(!backgroundRect.Contains(new Vector2(mouse[0], Screen.height - mouse[1]))) {
+                open = false;
+            }
+        }
+    }
+
     void OnGUI() {
         if(open) {
             GUI.Box(backgroundRect, "");
