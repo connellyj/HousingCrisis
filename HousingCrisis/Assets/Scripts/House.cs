@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class House : MonoBehaviour {
@@ -8,17 +9,28 @@ public class House : MonoBehaviour {
 
     public static int cost = 0;
 
+    public float chewingTime;
+
+    // sprites and renderer
+    SpriteRenderer spriteRenderer;
+    public GameObject spriteWrapper;
+    public Sprite defaultSprite;
+    public Sprite eatingSprite;
+    public Sprite[] chewingSprites = new Sprite[4];
+
     private List<Person> allPeople;
     private List<Person> toRemove;
     private Population population;
+
     protected int[] gridPos;
-    protected float eatRadius;
+    protected float eatRadius = 0.4f;
+    public bool isChewing = false;
 
     protected virtual void Awake() {
         if(cost == 0) cost = houseCost;
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
-        eatRadius = transform.GetChild(0).GetComponent<CircleCollider2D>().radius;
         population = GameManager.GetPopulation();
+        spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
         ActivateAbility();
     }
 
@@ -31,15 +43,21 @@ public class House : MonoBehaviour {
     }
 
     public void Eat(Direction d) {
-        toRemove = new List<Person>();
-        allPeople = population.GetAllPeople();
-        foreach(Person p in allPeople) {
-            if(PersonInRangeToEat(p, d)) toRemove.Add(p);
-            else if(PersonInRangeToSee(p, d)) p.OnSeeHouse(GridManager.coordsToIndex(gridPos[0], gridPos[1]));
-        }
-        foreach(Person p in toRemove) {
-            allPeople.Remove(p);
-            p.OnEaten();
+        if (!isChewing)
+        {
+            isChewing = true;
+            DisableEatingAreas();
+            StartCoroutine(EatAnimation(d));
+            toRemove = new List<Person>();
+            allPeople = population.GetAllPeople();
+            foreach(Person p in allPeople) {
+                if(PersonInRangeToEat(p, d)) toRemove.Add(p);
+                else if(PersonInRangeToSee(p, d)) p.OnSeeHouse(GridManager.coordsToIndex(gridPos[0], gridPos[1]));
+            }
+            foreach(Person p in toRemove) {
+                allPeople.Remove(p);
+                p.OnEaten();
+            }
         }
     }
 
@@ -99,4 +117,50 @@ public class House : MonoBehaviour {
     private bool PersonInRangeSameY(int difX, Person p) {
         return p.Y() == gridPos[1] && Mathf.Abs(difX) < noticeThreshold;
     }
+
+    private IEnumerator EatAnimation(Direction d)
+    {
+        Vector3 origin = spriteWrapper.transform.position;
+        Vector3 v = GridManager.DirectionToVector(d) / 2;   
+        spriteWrapper.transform.position += v;
+        spriteRenderer.sprite = eatingSprite;
+        yield return new WaitForSeconds(.5f);
+        spriteWrapper.transform.position = origin;
+        StartCoroutine(ChewAnimation());
+        yield return new WaitForSeconds(chewingTime);
+        isChewing = false;
+        StopCoroutine("ChewingAnimation");
+        spriteRenderer.sprite = defaultSprite;
+        EnableEatingAreas();
+    }
+
+    private IEnumerator ChewAnimation()
+    {
+        int frameIndex = 0;
+        float chewingFPS = 6f;
+        while (isChewing) {
+            spriteRenderer.sprite = chewingSprites[frameIndex];
+            frameIndex = (frameIndex + 1) % chewingSprites.Length;
+            yield return new WaitForSeconds(1f/chewingFPS);
+        }
+    }
+
+    private void EnableEatingAreas()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            GameObject eatingArea = transform.GetChild(i).gameObject;
+            eatingArea.SetActive(true);
+        }
+    }
+
+    private void DisableEatingAreas()
+    {
+        for(int i = 0; i < 4; i++)
+        {
+            GameObject eatingArea = transform.GetChild(i).gameObject;
+            eatingArea.SetActive(false);
+        }
+    }
 }
+

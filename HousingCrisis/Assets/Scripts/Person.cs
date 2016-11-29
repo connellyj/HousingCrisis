@@ -54,7 +54,7 @@ public class Person : MonoBehaviour {
         SetPath();
         LogPath();
         direction = path[0];
-        Vector3 v = DirectionToVector(direction);
+        Vector3 v = GridManager.DirectionToVector(direction);
         StartCoroutine(FollowPath(v));
         // create sprite arrays and start animation
 		northSprites = new Sprite[] {spriteNorthA, spriteNorthB};
@@ -106,7 +106,7 @@ public class Person : MonoBehaviour {
 		Vector3 targetTile = gridXY;
 		if (direction == newDirection)
 		{
-			targetTile += DirectionToVector(direction);
+			targetTile += GridManager.DirectionToVector(direction);
 			pathIndex = 0; // replaces first pathing direction
 		} else {
 			direction = Opposite(direction);
@@ -135,7 +135,7 @@ public class Person : MonoBehaviour {
 		if (pathIndex < path.Count)
 		{
 			direction = path[pathIndex];
-			Vector3 newV = DirectionToVector(direction);
+			Vector3 newV = GridManager.DirectionToVector(direction);
 			StartCoroutine(FollowPath(newV));
 		} else {
 			CompletePath();
@@ -168,22 +168,6 @@ public class Person : MonoBehaviour {
 				return Direction.WEST;
 			default:
 				throw new System.InvalidOperationException("Direction cannot be converted to opposite");
-		}
-	}
-
-	private Vector3 DirectionToVector(Direction d)
-	{
-		switch (d) {
-			case Direction.NORTH:
-				return Vector3.up;
-			case Direction.SOUTH:
-				return Vector3.down;
-			case Direction.WEST:
-				return Vector3.left;
-			case Direction.EAST:
-				return Vector3.right;
-			default:
-				throw new InvalidOperationException("Direction cannot be converted to vector");
 		}
 	}
 

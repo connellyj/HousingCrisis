@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
-using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour {
     
@@ -28,6 +27,8 @@ public class GameManager : MonoBehaviour {
         SceneManager.sceneLoaded += OnSceneLoaded;
         UpdateLevel();
     }
+
+    void Start() {}
 
     // Automatically called when the scene is loaded
     private void OnSceneLoaded(Scene sceneIndex, LoadSceneMode loadSceneMode) {

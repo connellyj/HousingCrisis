@@ -73,4 +73,20 @@ public class GridManager : MonoBehaviour {
         adj.Add(idx - MAX_COL);
         return adj;
     }
+
+    public static Vector3 DirectionToVector(Direction d)
+    {
+        switch (d) {
+            case Direction.NORTH:
+                return Vector3.up;
+            case Direction.SOUTH:
+                return Vector3.down;
+            case Direction.WEST:
+                return Vector3.left;
+            case Direction.EAST:
+                return Vector3.right;
+            default:
+                throw new System.InvalidOperationException("Direction cannot be converted to vector");
+        }
+    }
 }

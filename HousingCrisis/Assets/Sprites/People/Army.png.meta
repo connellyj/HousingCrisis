@@ -1,6 +1,11 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:HousingCrisis/Assets/Sprites/Army.png.meta
 guid: 46908fd04722047a5b6d4dcef579520c
 timeCreated: 1480446174
+=======
+guid: 8ceb4b4058bc3473597935e468bd2e1e
+timeCreated: 1480413964
+>>>>>>> refs/remotes/origin/master:HousingCrisis/Assets/Sprites/People/Army.png.meta
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:

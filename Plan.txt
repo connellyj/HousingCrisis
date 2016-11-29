@@ -53,3 +53,18 @@ Beyond Core
 - main and pause menu ui
 - info tooltips
 - levels
+
+Buildings
+- Apartment
+- Mansion
+- Store
+    - Attract people
+    - Stall people
+- Donut Shop
+    - Adjust for bankers
+- Bank
+    - Adjust for police
+
+
+
+
