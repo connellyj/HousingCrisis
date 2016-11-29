@@ -1,16 +1,17 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class PersonSpawner : MonoBehaviour {
 
 	public float spawnChance;
+    public float robberChance;
+    public float soldierChance;
+    public float policeChance;
 	private int spawnCounter = 0; 
 
 	public GameObject manPrefab;
-
-	void Start () {
-	
-	}
+    public GameObject robberPrefab;
+    public GameObject soldierPrefab;
+    public GameObject policePrefab;
 	
 	void Update () {
 		spawnCounter++;
@@ -18,10 +19,17 @@ public class PersonSpawner : MonoBehaviour {
 		{
 			spawnCounter = 0;
 			if (spawnChance > Random.value) {
-				manPrefab.transform.position = transform.position + Person.positionOffset;
-				Instantiate(manPrefab);
+                float rand = Random.value;
+                if(rand < policeChance) {
+                    Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                } else if(rand < soldierChance + robberChance && GridManager.houses.Count > 0) {
+                    Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                } else if(rand < soldierChance + robberChance + policeChance && GridManager.houses.Count > 0){
+                    Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                } else {
+                    Instantiate(manPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                }
 			}
 		}
 	}
-
 }

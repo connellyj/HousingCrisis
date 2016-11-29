@@ -27,7 +27,7 @@ public class Plot : MonoBehaviour {
         textStyle = new GUIStyle();
         textStyle.alignment = TextAnchor.MiddleCenter;
 
-        adjacentPaths = GridManager.GetAdjacentPaths((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y), gameObject);
+        adjacentPaths = GridManager.GetAdjacentPathDirections((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y), gameObject);
     }
 
     void OnMouseDown() {
@@ -39,9 +39,9 @@ public class Plot : MonoBehaviour {
     void OnGUI() {
         if(open) {
             GUI.Box(backgroundRect, "");
-            if(HouseManager.CanBuildHouse(HouseManager.HouseType.HOUSE1)) {
+            if(HouseManager.CanBuildHouse(HouseManager.HouseType.HOUSE)) {
                 if(GUI.Button(buildRect, "Build House")) {
-                    HouseManager.BuildHouse(transform.position, HouseManager.HouseType.HOUSE1, adjacentPaths);
+                    HouseManager.BuildHouse(transform.position, HouseManager.HouseType.HOUSE, adjacentPaths);
                     Destroy(gameObject);
                 }
             }else GUI.Box(buildRect, "Not enough $$", textStyle);

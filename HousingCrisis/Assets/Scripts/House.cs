@@ -3,19 +3,31 @@ using System.Collections.Generic;
 
 public class House : MonoBehaviour {
 
+    public int houseCost;
     public int noticeThreshold;
-    public int cost;
+
+    public static int cost = 0;
 
     private List<Person> allPeople;
     private List<Person> toRemove;
     private Population population;
-    private int[] gridPos;
-    private float eatRadius;
+    protected int[] gridPos;
+    protected float eatRadius;
 
-    void Start() {
+    protected virtual void Awake() {
+        if(cost == 0) cost = houseCost;
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         eatRadius = transform.GetChild(0).GetComponent<CircleCollider2D>().radius;
         population = GameManager.GetPopulation();
+        ActivateAbility();
+    }
+
+    protected virtual void ActivateAbility() {
+        return;
+    }
+
+    public void Buy() {
+        GameManager.UpdateMoney(-1 * houseCost);
     }
 
     public void Eat(Direction d) {
@@ -23,7 +35,7 @@ public class House : MonoBehaviour {
         allPeople = population.GetAllPeople();
         foreach(Person p in allPeople) {
             if(PersonInRangeToEat(p, d)) toRemove.Add(p);
-            else if(PersonInRangeToSee(p, d)) p.OnSeeHouse();
+            else if(PersonInRangeToSee(p, d)) p.OnSeeHouse(GridManager.coordsToIndex(gridPos[0], gridPos[1]));
         }
         foreach(Person p in toRemove) {
             allPeople.Remove(p);
@@ -31,7 +43,7 @@ public class House : MonoBehaviour {
         }
     }
 
-    private bool PersonInRangeToEat(Person p, Direction d) {
+    protected virtual bool PersonInRangeToEat(Person p, Direction d) {
         Vector3 pos = p.transform.position;
         switch(d) {
             case Direction.WEST:

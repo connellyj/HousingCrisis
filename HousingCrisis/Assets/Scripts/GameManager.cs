@@ -16,7 +16,6 @@ public class GameManager : MonoBehaviour {
     private int moneyAmount;
     private LevelUIController levelUI;
     private Population population;
-    private Pathfinder pathFinder;
 
     void Awake() {
         if(instance == null) {
@@ -24,10 +23,6 @@ public class GameManager : MonoBehaviour {
             DontDestroyOnLoad(gameObject);
         }
         if(instance != this) Destroy(gameObject);
-    }
-
-    void Start() {
-        pathFinder = new Pathfinder();
         population = new Population();
         currentScene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -102,10 +97,5 @@ public class GameManager : MonoBehaviour {
     // Returns the population
     public static Population GetPopulation() {
         return instance.population;
-    }
-
-    // Uses the pathfinder to find a path
-    public static List<Direction> FindPath(Person.PersonState state, int personLoc, Pathfinder.GoalType goalType) {
-        return instance.pathFinder.FindPath(state, personLoc, goalType);
     }
 }
