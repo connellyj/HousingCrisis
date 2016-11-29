@@ -5,35 +5,45 @@ using System.Collections.Generic;
 public class House : MonoBehaviour {
 
     public int noticeThreshold;
+    public float chewingTime;
     public int cost;
 
     // sprites and renderer
     SpriteRenderer spriteRenderer;
-    public Sprite[] chewingSprites = new Sprite[3];
+    public GameObject spriteWrapper;
+    public Sprite defaultSprite;
+    public Sprite eatingSprite;
+    public Sprite[] chewingSprites = new Sprite[4];
 
     private List<Person> allPeople;
     private List<Person> toRemove;
     private Population population;
     private int[] gridPos;
     private float eatRadius;
+    private bool isChewing = false;
 
     void Start() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         eatRadius = transform.GetChild(0).GetComponent<CircleCollider2D>().radius;
         population = GameManager.GetPopulation();
-        //StartCoroutine(Chew());
+        spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
     }
 
     public void Eat(Direction d) {
-        toRemove = new List<Person>();
-        allPeople = population.GetAllPeople();
-        foreach(Person p in allPeople) {
-            if(PersonInRangeToEat(p, d)) toRemove.Add(p);
-            else if(PersonInRangeToSee(p, d)) p.OnSeeHouse();
-        }
-        foreach(Person p in toRemove) {
-            allPeople.Remove(p);
-            p.OnEaten();
+        if (!isChewing)
+        {
+            isChewing = true;
+            StartCoroutine(EatAnimation(d));
+            toRemove = new List<Person>();
+            allPeople = population.GetAllPeople();
+            foreach(Person p in allPeople) {
+                if(PersonInRangeToEat(p, d)) toRemove.Add(p);
+                else if(PersonInRangeToSee(p, d)) p.OnSeeHouse();
+            }
+            foreach(Person p in toRemove) {
+                allPeople.Remove(p);
+                p.OnEaten();
+            }
         }
     }
 
@@ -94,13 +104,28 @@ public class House : MonoBehaviour {
         return p.Y() == gridPos[1] && Mathf.Abs(difX) < noticeThreshold;
     }
 
-    private IEnumerator Chew()
+    private IEnumerator EatAnimation(Direction d)
+    {
+        Vector3 origin = spriteWrapper.transform.position;
+        Vector3 v = GridManager.DirectionToVector(d) / 2;   
+        spriteWrapper.transform.position += v;
+        spriteRenderer.sprite = eatingSprite;
+        yield return new WaitForSeconds(.5f);
+        spriteWrapper.transform.position = origin;
+        StartCoroutine(ChewAnimation());
+        yield return new WaitForSeconds(chewingTime);
+        isChewing = false;
+        StopCoroutine("ChewingAnimation");
+        spriteRenderer.sprite = defaultSprite;
+    }
+
+    private IEnumerator ChewAnimation()
     {
         int frameIndex = 0;
-        float chewingFPS = 3f;
-        while (true) {
+        float chewingFPS = 6f;
+        while (isChewing) {
             spriteRenderer.sprite = chewingSprites[frameIndex];
-            frameIndex = (frameIndex + 1) % 3;
+            frameIndex = (frameIndex + 1) % chewingSprites.Length;
             yield return new WaitForSeconds(1f/chewingFPS);
         }
     }
