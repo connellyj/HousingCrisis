@@ -24,15 +24,14 @@ public class GameManager : MonoBehaviour {
             DontDestroyOnLoad(gameObject);
         }
         if(instance != this) Destroy(gameObject);
-    }
-
-    void Start() {
         pathFinder = new Pathfinder();
         population = new Population();
         currentScene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.sceneLoaded += OnSceneLoaded;
         UpdateLevel();
     }
+
+    void Start() {}
 
     // Automatically called when the scene is loaded
     private void OnSceneLoaded(Scene sceneIndex, LoadSceneMode loadSceneMode) {

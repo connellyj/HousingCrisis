@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 
 public class House : MonoBehaviour {
 
     public int noticeThreshold;
     public int cost;
+
+    // sprites and renderer
+    SpriteRenderer spriteRenderer;
+    public Sprite[] chewingSprites = new Sprite[3];
 
     private List<Person> allPeople;
     private List<Person> toRemove;
@@ -14,6 +19,7 @@ public class House : MonoBehaviour {
     void Awake() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         population = GameManager.GetPopulation();
+        //StartCoroutine(Chew());
     }
 
     public void Eat(Direction d) {
@@ -70,5 +76,16 @@ public class House : MonoBehaviour {
 
     private bool PersonInRangeSameY(int difX, Person p) {
         return p.Y() == gridPos[1] && Mathf.Abs(difX) < noticeThreshold;
+    }
+
+    private IEnumerator Chew()
+    {
+        int frameIndex = 0;
+        float chewingFPS = 3f;
+        while (true) {
+            spriteRenderer.sprite = chewingSprites[frameIndex];
+            frameIndex = (frameIndex + 1) % 3;
+            yield return new WaitForSeconds(1f/chewingFPS);
+        }
     }
 }
