@@ -18,6 +18,7 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
+        houses = new List<House>();
     }
 
     public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
