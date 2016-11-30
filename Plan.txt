@@ -1,69 +1,29 @@
 Housing Crisis
 
-* = core
+Julia
+- debug people
+- shooting animation
+- store/donut/bank functionality
+- apartment functionality
+- finalize build menus
 
-Tiles:
-* roads
-* plots
-* grass
+Connor
+- finish burning
+- rob house
+- start and win buttons
+- woman
+- all sprites
+	- mansion (full set)
+	- apartment, donut, bank (single sprite)
+- mansion functionality
+- wanted level and difficulty curve
+- level design
 
-People:
-* (with wandering and noticing) pedestrians
-- robbers
-- police/soldiers
-
-Buildings:
-* (lvl 1) houses
-- stores
-- factories
-- town hall
-
-UI:
-- pause menu
-- start screen
-- end screen
-- tutorial info
-- game info
-- wanted level
-- building UI
-
-Game Design Questions:
-- exact store funtion
-- exact factory function
-- how to beat a level
-- how do buildings take damage
-
-Overall notes:
-- maybe the levels are all different cities in the US
-- houses take damage by setting on fire, you tap them to put it out
-- take over the city via poliical power and the town hall
-
-To Finish Core
-- house eating and chewing animations
-- chewing implementation
-- cost $ to build house, get $ for eating people
-- $ and escaped people displayed in upper right
-- center build menu
-
-Beyond Core
-- building upgrades
-- people with varying speeds
-- enemies: robbers, police, army
-- burning houses and putting them out
-- main and pause menu ui
-- info tooltips
-- levels
-
-Buildings
-- Apartment
-- Mansion
-- Store
-    - Attract people
-    - Stall people
-- Donut Shop
-    - Adjust for bankers
-- Bank
-    - Adjust for police
+UI
+- polish $ counter
+- info popups
+- scene transitions
+- help menu
 
 
 
