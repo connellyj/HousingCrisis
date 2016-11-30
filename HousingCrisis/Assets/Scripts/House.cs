@@ -22,7 +22,7 @@ public class House : MonoBehaviour {
     private List<Person> toRemove;
 
     protected int[] gridPos;
-    protected float eatRadius = 0.4f;
+    protected float eatRadius = 0.5f;
     public bool isChewing = false;
 
     protected virtual void Awake() {
