@@ -51,6 +51,7 @@ public class Plot : MonoBehaviour {
             if(HouseManager.CanBuildHouse(HouseManager.HouseType.HOUSE)) {
                 if(GUI.Button(buildRect, "Build House")) {
                     HouseManager.BuildHouse(transform.position, HouseManager.HouseType.HOUSE, adjacentPaths);
+                    open = false;
                     Destroy(gameObject);
                 }
             }else GUI.Box(buildRect, "Not enough $$", textStyle);

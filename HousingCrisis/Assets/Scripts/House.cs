@@ -23,7 +23,7 @@ public class House : MonoBehaviour {
     private Population population;
 
     protected int[] gridPos;
-    protected float eatRadius = 0.4f;
+    protected float eatRadius = 0.5f;
     public bool isChewing = false;
 
     protected virtual void Awake() {
