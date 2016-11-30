@@ -64,6 +64,7 @@ public class Person : MonoBehaviour {
         StartCoroutine(PlayAnimation());
 
         Population.AddPerson(this);
+        gameObject.layer = 2;
 	}
 	
 	protected virtual void Update () {
