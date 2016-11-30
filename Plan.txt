@@ -13,10 +13,11 @@ Connor
 * finish burning
 * rob house
 * woman
-- start and win buttons
+- design wanted level and difficulty curve
 - all sprites
+	- apartment, donut, bank (single sprites)
 	- mansion (full set)
-	- apartment, donut, bank (single sprite)
+- start and win buttons
 - mansion functionality
 - wanted level and difficulty curve
 - level design
