@@ -38,6 +38,7 @@ public class Person : MonoBehaviour {
 	private int pathIndex = 0;
 	public Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
+    private Vector3 prevPos;
 
     // HEY CONNOR!!
     // You have to account for the case where the person is on an exit when they panic
@@ -112,8 +113,13 @@ public class Person : MonoBehaviour {
 	}
 
     protected virtual IEnumerator Stall() {
-        yield return new WaitForSeconds(stallTime);
-        CompletePath();
+        House h = HouseManager.houses[GridManager.houses.IndexOf(goalIndex)];
+        if(h.HasAvailableStallSpace()) {
+            MoveToPosition(h.AddStalledPerson(X(), Y()));
+            yield return new WaitForSeconds(stallTime);
+            ResetPosition();
+            CompletePath();
+        } else CompletePath();
     }
 
 	private IEnumerator FollowPath(Vector3 v)
@@ -229,6 +235,26 @@ public class Person : MonoBehaviour {
 
     protected virtual void Attack() {
         return;
+    }
+
+    protected void MoveToPosition(Vector3 pos) {
+        prevPos = transform.position;
+        StartCoroutine(TranslateToPos(pos));
+    }
+
+    protected void ResetPosition() {
+        MoveToPosition(prevPos);
+    }
+
+    private IEnumerator TranslateToPos(Vector3 pos) {
+        Vector3 dir = pos - transform.position;
+        float dist = dir.magnitude;
+        dir = dir.normalized;
+        while(dist > 0) {
+            transform.Translate(dir * 0.1f);
+            dist -= 0.1f;
+            yield return new WaitForSeconds(0.5f);
+        }
     }
 
     protected void RemovePerson() {
