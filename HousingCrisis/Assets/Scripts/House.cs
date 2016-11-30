@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -25,11 +26,21 @@ public class House : MonoBehaviour {
     protected float eatRadius = 0.5f;
     public bool isChewing = false;
 
+    public GameObject firePrefab;
+    public int burnState = 0;
+    private int totalDamage = 0;
+    private List<GameObject> fires = new List<GameObject>();
+    private Vector3 fireOffset = new Vector3(0,0.4f,0);
+
     protected virtual void Awake() {
         if(cost == 0) cost = houseCost;
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
         ActivateAbility();
+    }
+
+    void Start() {
+        DamageHouse(100);
     }
 
     protected virtual void ActivateAbility() {
@@ -102,6 +113,91 @@ public class House : MonoBehaviour {
             GameObject eatingArea = transform.GetChild(i).gameObject;
             eatingArea.SetActive(false);
         }
+    }
+
+    public void RobHouse()
+    {
+
+    }
+
+    public void DamageHouse(int damage)
+    {
+        totalDamage += damage;
+        if (DidBurnStateChange())
+        {
+            int oldState = burnState;
+            burnState = CorrectBurnState();
+            if (oldState == 0)
+            {
+                StartBurning();
+            } else if (burnState == 0) {
+                StopBurning();
+            }
+            UpdateFires();
+        }
+
+    }
+
+    private void StartBurning() 
+    {
+        Debug.Log("Burning started");
+    }
+
+    private void StopBurning() 
+    {
+        Debug.Log("Burning stopped");
+    }
+
+    private bool DidBurnStateChange()
+    {
+        int correctBurnState = CorrectBurnState();
+        return correctBurnState != burnState;
+    }
+
+    private int CorrectBurnState()
+    {
+        return (int)Math.Floor(totalDamage / 100f);
+    }
+
+    private void UpdateFires()
+    {
+        RemoveAllFires();
+        switch(burnState) {
+            case 1:
+                AddFireWithOffset(Vector3.zero);
+                break;
+            case 2:
+                AddFireWithOffset(Vector3.left / 3);
+                AddFireWithOffset(Vector3.right / 3);
+                break;
+            case 3:
+                AddFireWithOffset(Vector3.left / 4);
+                AddFireWithOffset(Vector3.zero);
+                AddFireWithOffset(Vector3.right / 4);
+                break;
+            default: break;
+        }
+    }
+
+    private void AddFireWithOffset(Vector3 individualOffset)
+    {
+        Vector3 firePosition = transform.position + individualOffset + fireOffset;
+        GameObject fire = (GameObject)Instantiate(firePrefab, firePosition, Quaternion.identity);
+        fires.Add(fire);
+    }
+
+    private void RemoveAllFires()
+    {
+        for (int i = 0; i < fires.Count; i++)
+        {
+            fires.Remove(fires[0]);
+        }
+    }
+
+    private void RemoveHouse()
+    {
+        HouseManager.RemoveHouse();
+        Destroy(gameObject);
     }
 }
 
