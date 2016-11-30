@@ -28,6 +28,7 @@ public class EatingArea : MonoBehaviour {
     }
 
     void OnMouseDown() {
+        Debug.Log("click");
         if(numPeopleInArea > 0) {
             house.Eat(direction);
         }
