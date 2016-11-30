@@ -70,7 +70,6 @@ public class HouseManager : MonoBehaviour {
     }
 
     public static void AddHouseToGrid(Vector3 pos) {
-        Debug.Log("hello?");
         GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
     }
 
