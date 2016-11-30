@@ -39,8 +39,6 @@ public class Person : MonoBehaviour {
 	public Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
 
-    protected Population population;
-
     // HEY CONNOR!!
     // You have to account for the case where the person is on an exit when they panic
     // Because in that case the path will be an empty list
@@ -65,8 +63,7 @@ public class Person : MonoBehaviour {
 		spriteRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(PlayAnimation());
 
-        population = GameManager.GetPopulation();
-        population.AddPerson(this);
+        Population.AddPerson(this);
 	}
 	
 	protected virtual void Update () {
@@ -174,20 +171,20 @@ public class Person : MonoBehaviour {
     private void SetPath()
     {
     	int personLoc = PersonLocFromPosition();
-    	if(state == PersonState.ATTACK) path = Pathfinder.FindPath(personLoc, attackGoal);
+    	if(state == PersonState.ATTACK) path = Pathfinder.FindPathToHouse(personLoc, attackGoal);
         else if(state == PersonState.TARGET) {
             if(GridManager.houses.Count == 0) {
                 ChangeState(PersonState.WANDER);
             } else {
                 attackGoal = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
-                path = Pathfinder.FindPath(personLoc, attackGoal);
+                path = Pathfinder.FindPathToHouse(personLoc, attackGoal);
             }
         } else path = Pathfinder.FindPath(state, personLoc);
     }
 
     protected int PersonLocFromPosition()
     {
-        return GridManager.coordsToIndex((int)gridXY[0], (int)gridXY[1]);
+        return GridManager.CoordsToIndex((int)gridXY[0], (int)gridXY[1]);
     }
 
     private void LogPath()
@@ -216,7 +213,7 @@ public class Person : MonoBehaviour {
     }
 
     protected void RemovePerson() {
-        population.RemovePerson(this);
+        Population.RemovePerson(this);
         Destroy(gameObject);
     }
 

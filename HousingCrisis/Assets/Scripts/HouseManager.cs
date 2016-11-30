@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 public class HouseManager : MonoBehaviour {
 
-    public GameObject house1;
-    public GameObject house2;
-    public GameObject office;
+    public GameObject house;
+    public GameObject apartment;
+    public GameObject bank;
     public GameObject donut;
-    public GameObject attack;
+    public GameObject mansion;
     public GameObject store;
 
     private static HouseManager instance;
@@ -22,26 +22,26 @@ public class HouseManager : MonoBehaviour {
         House house = null;
         switch(type) {
             case HouseType.HOUSE:
-                house = ((GameObject)Instantiate(instance.house1, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.APARTMENT:
-                house = ((GameObject) Instantiate(instance.house2, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.BANK:
-                house = ((GameObject) Instantiate(instance.office, position, Quaternion.identity)).GetComponent<Bank>();
+                house = ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Bank>();
                 break;
             case HouseType.DONUT:
                 house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.MANSION:
-                house = ((GameObject) Instantiate(instance.attack, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.STORE:
                 house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<House>();
                 break;
         }
         house.Buy();
-        RemoveTriggers(adjacentPaths, house);
+        house.RemoveTriggers(adjacentPaths);
         AddHouseToGrid(position);
     }
 
@@ -65,13 +65,7 @@ public class HouseManager : MonoBehaviour {
         }
     }
 
-    public static void RemoveTriggers(List<Direction> adjacent, House house) {
-        foreach(Transform t in house.transform) {
-            if(!adjacent.Contains(t.GetComponent<EatingArea>().direction)) Destroy(t.gameObject);
-        }
-    }
-
     public static void AddHouseToGrid(Vector3 pos) {
-        GridManager.houses.Add(GridManager.coordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+        GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
     }
 }

@@ -3,10 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
     
-    public int houseCost;
     public int startingMoney;
-    public GameObject pauseController;
-    public GameObject houseManager;
 
     private static GameManager instance;
 
@@ -14,7 +11,6 @@ public class GameManager : MonoBehaviour {
     private int wantedLevel;
     private int moneyAmount;
     private LevelUIController levelUI;
-    private Population population;
 
     void Awake() {
         if(instance == null) {
@@ -22,13 +18,13 @@ public class GameManager : MonoBehaviour {
             DontDestroyOnLoad(gameObject);
         }
         if(instance != this) Destroy(gameObject);
-        population = new Population();
+    }
+
+    void Start() {
         currentScene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.sceneLoaded += OnSceneLoaded;
         UpdateLevel();
     }
-
-    void Start() {}
 
     // Automatically called when the scene is loaded
     private void OnSceneLoaded(Scene sceneIndex, LoadSceneMode loadSceneMode) {
@@ -38,7 +34,7 @@ public class GameManager : MonoBehaviour {
     // Updates values when a new level starts
     private void UpdateLevel() {
         UpdateUI();
-        population.ClearPeople();
+        Population.ClearPeople();
         moneyAmount = 0;
         wantedLevel = 0;
         UpdateMoney(startingMoney);
@@ -49,8 +45,6 @@ public class GameManager : MonoBehaviour {
         GameObject ui = GameObject.FindGameObjectWithTag("LevelUI");
         if(ui != null) {
             levelUI = ui.GetComponent<LevelUIController>();
-            Instantiate(instance.pauseController);
-            Instantiate(houseManager);
         } else levelUI = null;
     }
 
@@ -93,10 +87,5 @@ public class GameManager : MonoBehaviour {
     // Returns the amount of money
     public static int GetMoney() {
         return instance.moneyAmount;
-    }
-
-    // Returns the population
-    public static Population GetPopulation() {
-        return instance.population;
     }
 }

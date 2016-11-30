@@ -29,7 +29,7 @@ public class GridManager : MonoBehaviour {
         foreach(GameObject tile in pathTiles) {
             x = (int) Mathf.Round(tile.transform.position.x);
             y = (int) Mathf.Round(tile.transform.position.y);
-            index = coordsToIndex(x, y);
+            index = CoordsToIndex(x, y);
             paths.Add(index);
             if(x == 0 || y == 0 || x == MAX_COL - 1 || y == MAX_ROW - 1) exits.Add(index);
         }
@@ -42,27 +42,18 @@ public class GridManager : MonoBehaviour {
         return false;
     }
 
-    public static int coordsToIndex(int x, int y) {
+    public static int CoordsToIndex(int x, int y) {
         return (MAX_ROW - 1 - y) * MAX_COL + x;
     }
 
     public static List<Direction> GetAdjacentPathDirections(int x, int y, GameObject tmp) {
-        int data = coordsToIndex(x, y);
+        int data = CoordsToIndex(x, y);
         List<Direction> adjacentPaths = new List<Direction>();
         if(CellIsPath(data + 1)) adjacentPaths.Add(Direction.EAST);
         if(CellIsPath(data - 1)) adjacentPaths.Add(Direction.WEST);
         if(CellIsPath(data + MAX_COL)) adjacentPaths.Add(Direction.SOUTH);
         if(CellIsPath(data - MAX_COL)) adjacentPaths.Add(Direction.NORTH);
         return adjacentPaths;
-    }
-
-    public static List<int> GetAdjacentPathIndeces(int idx) {
-        List<int> adj = new List<int>();
-        if(CellIsPath(idx + 1)) adj.Add(idx + 1);
-        if(CellIsPath(idx - 1)) adj.Add(idx - 1);
-        if(CellIsPath(idx + MAX_COL)) adj.Add(idx + MAX_COL);
-        if(CellIsPath(idx - MAX_COL)) adj.Add(idx - MAX_COL);
-        return adj;
     }
 
     public static List<int> GetAdjacentIndeces(int idx) {

@@ -8,12 +8,12 @@ public class Pathfinder {
 
     public enum GoalType { EXIT, HOUSE, NONE }
 
-    // Conducts a graph search to find a path from the given location to a goal
-    public static List<Direction> FindPath(int personLoc, int goal) {
-        return FindPath(new Node(personLoc, GoalType.HOUSE, goal), new Strategy.DFS());
+    // Conducts a graph search to find a path from the given location to the given house
+    public static List<Direction> FindPathToHouse(int personLoc, int house) {
+        return FindPath(new Node(personLoc, GoalType.HOUSE, house), new Strategy.DFS());
     }
 
-    // Conducts a graph search to find a path from the given location to a goal
+    // Conducts a graph search to find a path from the given location to the person's goal
     public static List<Direction> FindPath(Person.PersonState state, int personLoc) {
         GoalType goalType;
         Strategy strategy;
@@ -43,7 +43,7 @@ public class Pathfinder {
         return FindPath(initialState, strategy);
     }
 
-    // Conducts a graph search to find a path from the given location to a goal
+    // Conducts a graph search to find a path starting at the given node with the provided strategy
     private static List<Direction> FindPath(Node initialState, Strategy strategy) {
 
         if(!strategy.ignoreFirstGoal && initialState.isGoal()) {
@@ -130,30 +130,30 @@ public class Pathfinder {
         public GoalType gType;
         private Direction direction;
         private Node parent;
-        private System.Random rng = new System.Random();
+        private Random rng = new Random();
 
-        public Node(int personLoc, GoalType hType) {
-            this.parent = null;
-            this.direction = Direction.NONE;
-            this.data = personLoc;
-            this.gType = hType;
+        public Node(int personLoc, GoalType goalType) {
+            parent = null;
+            direction = Direction.NONE;
+            data = personLoc;
+            gType = goalType;
             goal = 0;
         }
 
-        public Node(int personLoc, GoalType hType, int goal) {
-            this.parent = null;
-            this.direction = Direction.NONE;
-            this.data = personLoc;
-            this.gType = hType;
-            this.goal = goal;
+        public Node(int personLoc, GoalType goalType, int searchGoal) {
+            parent = null;
+            direction = Direction.NONE;
+            data = personLoc;
+            gType = goalType;
+            goal = searchGoal;
         }
 
-        public Node(Node parent, Direction direction, int personLoc) {
-            this.parent = parent;
-            this.direction = direction;
-            this.data = personLoc;
-            this.gType = parent.gType;
-            this.goal = parent.goal;
+        public Node(Node p, Direction d, int personLoc) {
+            parent = p;
+            direction = d;
+            data = personLoc;
+            gType = p.gType;
+            goal = p.goal;
         }
 
         // Returns whether or not the current node is a goal state
