@@ -2,9 +2,6 @@
 using UnityEngine;
 
 public class Soldier : Person {
-    
-    public int attackValue;
-    public int attackStallTime;
 
     protected override void Start() {
         state = PersonState.TARGET_RANDOM;
@@ -24,7 +21,7 @@ public class Soldier : Person {
             h = HouseManager.houses[hIndex];
         }
         if(h.HasAvailableStallSpace()) {
-            MoveToPosition(h.AddStalledPerson(X(), Y()));
+            MoveToPosition(h.AddStalledPerson(this));
             StartCoroutine(Shoot(h));
         } else CompletePath();
     }
@@ -34,6 +31,7 @@ public class Soldier : Person {
             h.DamageHouse(attackValue);
             yield return new WaitForSeconds(attackStallTime);
         }
+        h.RemoveStalledPerson(this);
         CompletePath();
     }
 

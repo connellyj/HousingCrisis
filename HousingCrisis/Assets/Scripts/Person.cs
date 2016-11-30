@@ -39,13 +39,14 @@ public class Person : MonoBehaviour {
 	public Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
     private Vector3 prevPos;
+    public int attackValue;
+    public int attackStallTime;
 
     // HEY CONNOR!!
     // You have to account for the case where the person is on an exit when they panic
     // Because in that case the path will be an empty list
-    // This causes problems with at least line 95
     // I didn't wanna try and fix it because I don't entirely know what's going on
-	protected virtual void Start () {
+    protected virtual void Start () {
         // set and start path
         gridXY[0] = (int)Math.Round(transform.position.x);
     	gridXY[1] = (int)Math.Round(transform.position.y);
@@ -121,9 +122,10 @@ public class Person : MonoBehaviour {
             h = HouseManager.houses[hIndex];
         }
         if(h.HasAvailableStallSpace()) {
-            MoveToPosition(h.AddStalledPerson(X(), Y()));
+            MoveToPosition(h.AddStalledPerson(this));
             yield return new WaitForSeconds(stallTime);
             ResetPosition();
+            h.RemoveStalledPerson(this);
             CompletePath();
         } else CompletePath();
     }
