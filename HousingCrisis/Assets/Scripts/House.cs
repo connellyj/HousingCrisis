@@ -44,7 +44,7 @@ public class House : MonoBehaviour {
     }
     
     void Start() {
-        DamageHouse(200);
+        //DamageHouse(200);
     }
 
     private void CalculateStallPositions(List<Direction> adjPaths) {
