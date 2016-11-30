@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 ﻿using UnityEngine;
 using System.Collections;
+=======
+﻿using System.Collections;
+using UnityEngine;
+>>>>>>> 52d114b4b5cac5bfd094086cca6f7283aeb548e1
 
 public class Police : Person {
 
@@ -19,7 +24,10 @@ public class Police : Person {
 
     protected override void Attack() {
         House h = HouseManager.houses[GridManager.houses.IndexOf(goalIndex)];
-        StartCoroutine(Shoot(h));
+        if(h.HasAvailableStallSpace()) {
+            MoveToPosition(h.AddStalledPerson(X(), Y()));
+            StartCoroutine(Shoot(h));
+        } else CompletePath();
     }
 
     private IEnumerator Shoot(House h) {
@@ -37,6 +45,7 @@ public class Police : Person {
         }else if(state == PersonState.TARGET_SET) {
             ChangeState(PersonState.ATTACK);
         } else if(state == PersonState.ATTACK) {
+            ResetPosition();
             ChangeState(PersonState.WANDER);
         } else if(state == PersonState.WANDER_SET) {
             ChangeState(PersonState.STALL);

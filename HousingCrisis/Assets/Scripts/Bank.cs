@@ -1,12 +1,6 @@
-﻿using UnityEngine;
-
-public class Bank : House {
+﻿public class Bank : Store {
 
     protected override void Awake() {
         base.Awake();
-    }
-
-    protected override void ActivateAbility() {
-        Debug.Log("BANK ACTIVATED");
     }
 }

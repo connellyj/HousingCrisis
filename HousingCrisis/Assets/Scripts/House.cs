@@ -5,6 +5,8 @@ using System.Collections.Generic;
 
 public class House : MonoBehaviour {
 
+    private static readonly int MAX_STALL = 3;
+
     public int houseCost;
     public int noticeThreshold;
 
@@ -19,8 +21,8 @@ public class House : MonoBehaviour {
     public Sprite eatingSprite;
     public Sprite[] chewingSprites = new Sprite[4];
 
-    private List<Person> allPeople;
-    private List<Person> toRemove;
+    protected Person[] stalledPeople;
+    protected Dictionary<int, Vector3[]> stalledPositions;
 
     protected int[] gridPos;
     protected float eatRadius = 0.5f;
@@ -37,15 +39,50 @@ public class House : MonoBehaviour {
         if(cost == 0) cost = houseCost;
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
-        ActivateAbility();
+        stalledPeople = new Person[MAX_STALL];
+        stalledPositions = new Dictionary<int, Vector3[]>();
     }
 
+<<<<<<< HEAD
     void Start() {
         DamageHouse(200);
     }
 
     protected virtual void ActivateAbility() {
         return;
+=======
+    private void CalculateStallPositions(List<Direction> adjPaths) {
+        int houseIndex = GridManager.CoordsToIndex(gridPos[0], gridPos[1]);
+        foreach(Direction d in adjPaths) {
+            Vector3[] positions = new Vector3[MAX_STALL];
+            switch(d) {
+                case Direction.EAST:
+                    for(int i = 0; i < MAX_STALL; i++) {
+                        positions[i] = new Vector3(transform.position.x - 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                    }
+                    stalledPositions.Add(houseIndex + 1, positions);
+                    break;
+                case Direction.WEST:
+                    for(int i = 0; i < MAX_STALL; i++) {
+                        positions[i] = new Vector3(transform.position.x + 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                    }
+                    stalledPositions.Add(houseIndex - 1, positions);
+                    break;
+                case Direction.NORTH:
+                    for(int i = 0; i < MAX_STALL; i++) {
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y - 0.5f);
+                    }
+                    stalledPositions.Add(houseIndex - GridManager.MAX_COL, positions);
+                    break;
+                case Direction.SOUTH:
+                    for(int i = 0; i < MAX_STALL; i++) {
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y + 0.5f);
+                    }
+                    stalledPositions.Add(houseIndex + GridManager.MAX_COL, positions);
+                    break;
+            }
+        }
+>>>>>>> 52d114b4b5cac5bfd094086cca6f7283aeb548e1
     }
 
     public void Buy() {
@@ -69,6 +106,7 @@ public class House : MonoBehaviour {
                 if(!adjacent.Contains(e.direction)) Destroy(t.gameObject);
             }
         }
+        CalculateStallPositions(adjacent);
     }
 
     private IEnumerator EatAnimation(Direction d)
@@ -212,6 +250,20 @@ public class House : MonoBehaviour {
     {
         HouseManager.RemoveHouse(this);
         Destroy(gameObject);
+
+    public bool HasAvailableStallSpace() {
+        return stalledPeople.Length < MAX_STALL;
+    }
+
+    public Vector3 AddStalledPerson(int x, int y) {
+        for(int i = 0; i < MAX_STALL; i++) {
+            if(stalledPeople[i] == null) {
+                int idx = GridManager.CoordsToIndex(x, y);
+                Vector3[] value;
+                if(stalledPositions.TryGetValue(idx, out value)) return value[i];
+            }
+        }
+        return Vector3.zero;
     }
 }
 
