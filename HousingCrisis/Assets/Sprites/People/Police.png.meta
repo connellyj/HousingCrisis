@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:HousingCrisis/Assets/Sprites/Police.png.meta
-guid: f2a51821ec6d8e449983c33bae006a20
-timeCreated: 1480454781
-=======
 guid: b05f6cbec2d21459fa54fde4ac2e9e4a
-timeCreated: 1480413964
->>>>>>> refs/remotes/origin/master:HousingCrisis/Assets/Sprites/People/Police.png.meta
+timeCreated: 1480501392
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -145,7 +140,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 48
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
