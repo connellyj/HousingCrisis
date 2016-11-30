@@ -52,7 +52,10 @@ public class House : MonoBehaviour {
 
     public void RemoveTriggers(List<Direction> adjacent) {
         foreach(Transform t in transform) {
-            if(!adjacent.Contains(t.GetComponent<EatingArea>().direction)) Destroy(t.gameObject);
+            EatingArea e = t.GetComponent<EatingArea>();
+            if(e != null) {
+                if(!adjacent.Contains(e.direction)) Destroy(t.gameObject);
+            }
         }
     }
 
@@ -85,7 +88,7 @@ public class House : MonoBehaviour {
 
     private void EnableEatingAreas()
     {
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < transform.childCount - 1; i++)
         {
             GameObject eatingArea = transform.GetChild(i).gameObject;
             eatingArea.SetActive(true);
@@ -94,7 +97,7 @@ public class House : MonoBehaviour {
 
     private void DisableEatingAreas()
     {
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < transform.childCount - 1; i++)
         {
             GameObject eatingArea = transform.GetChild(i).gameObject;
             eatingArea.SetActive(false);

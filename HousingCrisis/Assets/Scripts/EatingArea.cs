@@ -28,6 +28,8 @@ public class EatingArea : MonoBehaviour {
     }
 
     void OnMouseDown() {
-        if(numPeopleInArea > 0) house.Eat(direction);
+        if(numPeopleInArea > 0) {
+            house.Eat(direction);
+        }
     }
 }
