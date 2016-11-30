@@ -9,6 +9,7 @@ public class PersonSpawner : MonoBehaviour {
 	private int spawnCounter = 0; 
 
 	public GameObject manPrefab;
+    public GameObject womanPrefab;
     public GameObject robberPrefab;
     public GameObject soldierPrefab;
     public GameObject policePrefab;
@@ -27,7 +28,13 @@ public class PersonSpawner : MonoBehaviour {
                 } else if(rand < soldierChance + robberChance + policeChance && GridManager.houses.Count > 0){
                     Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
                 } else {
-                    Instantiate(manPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                    float genderRoll = Random.value;
+                    if (genderRoll < .5)
+                    {
+                        Instantiate(manPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                    } else {
+                        Instantiate(womanPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                    }
                 }
 			}
 		}

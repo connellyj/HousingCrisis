@@ -1,5 +1,7 @@
 Housing Crisis
 
+* = done
+
 Julia
 - debug people
 - shooting animation
@@ -8,10 +10,10 @@ Julia
 - finalize build menus
 
 Connor
-- finish burning
-- rob house
+* finish burning
+* rob house
+* woman
 - start and win buttons
-- woman
 - all sprites
 	- mansion (full set)
 	- apartment, donut, bank (single sprite)

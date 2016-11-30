@@ -35,6 +35,7 @@ public class House : MonoBehaviour {
     public int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
+    public int healingPerTap;
 
     protected virtual void Awake() {
         if(cost == 0) cost = houseCost;
@@ -45,7 +46,19 @@ public class House : MonoBehaviour {
     }
     
     void Start() {
-        //DamageHouse(100);
+        DamageHouse(100);
+    }
+
+    void OnMouseDown() 
+    {
+        if (burnState == 0)
+        {
+            // display build options
+        } else {
+            // put out fire
+            Debug.Log("Healing House");
+            HealHouse(healingPerTap);
+        }
     }
 
     private void CalculateStallPositions(List<Direction> adjPaths) {
@@ -175,6 +188,20 @@ public class House : MonoBehaviour {
     public void DamageHouse(int damage)
     {
         totalDamage += damage;
+        OnDamageOrHeal();
+    }
+
+    public void HealHouse(int damageHealed)
+    {
+        totalDamage -= damageHealed;
+        if (totalDamage < 100) {
+            totalDamage = 0;
+        }
+        OnDamageOrHeal();
+    }
+
+    private void OnDamageOrHeal()
+    {
         if (DidBurnStateChange())
         {
             int oldState = burnState;
@@ -191,7 +218,6 @@ public class House : MonoBehaviour {
             }
             UpdateFires();
         }
-
     }
 
     private void StartBurning() 
