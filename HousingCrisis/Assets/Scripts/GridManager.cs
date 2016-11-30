@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections.Generic;
 
 public class GridManager : MonoBehaviour {
@@ -83,12 +84,14 @@ public class GridManager : MonoBehaviour {
         }
     }
 
-    public static void AddBurningHouse(int houseIndex) {
+    public static void AddBurningHouse(House house) {
+        int houseIndex = CoordsToIndex((int)Math.Round(house.transform.position.x), (int)Math.Round(house.transform.position.y));
         burningHouses.Add(houseIndex);
         houses.Remove(houseIndex);
     }
 
-    public static void RemoveBurningHouse(int houseIndex) {
+    public static void RemoveBurningHouse(House house) {
+        int houseIndex = CoordsToIndex((int)Math.Round(house.transform.position.x), (int)Math.Round(house.transform.position.y));
         burningHouses.Remove(houseIndex);
         houses.Add(houseIndex);
     }

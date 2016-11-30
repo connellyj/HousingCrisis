@@ -28,7 +28,8 @@ public class House : MonoBehaviour {
 
     public GameObject firePrefab;
     public int burnState = 0;
-    private int totalDamage = 0;
+    public float attritionDPS;
+    public int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
 
@@ -40,7 +41,7 @@ public class House : MonoBehaviour {
     }
 
     void Start() {
-        DamageHouse(100);
+        DamageHouse(200);
     }
 
     protected virtual void ActivateAbility() {
@@ -141,11 +142,24 @@ public class House : MonoBehaviour {
     private void StartBurning() 
     {
         Debug.Log("Burning started");
+        GridManager.AddBurningHouse(this);
+        StartCoroutine(BurnDown());
     }
 
     private void StopBurning() 
     {
         Debug.Log("Burning stopped");
+        GridManager.RemoveBurningHouse(this);
+        StopCoroutine("BurnDown");
+    }
+
+    private IEnumerator BurnDown()
+    {
+        while (burnState > 0)
+        {
+            DamageHouse(1);
+            yield return new WaitForSeconds(1f / attritionDPS);
+        }
     }
 
     private bool DidBurnStateChange()
@@ -167,8 +181,8 @@ public class House : MonoBehaviour {
                 AddFireWithOffset(Vector3.zero);
                 break;
             case 2:
-                AddFireWithOffset(Vector3.left / 3);
-                AddFireWithOffset(Vector3.right / 3);
+                AddFireWithOffset(Vector3.left / 8);
+                AddFireWithOffset(Vector3.right / 8);
                 break;
             case 3:
                 AddFireWithOffset(Vector3.left / 4);
@@ -182,7 +196,7 @@ public class House : MonoBehaviour {
     private void AddFireWithOffset(Vector3 individualOffset)
     {
         Vector3 firePosition = transform.position + individualOffset + fireOffset;
-        GameObject fire = (GameObject)Instantiate(firePrefab, firePosition, Quaternion.identity);
+        GameObject fire = (GameObject)Instantiate(firePrefab, firePosition, Quaternion.Euler(0,0,270));
         fires.Add(fire);
     }
 
@@ -196,7 +210,7 @@ public class House : MonoBehaviour {
 
     private void RemoveHouse()
     {
-        HouseManager.RemoveHouse();
+        HouseManager.RemoveHouse(this);
         Destroy(gameObject);
     }
 }
