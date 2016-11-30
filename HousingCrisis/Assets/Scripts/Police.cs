@@ -1,14 +1,8 @@
-<<<<<<< HEAD
-﻿using UnityEngine;
-using System.Collections;
-=======
-﻿using System.Collections;
 using UnityEngine;
->>>>>>> 52d114b4b5cac5bfd094086cca6f7283aeb548e1
+using System.Collections;
 
 public class Police : Person {
-
-    private bool stalled;
+    
     public int attackValue;
     public int attackStallTime;
 

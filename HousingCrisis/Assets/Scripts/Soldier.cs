@@ -6,8 +6,6 @@ public class Soldier : Person {
     public int attackValue;
     public int attackStallTime;
 
-    private bool stalled = false;
-
     protected override void Start() {
         state = PersonState.TARGET_RANDOM;
         base.Start();

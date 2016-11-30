@@ -42,15 +42,11 @@ public class House : MonoBehaviour {
         stalledPeople = new Person[MAX_STALL];
         stalledPositions = new Dictionary<int, Vector3[]>();
     }
-
-<<<<<<< HEAD
+    
     void Start() {
         DamageHouse(200);
     }
 
-    protected virtual void ActivateAbility() {
-        return;
-=======
     private void CalculateStallPositions(List<Direction> adjPaths) {
         int houseIndex = GridManager.CoordsToIndex(gridPos[0], gridPos[1]);
         foreach(Direction d in adjPaths) {
@@ -82,7 +78,6 @@ public class House : MonoBehaviour {
                     break;
             }
         }
->>>>>>> 52d114b4b5cac5bfd094086cca6f7283aeb548e1
     }
 
     public void Buy() {
@@ -246,10 +241,10 @@ public class House : MonoBehaviour {
         }
     }
 
-    private void RemoveHouse()
-    {
+    private void RemoveHouse() {
         HouseManager.RemoveHouse(this);
         Destroy(gameObject);
+    }
 
     public bool HasAvailableStallSpace() {
         return stalledPeople.Length < MAX_STALL;
