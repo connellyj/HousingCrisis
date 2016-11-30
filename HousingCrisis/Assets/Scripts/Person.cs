@@ -7,11 +7,13 @@ public class Person : MonoBehaviour {
 
 	// script component variables
 	public Direction direction;
+    public float stallTime;
     public int value;
 	public float speed;
 	public float alertSpeed;
 	public float animationFPS;
 	private float motionFPS = 30;
+    protected int attackGoal;
 	// component references
 	SpriteRenderer spriteRenderer;
 	// directional sprites
@@ -30,21 +32,21 @@ public class Person : MonoBehaviour {
 	private Sprite[] eastSprites;
 	private Sprite[][] spritesByDirection;
 	// AI and pathing
-	public enum PersonState { WANDER, PANIC, TARGET, NONE }
-	public PersonState state = PersonState.WANDER;
-	private List<Direction> path = new List<Direction>();
+	public enum PersonState { WANDER, PANIC, TARGET, NONE, STALL, ATTACK }
+    public PersonState state;
+	protected List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
 	public Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
 
-    private Population population;
+    protected Population population;
 
     // HEY CONNOR!!
     // You have to account for the case where the person is on an exit when they panic
     // Because in that case the path will be an empty list
     // This causes problems with at least line 95
     // I didn't wanna try and fix it because I don't entirely know what's going on
-	void Start () {
+	protected virtual void Start () {
         // set and start path
         gridXY[0] = (int)Math.Round(transform.position.x);
     	gridXY[1] = (int)Math.Round(transform.position.y);
@@ -64,10 +66,10 @@ public class Person : MonoBehaviour {
         StartCoroutine(PlayAnimation());
 
         population = GameManager.GetPopulation();
-        population.AddPerson(GetComponent<Person>());
+        population.AddPerson(this);
 	}
 	
-	void Update () {
+	protected virtual void Update () {
 		if(Input.GetKeyDown(KeyCode.P)) {
 			Panic();
 		}
@@ -82,16 +84,18 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-	private void ChangeState(PersonState newState)
+	protected void ChangeState(PersonState newState)
 	{
 		StopAllCoroutines();
 		StartCoroutine(PlayAnimation());
 		state = newState;
 		SetPath();
-		if (path == null)
-		{
+		if (path == null) {
 			CompletePath();
-		} else {
+		} else if(path[0] == Direction.NONE) {
+            StopAllCoroutines();
+            StartCoroutine(Stall());
+        } else {
 			FollowNewPath(path[0]);
 			LogPath();
 		}
@@ -111,6 +115,11 @@ public class Person : MonoBehaviour {
 		Vector3 tileAdjust = targetTile + positionOffset - transform.position;
 		StartCoroutine(FollowPath(tileAdjust));
 	}
+
+    protected virtual IEnumerator Stall() {
+        yield return new WaitForSeconds(stallTime);
+        CompletePath();
+    }
 
 	private IEnumerator FollowPath(Vector3 v)
 	{
@@ -133,12 +142,9 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-	private void CompletePath()
+	protected virtual void CompletePath()
 	{
 		StopAllCoroutines();
-        population.RemovePerson(GetComponent<Person>());
-        if(state == PersonState.PANIC) GameManager.UpdateWantedLevel(1);
-        Destroy(gameObject);
 	}
 
 	private void SnapPositionToGrid()
@@ -168,18 +174,24 @@ public class Person : MonoBehaviour {
     private void SetPath()
     {
     	int personLoc = PersonLocFromPosition();
-    	Pathfinder.GoalType goal = Pathfinder.GoalType.EXIT;
-    	path = GameManager.FindPath(state, personLoc, goal);
+    	if(state == PersonState.ATTACK) path = Pathfinder.FindPath(personLoc, attackGoal);
+        else if(state == PersonState.TARGET) {
+            if(GridManager.houses.Count == 0) {
+                ChangeState(PersonState.WANDER);
+            } else {
+                attackGoal = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
+                path = Pathfinder.FindPath(personLoc, attackGoal);
+            }
+        } else path = Pathfinder.FindPath(state, personLoc);
     }
 
-    private int PersonLocFromPosition()
+    protected int PersonLocFromPosition()
     {
-    	return (int)((GridManager.MAX_ROW - 1 - gridXY[1]) * GridManager.MAX_COL + gridXY[0]);
+        return GridManager.coordsToIndex((int)gridXY[0], (int)gridXY[1]);
     }
 
     private void LogPath()
     {
-        //Debug.Log("PATH =");
         Direction last = path[0];
     	int c = 0;
     	for (int i = 0; i < path.Count; i++)
@@ -187,13 +199,11 @@ public class Person : MonoBehaviour {
     		Direction next = path[i];
     		if (next != last)
     		{
-    			//Debug.LogFormat("   {0} {1}", last, c);
     			last = next;
     			c = 0;
     		}
     		c++;
     	}
-    	//Debug.LogFormat("   {0} {1}", path[path.Count - 1], c);
     }
 
     private IEnumerator PlayAnimation(){
@@ -203,6 +213,11 @@ public class Person : MonoBehaviour {
 			frameIndex = (frameIndex + 1) % 2;
         	yield return new WaitForSeconds(1f/animationFPS);
         }
+    }
+
+    protected void RemovePerson() {
+        population.RemovePerson(this);
+        Destroy(gameObject);
     }
 
     public void Highlight() {
@@ -218,7 +233,7 @@ public class Person : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    public void OnSeeHouse() {
+    public virtual void OnSeeHouse(int houseIndex) {
         Panic();
     }
 

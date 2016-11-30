@@ -4,22 +4,47 @@ using System;
 public class Pathfinder {
 
     private static int[] exitDistanceArray;
-    private List<int> visited;
+    private static List<int> visited;
 
-    public enum GoalType { EXIT, RANDOM_HOUSE, NONE }
+    public enum GoalType { EXIT, HOUSE, NONE }
 
-    public Pathfinder() {
-        InitExitDistanceArray();
+    // Conducts a graph search to find a path from the given location to a goal
+    public static List<Direction> FindPath(int personLoc, int goal) {
+        return FindPath(new Node(personLoc, GoalType.HOUSE, goal), new Strategy.DFS());
     }
 
     // Conducts a graph search to find a path from the given location to a goal
-    public List<Direction> FindPath(Person.PersonState state, int personLoc, GoalType goalType) {
+    public static List<Direction> FindPath(Person.PersonState state, int personLoc) {
+        GoalType goalType;
+        Strategy strategy;
+        switch(state) {
+            case Person.PersonState.WANDER:
+                goalType = GoalType.EXIT;
+                strategy = new Strategy.DFS();
+                break;
+            case Person.PersonState.TARGET:
+                goalType = GoalType.HOUSE;
+                strategy = new Strategy.DFS();
+                break;
+            case Person.PersonState.PANIC:
+                goalType = GoalType.EXIT;
+                strategy = new Strategy.Greedy();
+                break;
+            case Person.PersonState.STALL:
+                return new List<Direction>() { Direction.NONE };
+            default:
+                goalType = GoalType.EXIT;
+                strategy = new Strategy.DFS();
+                break;
+        }
 
         Node initialState = new Node(personLoc, goalType);
 
-        Strategy strategy;
-        if(state == Person.PersonState.PANIC) strategy = new Strategy.Greedy();
-        else strategy = new Strategy.DFS();
+        return FindPath(initialState, strategy);
+    }
+
+    // Conducts a graph search to find a path from the given location to a goal
+    private static List<Direction> FindPath(Node initialState, Strategy strategy) {
 
         if(!strategy.ignoreFirstGoal && initialState.isGoal()) {
             return initialState.extractPlan();
@@ -57,13 +82,13 @@ public class Pathfinder {
     }
 
     // Creates an array that contains the distances from each location to the closest exit
-    private void InitExitDistanceArray() {
+    public static void InitExitDistanceArray() {
         exitDistanceArray = new int[GridManager.MAX_ROW * GridManager.MAX_COL];
         CreateDistanceArray(GridManager.exits);
     }
 
     // Helper method for creating distance array
-    private void CreateDistanceArray(List<int> startingLocations) {
+    private static void CreateDistanceArray(List<int> startingLocations) {
         foreach(int loc in startingLocations) {
             visited = new List<int>();
             exitDistanceArray[loc] = 1;
@@ -73,7 +98,7 @@ public class Pathfinder {
     }
 
     // Helper method for creating distance array
-    private void CreateDistanceArray(int idx) {
+    private static void CreateDistanceArray(int idx) {
         List<int> adj = FindAdjacent(idx);
         if(adj.Count == 0) return;
         foreach(int loc in adj) {
@@ -86,7 +111,7 @@ public class Pathfinder {
     }
 
     // Returns all the locations adjacent to the given location that are paths
-    private List<int> FindAdjacent(int idx) {
+    private static List<int> FindAdjacent(int idx) {
         List<int> adj = new List<int>();
         if(GridManager.CellIsPath(idx + 1) && !visited.Contains(idx + 1)) adj.Add(idx + 1);
         if(GridManager.CellIsPath(idx - 1) && !visited.Contains(idx - 1)) adj.Add(idx - 1);
@@ -105,16 +130,22 @@ public class Pathfinder {
         public GoalType gType;
         private Direction direction;
         private Node parent;
-        private Random rng = new Random();
+        private System.Random rng = new System.Random();
 
         public Node(int personLoc, GoalType hType) {
             this.parent = null;
             this.direction = Direction.NONE;
             this.data = personLoc;
             this.gType = hType;
-            if(hType == GoalType.RANDOM_HOUSE) {
-                this.goal = GridManager.houses[rng.Next(0, GridManager.houses.Count)];
-            }
+            goal = 0;
+        }
+
+        public Node(int personLoc, GoalType hType, int goal) {
+            this.parent = null;
+            this.direction = Direction.NONE;
+            this.data = personLoc;
+            this.gType = hType;
+            this.goal = goal;
         }
 
         public Node(Node parent, Direction direction, int personLoc) {
@@ -128,7 +159,7 @@ public class Pathfinder {
         // Returns whether or not the current node is a goal state
         public bool isGoal() {
             if(gType == GoalType.EXIT) return GridManager.exits.Contains(data);
-            if(gType == GoalType.RANDOM_HOUSE) return data == goal;
+            if(gType == GoalType.HOUSE) return GridManager.GetAdjacentIndeces(data).Contains(goal);
             return false;
         }
 

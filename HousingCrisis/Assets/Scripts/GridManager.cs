@@ -33,6 +33,7 @@ public class GridManager : MonoBehaviour {
             paths.Add(index);
             if(x == 0 || y == 0 || x == MAX_COL - 1 || y == MAX_ROW - 1) exits.Add(index);
         }
+        Pathfinder.InitExitDistanceArray();
     }
     
     public static bool CellIsPath(int idx) {
@@ -45,7 +46,7 @@ public class GridManager : MonoBehaviour {
         return (MAX_ROW - 1 - y) * MAX_COL + x;
     }
 
-    public static List<Direction> GetAdjacentPaths(int x, int y, GameObject tmp) {
+    public static List<Direction> GetAdjacentPathDirections(int x, int y, GameObject tmp) {
         int data = coordsToIndex(x, y);
         List<Direction> adjacentPaths = new List<Direction>();
         if(CellIsPath(data + 1)) adjacentPaths.Add(Direction.EAST);
@@ -53,6 +54,24 @@ public class GridManager : MonoBehaviour {
         if(CellIsPath(data + MAX_COL)) adjacentPaths.Add(Direction.SOUTH);
         if(CellIsPath(data - MAX_COL)) adjacentPaths.Add(Direction.NORTH);
         return adjacentPaths;
+    }
+
+    public static List<int> GetAdjacentPathIndeces(int idx) {
+        List<int> adj = new List<int>();
+        if(CellIsPath(idx + 1)) adj.Add(idx + 1);
+        if(CellIsPath(idx - 1)) adj.Add(idx - 1);
+        if(CellIsPath(idx + MAX_COL)) adj.Add(idx + MAX_COL);
+        if(CellIsPath(idx - MAX_COL)) adj.Add(idx - MAX_COL);
+        return adj;
+    }
+
+    public static List<int> GetAdjacentIndeces(int idx) {
+        List<int> adj = new List<int>();
+        adj.Add(idx + 1);
+        adj.Add(idx - 1);
+        adj.Add(idx + MAX_COL);
+        adj.Add(idx - MAX_COL);
+        return adj;
     }
 
     public static Vector3 DirectionToVector(Direction d)

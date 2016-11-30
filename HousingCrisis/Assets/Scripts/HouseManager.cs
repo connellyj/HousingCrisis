@@ -10,58 +10,37 @@ public class HouseManager : MonoBehaviour {
     public GameObject attack;
     public GameObject store;
 
-    private int house1Cost;
-    private int house2Cost;
-    private int officeCost;
-    private int donutCost;
-    private int attackCost;
-    private int storeCost;
-
     private static HouseManager instance;
 
-    public enum HouseType { HOUSE1, HOUSE2, OFFICE, DONUT, ATTACK, STORE }
+    public enum HouseType { HOUSE, APARTMENT, BANK, DONUT, MANSION, STORE }
 
     void Awake() {
         instance = this;
     }
 
-    void Start() {
-        house1Cost = instance.house1.GetComponent<House>().cost;
-        house2Cost = instance.house2.GetComponent<House>().cost;
-        officeCost = instance.office.GetComponent<House>().cost;
-        donutCost = instance.donut.GetComponent<House>().cost;
-        attackCost = instance.attack.GetComponent<House>().cost;
-        storeCost = instance.store.GetComponent<House>().cost;
-    }
-
     public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
-        GameObject house = null;
+        House house = null;
         switch(type) {
-            case HouseType.HOUSE1:
-                house = Instantiate(instance.house1, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.house1Cost);
+            case HouseType.HOUSE:
+                house = ((GameObject)Instantiate(instance.house1, position, Quaternion.identity)).GetComponent<House>();
                 break;
-            case HouseType.HOUSE2:
-                house = Instantiate(instance.house2, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.house2Cost);
+            case HouseType.APARTMENT:
+                house = ((GameObject) Instantiate(instance.house2, position, Quaternion.identity)).GetComponent<House>();
                 break;
-            case HouseType.OFFICE:
-                house = Instantiate(instance.office, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.officeCost);
+            case HouseType.BANK:
+                house = ((GameObject) Instantiate(instance.office, position, Quaternion.identity)).GetComponent<Bank>();
                 break;
             case HouseType.DONUT:
-                house = Instantiate(instance.donut, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.donutCost);
+                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<House>();
                 break;
-            case HouseType.ATTACK:
-                house = Instantiate(instance.attack, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.attackCost);
+            case HouseType.MANSION:
+                house = ((GameObject) Instantiate(instance.attack, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.STORE:
-                house = Instantiate(instance.store, position, Quaternion.identity) as GameObject;
-                GameManager.UpdateMoney(-1 * instance.storeCost);
+                house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<House>();
                 break;
         }
+        house.Buy();
         RemoveTriggers(adjacentPaths, house);
         AddHouseToGrid(position);
     }
@@ -69,30 +48,30 @@ public class HouseManager : MonoBehaviour {
     public static bool CanBuildHouse(HouseType type) {
         int money = GameManager.GetMoney();
         switch(type) {
-            case HouseType.HOUSE1:
-                return money >= instance.house1Cost;
-            case HouseType.HOUSE2:
-                return money >= instance.house2Cost;
-            case HouseType.OFFICE:
-                return money >= instance.officeCost;
+            case HouseType.HOUSE:
+                return money >= House.cost;
+            case HouseType.APARTMENT:
+                return money >= House.cost;
+            case HouseType.BANK:
+                return money >= House.cost;
             case HouseType.DONUT:
-                return money >= instance.donutCost;
-            case HouseType.ATTACK:
-                return money >= instance.attackCost;
+                return money >= House.cost;
+            case HouseType.MANSION:
+                return money >= House.cost;
             case HouseType.STORE:
-                return money >= instance.storeCost;
+                return money >= House.cost;
             default:
                 return false;
         }
     }
 
-    public static void RemoveTriggers(List<Direction> adjacent, GameObject house) {
+    public static void RemoveTriggers(List<Direction> adjacent, House house) {
         foreach(Transform t in house.transform) {
             if(!adjacent.Contains(t.GetComponent<EatingArea>().direction)) Destroy(t.gameObject);
         }
     }
 
     public static void AddHouseToGrid(Vector3 pos) {
-        GridManager.houses.Add((GridManager.MAX_ROW - 1 - (int)Mathf.Round(pos.y)) * GridManager.MAX_COL + (int)Mathf.Round(pos.x));
+        GridManager.houses.Add(GridManager.coordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
     }
 }
