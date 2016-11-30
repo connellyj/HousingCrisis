@@ -18,6 +18,7 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
+        houses = new List<House>();
     }
 
     public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
@@ -69,6 +70,7 @@ public class HouseManager : MonoBehaviour {
     }
 
     public static void AddHouseToGrid(Vector3 pos) {
+        Debug.Log("hello?");
         GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
     }
 

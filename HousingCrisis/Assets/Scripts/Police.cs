@@ -17,7 +17,13 @@ public class Police : Person {
     }
 
     protected override void Attack() {
-        House h = HouseManager.houses[GridManager.houses.IndexOf(goalIndex)];
+        int hIndex = GridManager.houses.IndexOf(goalIndex);
+        House h;
+        if(hIndex < 0) {
+            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
+        } else {
+            h = HouseManager.houses[hIndex];
+        }
         if(h.HasAvailableStallSpace()) {
             MoveToPosition(h.AddStalledPerson(X(), Y()));
             StartCoroutine(Shoot(h));

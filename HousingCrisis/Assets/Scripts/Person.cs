@@ -113,7 +113,13 @@ public class Person : MonoBehaviour {
 	}
 
     protected virtual IEnumerator Stall() {
-        House h = HouseManager.houses[GridManager.houses.IndexOf(goalIndex)];
+        int hIndex = GridManager.houses.IndexOf(goalIndex);
+        House h;
+        if(hIndex < 0) {
+            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
+        } else {
+            h = HouseManager.houses[hIndex];
+        }
         if(h.HasAvailableStallSpace()) {
             MoveToPosition(h.AddStalledPerson(X(), Y()));
             yield return new WaitForSeconds(stallTime);
