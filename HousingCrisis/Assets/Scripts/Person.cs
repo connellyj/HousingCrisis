@@ -13,7 +13,7 @@ public class Person : MonoBehaviour {
 	public float alertSpeed;
 	public float animationFPS;
 	private float motionFPS = 30;
-    protected int attackGoal;
+    protected int goalIndex;
 	// component references
 	SpriteRenderer spriteRenderer;
 	// directional sprites
@@ -32,7 +32,7 @@ public class Person : MonoBehaviour {
 	private Sprite[] eastSprites;
 	private Sprite[][] spritesByDirection;
 	// AI and pathing
-	public enum PersonState { WANDER, PANIC, TARGET, NONE, STALL, ATTACK }
+	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET }
     public PersonState state;
 	protected List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
@@ -90,10 +90,7 @@ public class Person : MonoBehaviour {
 		SetPath();
 		if (path == null) {
 			CompletePath();
-		} else if(path[0] == Direction.NONE) {
-            StopAllCoroutines();
-            StartCoroutine(Stall());
-        } else {
+		} else {
 			FollowNewPath(path[0]);
 			LogPath();
 		}
@@ -165,22 +162,39 @@ public class Person : MonoBehaviour {
 			case Direction.EAST:
 				return Direction.WEST;
 			default:
-				throw new System.InvalidOperationException("Direction cannot be converted to opposite");
+				throw new InvalidOperationException("Direction cannot be converted to opposite");
 		}
 	}
 
     private void SetPath()
     {
     	int personLoc = PersonLocFromPosition();
-    	if(state == PersonState.ATTACK) path = Pathfinder.FindPathToHouse(personLoc, attackGoal);
-        else if(state == PersonState.TARGET) {
-            if(GridManager.houses.Count == 0) {
-                ChangeState(PersonState.WANDER);
-            } else {
-                attackGoal = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
-                path = Pathfinder.FindPathToHouse(personLoc, attackGoal);
-            }
-        } else path = Pathfinder.FindPath(state, personLoc);
+        switch(state) {
+            case PersonState.TARGET_SET:
+                path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
+                break;
+            case PersonState.TARGET_RANDOM:
+                if(GridManager.houses.Count == 0) {
+                    ChangeState(PersonState.WANDER);
+                } else {
+                    goalIndex = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
+                    path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
+                }
+                break;
+            case PersonState.STALL:
+                StopAllCoroutines();
+                StartCoroutine(Stall());
+                break;
+            case PersonState.ATTACK:
+                Attack();
+                break;
+            case PersonState.WANDER_SET:
+                path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
+                break;
+            default:
+                path = Pathfinder.FindPath(state, personLoc);
+                break;
+        }
     }
 
     protected int PersonLocFromPosition()
@@ -211,6 +225,10 @@ public class Person : MonoBehaviour {
 			frameIndex = (frameIndex + 1) % 2;
         	yield return new WaitForSeconds(1f/animationFPS);
         }
+    }
+
+    protected virtual void Attack() {
+        return;
     }
 
     protected void RemovePerson() {

@@ -10,6 +10,8 @@ public class HouseManager : MonoBehaviour {
     public GameObject mansion;
     public GameObject store;
 
+    public static List<House> houses;
+
     private static HouseManager instance;
 
     public enum HouseType { HOUSE, APARTMENT, BANK, DONUT, MANSION, STORE }
@@ -42,6 +44,7 @@ public class HouseManager : MonoBehaviour {
         }
         house.Buy();
         house.RemoveTriggers(adjacentPaths);
+        houses.Add(house);
         AddHouseToGrid(position);
     }
 
@@ -67,5 +70,15 @@ public class HouseManager : MonoBehaviour {
 
     public static void AddHouseToGrid(Vector3 pos) {
         GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+    }
+
+    public static void RemoveHouse(House house) {
+        Vector3 pos = house.transform.position;
+        if(house.burnState > 0) {
+            GridManager.burningHouses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+        }else {
+            GridManager.houses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+        }
+        houses.Remove(house);
     }
 }

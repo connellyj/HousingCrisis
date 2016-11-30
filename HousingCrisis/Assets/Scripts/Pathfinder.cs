@@ -22,7 +22,7 @@ public class Pathfinder {
                 goalType = GoalType.EXIT;
                 strategy = new Strategy.DFS();
                 break;
-            case Person.PersonState.TARGET:
+            case Person.PersonState.TARGET_RANDOM:
                 goalType = GoalType.HOUSE;
                 strategy = new Strategy.DFS();
                 break;
@@ -30,8 +30,6 @@ public class Pathfinder {
                 goalType = GoalType.EXIT;
                 strategy = new Strategy.Greedy();
                 break;
-            case Person.PersonState.STALL:
-                return new List<Direction>() { Direction.NONE };
             default:
                 goalType = GoalType.EXIT;
                 strategy = new Strategy.DFS();
