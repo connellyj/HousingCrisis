@@ -2,9 +2,6 @@ using UnityEngine;
 using System.Collections;
 
 public class Police : Person {
-    
-    public int attackValue;
-    public int attackStallTime;
 
     protected override void Start() {
         state = PersonState.WANDER;
@@ -25,7 +22,7 @@ public class Police : Person {
             h = HouseManager.houses[hIndex];
         }
         if(h.HasAvailableStallSpace()) {
-            MoveToPosition(h.AddStalledPerson(X(), Y()));
+            //MoveToPosition(h.AddStalledPerson(this));
             StartCoroutine(Shoot(h));
         } else CompletePath();
     }
@@ -35,6 +32,7 @@ public class Police : Person {
             h.DamageHouse(attackValue);
             yield return new WaitForSeconds(attackStallTime);
         }
+        h.RemoveStalledPerson(this);
         CompletePath();
     }
 
@@ -45,7 +43,7 @@ public class Police : Person {
         }else if(state == PersonState.TARGET_SET) {
             ChangeState(PersonState.ATTACK);
         } else if(state == PersonState.ATTACK) {
-            ResetPosition();
+            //ResetPosition();
             ChangeState(PersonState.WANDER);
         } else if(state == PersonState.WANDER_SET) {
             ChangeState(PersonState.STALL);

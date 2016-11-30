@@ -23,6 +23,7 @@ public class House : MonoBehaviour {
 
     protected Person[] stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
+    protected int numStalled = 0;
 
     protected int[] gridPos;
     protected float eatRadius = 0.5f;
@@ -247,18 +248,27 @@ public class House : MonoBehaviour {
     }
 
     public bool HasAvailableStallSpace() {
-        return stalledPeople.Length < MAX_STALL;
+        return numStalled < MAX_STALL;
     }
 
-    public Vector3 AddStalledPerson(int x, int y) {
-        for(int i = 0; i < MAX_STALL; i++) {
+    public Vector3 AddStalledPerson(Person p) {
+        numStalled++;
+        for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == null) {
-                int idx = GridManager.CoordsToIndex(x, y);
+                stalledPeople[i] = p;
+                int idx = GridManager.CoordsToIndex(p.X(), p.Y());
                 Vector3[] value;
                 if(stalledPositions.TryGetValue(idx, out value)) return value[i];
             }
         }
         return Vector3.zero;
+    }
+
+    public void RemoveStalledPerson(Person p) {
+        numStalled--;
+        for(int i = 0; i < stalledPeople.Length; i++) {
+            if(stalledPeople[i] == p) stalledPeople[i] = null;
+        }
     }
 }
 
