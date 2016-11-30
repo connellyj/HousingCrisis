@@ -1,11 +1,6 @@
 fileFormatVersion: 2
-<<<<<<< HEAD:HousingCrisis/Assets/Sprites/Army.png.meta
-guid: 46908fd04722047a5b6d4dcef579520c
-timeCreated: 1480446174
-=======
 guid: 8ceb4b4058bc3473597935e468bd2e1e
-timeCreated: 1480413964
->>>>>>> refs/remotes/origin/master:HousingCrisis/Assets/Sprites/People/Army.png.meta
+timeCreated: 1480501869
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -97,7 +92,7 @@ TextureImporter:
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
-  spritePixelsToUnits: 50
+  spritePixelsToUnits: 48
   alphaIsTransparency: 1
   spriteTessellationDetail: -1
   textureType: 8
