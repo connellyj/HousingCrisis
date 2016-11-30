@@ -1,5 +1,7 @@
 ﻿public class Robber : Person {
 
+    public int minDamage; // damage done to house if it is already burning
+
     protected override void Start() {
         state = PersonState.TARGET_RANDOM;
         base.Start();
@@ -18,7 +20,7 @@
             h = HouseManager.houses[hIndex];
         }
         MoveToPosition(h.transform.position);
-        h.RobHouse();
+        h.RobHouse(minDamage);
         CompletePath();
     }
 

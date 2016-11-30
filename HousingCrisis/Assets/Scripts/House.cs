@@ -44,7 +44,7 @@ public class House : MonoBehaviour {
     }
     
     void Start() {
-        //DamageHouse(200);
+        //DamageHouse(100);
     }
 
     private void CalculateStallPositions(List<Direction> adjPaths) {
@@ -84,8 +84,13 @@ public class House : MonoBehaviour {
         GameManager.UpdateMoney(-1 * houseCost);
     }
 
+    public bool CanEat()
+    {
+        return (!isChewing) && (burnState == 0);
+    }
+
     public void Eat(Direction d) {
-        if (!isChewing)
+        if (CanEat())
         {
             isChewing = true;
             DisableEatingAreas();
@@ -133,25 +138,37 @@ public class House : MonoBehaviour {
 
     private void EnableEatingAreas()
     {
-        for(int i = 0; i < transform.childCount - 1; i++)
-        {
-            GameObject eatingArea = transform.GetChild(i).gameObject;
-            eatingArea.SetActive(true);
+        if (CanEat()) 
+        {   
+            for(int i = 0; i < transform.childCount - 1; i++)
+            {
+                GameObject eatingArea = transform.GetChild(i).gameObject;
+                eatingArea.SetActive(true);
+            }
         }
     }
 
     private void DisableEatingAreas()
     {
-        for(int i = 0; i < transform.childCount - 1; i++)
+        if (!CanEat())
         {
-            GameObject eatingArea = transform.GetChild(i).gameObject;
-            eatingArea.SetActive(false);
+            for(int i = 0; i < transform.childCount - 1; i++)
+            {
+                GameObject eatingArea = transform.GetChild(i).gameObject;
+                eatingArea.SetActive(false);
+            }
         }
     }
 
-    public void RobHouse()
+    public void RobHouse(int minDamage)
     {
-
+        if (totalDamage < 100)
+        {
+            int damageToBurn = 100 - totalDamage; 
+            DamageHouse(damageToBurn);
+        } else {
+            DamageHouse(minDamage);
+        }
     }
 
     public void DamageHouse(int damage)
@@ -161,6 +178,10 @@ public class House : MonoBehaviour {
         {
             int oldState = burnState;
             burnState = CorrectBurnState();
+            if (burnState > 3) 
+            {
+                RemoveHouse();
+            }
             if (oldState == 0)
             {
                 StartBurning();
@@ -175,6 +196,7 @@ public class House : MonoBehaviour {
     private void StartBurning() 
     {
         Debug.Log("Burning started");
+        DisableEatingAreas();
         GridManager.AddBurningHouse(this);
         StartCoroutine(BurnDown());
     }
@@ -182,6 +204,7 @@ public class House : MonoBehaviour {
     private void StopBurning() 
     {
         Debug.Log("Burning stopped");
+        EnableEatingAreas();
         GridManager.RemoveBurningHouse(this);
         StopCoroutine("BurnDown");
     }
@@ -237,8 +260,10 @@ public class House : MonoBehaviour {
     {
         for (int i = 0; i < fires.Count; i++)
         {
-            fires.Remove(fires[0]);
+            GameObject fire = fires[i];
+            Destroy(fire);
         }
+        fires.Clear();
     }
 
     private void RemoveHouse() {

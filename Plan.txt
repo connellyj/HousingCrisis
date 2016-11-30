@@ -24,7 +24,7 @@ UI
 - info popups
 - scene transitions
 - help menu
-
+- edible person highlight
 
 
 
