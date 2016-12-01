@@ -23,9 +23,9 @@ public class PersonSpawner : MonoBehaviour {
                 float rand = Random.value;
                 if(rand < policeChance) {
                     Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance && GridManager.houses.Count > 0) {
+                } else if(rand < soldierChance + robberChance && HouseManager.houses.Count > 0) {
                     Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance + policeChance && GridManager.houses.Count > 0){
+                } else if(rand < soldierChance + robberChance + policeChance && HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()){
                     Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
                 } else {
                     float genderRoll = Random.value;

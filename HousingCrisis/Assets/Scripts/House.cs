@@ -57,7 +57,6 @@ public class House : Builder {
             BuildMenu.Open(this);
         } else {
             // put out fire
-            Debug.Log("Healing House");
             HealHouse(healingPerTap);
         }
     }
@@ -69,25 +68,25 @@ public class House : Builder {
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x - 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                        positions[i] = new Vector3(transform.position.x - 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                        positions[i] = new Vector3(transform.position.x + 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex - 1, positions);
                     break;
                 case Direction.NORTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y - 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.3f);
                     }
                     stalledPositions.Add(houseIndex - GridManager.MAX_COL, positions);
                     break;
                 case Direction.SOUTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y + 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.3f);
                     }
                     stalledPositions.Add(houseIndex + GridManager.MAX_COL, positions);
                     break;
@@ -223,17 +222,15 @@ public class House : Builder {
 
     private void StartBurning() 
     {
-        Debug.Log("Burning started");
         DisableEatingAreas();
-        GridManager.AddBurningHouse(this);
+        HouseManager.AddBurningHouse(this);
         StartCoroutine(BurnDown());
     }
 
     private void StopBurning() 
     {
-        Debug.Log("Burning stopped");
         EnableEatingAreas();
-        GridManager.RemoveBurningHouse(this);
+        HouseManager.RemoveBurningHouse(this);
         StopCoroutine("BurnDown");
     }
 
@@ -325,7 +322,16 @@ public class House : Builder {
         numStalled--;
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
+            p.ResetPosition();
         }
+    }
+
+    public int X() {
+        return gridPos[0];
+    }
+
+    public int Y() {
+        return gridPos[1];
     }
 }
 

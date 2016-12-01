@@ -11,14 +11,10 @@ public class GridManager : MonoBehaviour {
     public static int MAX_ROW;
     public static int MAX_COL;
     public static List<int> exits;
-    public static List<int> houses;
-    public static List<int> burningHouses;
     public static List<int> paths;
     
     void Awake() {
         exits = new List<int>();
-        houses = new List<int>();
-        burningHouses = new List<int>();
         paths = new List<int>();
         MAX_ROW = gridHeight;
         MAX_COL = gridWidth;
@@ -80,19 +76,7 @@ public class GridManager : MonoBehaviour {
             case Direction.EAST:
                 return Vector3.right;
             default:
-                throw new System.InvalidOperationException("Direction cannot be converted to vector");
+                throw new InvalidOperationException("Direction cannot be converted to vector");
         }
-    }
-
-    public static void AddBurningHouse(House house) {
-        int houseIndex = CoordsToIndex((int)Math.Round(house.transform.position.x), (int)Math.Round(house.transform.position.y));
-        burningHouses.Add(houseIndex);
-        houses.Remove(houseIndex);
-    }
-
-    public static void RemoveBurningHouse(House house) {
-        int houseIndex = CoordsToIndex((int)Math.Round(house.transform.position.x), (int)Math.Round(house.transform.position.y));
-        burningHouses.Remove(houseIndex);
-        houses.Add(houseIndex);
     }
 }

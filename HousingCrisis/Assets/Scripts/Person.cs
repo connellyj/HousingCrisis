@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Person : MonoBehaviour {
 
@@ -32,7 +33,7 @@ public class Person : MonoBehaviour {
 	private Sprite[] eastSprites;
 	private Sprite[][] spritesByDirection;
 	// AI and pathing
-	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET }
+	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET, TARGET_RANDOM_NOTBURNING }
     public PersonState state;
 	protected List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
@@ -47,7 +48,7 @@ public class Person : MonoBehaviour {
         gridXY[0] = (int)Math.Round(transform.position.x);
     	gridXY[1] = (int)Math.Round(transform.position.y);
     	gridXY[2] = 0;
-        SetPath();
+        SetAction();
         LogPath();
         direction = path[0];
         Vector3 v = GridManager.DirectionToVector(direction);
@@ -85,44 +86,46 @@ public class Person : MonoBehaviour {
 		StopAllCoroutines();
 		StartCoroutine(PlayAnimation());
 		state = newState;
-		SetPath();
-		if (path == null) {
-			CompletePath();
-		} else {
-			FollowNewPath(path[0]);
-			LogPath();
-		}
+        if(SetAction()) {
+            if(path != null && path.Count != 0) {
+                FollowNewPath(path[0]);
+                LogPath();
+            }else {
+                CompletePath();
+            }
+        }
 	}
 
 	private void FollowNewPath(Direction newDirection)
 	{
-		Vector3 targetTile = gridXY;
-		if (direction == newDirection)
-		{
-			targetTile += GridManager.DirectionToVector(direction);
-			pathIndex = 0; // replaces first pathing direction
-		} else {
-			direction = Opposite(direction);
-			pathIndex = -1; // does not replace first pathing direction
-		}
-		Vector3 tileAdjust = targetTile + positionOffset - transform.position;
-		StartCoroutine(FollowPath(tileAdjust));
+        // attempt to fix diagonal problem
+        /*if(Mathf.Abs(X() - transform.position.x) < 0.1 &&
+            Mathf.Abs((Y() + positionOffset.magnitude) - transform.position.y) < 0.1) {
+            SnapPositionToGrid();
+            StartCoroutine(FollowPath(GridManager.DirectionToVector(path[0])));
+        }else {*/
+            Vector3 targetTile = gridXY;
+            if(direction == newDirection) {
+                targetTile += GridManager.DirectionToVector(direction);
+                pathIndex = 0; // replaces first pathing direction
+            } else {
+                direction = Opposite(direction);
+                pathIndex = -1; // does not replace first pathing direction
+            }
+            Vector3 tileAdjust = targetTile + positionOffset - transform.position;
+            StartCoroutine(FollowPath(tileAdjust));
+        //}
 	}
 
     protected virtual IEnumerator Stall() {
-        int hIndex = GridManager.houses.IndexOf(goalIndex);
-        House h;
-        if(hIndex < 0) {
-            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
-        } else {
-            h = HouseManager.houses[hIndex];
-        }
-        if(h.HasAvailableStallSpace()) {
-            MoveToPosition(h.AddStalledPerson(this));
-            yield return new WaitForSeconds(stallTime);
-            ResetPosition();
-            h.RemoveStalledPerson(this);
-            CompletePath();
+        if(HouseManager.houses.ContainsKey(goalIndex)) {
+            House h = HouseManager.houses[goalIndex];
+            if(h.HasAvailableStallSpace()) {
+                MoveToPosition(h.AddStalledPerson(this));
+                yield return new WaitForSeconds(stallTime);
+                h.RemoveStalledPerson(this);
+                CompletePath();
+            } else CompletePath();
         } else CompletePath();
     }
 
@@ -150,7 +153,7 @@ public class Person : MonoBehaviour {
 	protected virtual void CompletePath()
 	{
 		StopAllCoroutines();
-	}
+    }
 
 	private void SnapPositionToGrid()
 	{
@@ -176,34 +179,52 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-    private void SetPath()
+    private bool SetAction()
     {
     	int personLoc = PersonLocFromPosition();
         switch(state) {
             case PersonState.TARGET_SET:
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
-                break;
+                return true;
             case PersonState.TARGET_RANDOM:
-                if(GridManager.houses.Count == 0) {
+                if(HouseManager.houses.Count == 0) {
+                    ChangeState(PersonState.WANDER);
+                } else if(!HouseManager.AnyStallSpaceAnywhere()) {
                     ChangeState(PersonState.WANDER);
                 } else {
-                    goalIndex = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
+                    goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 }
-                break;
+                return true;
+            case PersonState.TARGET_RANDOM_NOTBURNING:
+                if(HouseManager.houses.Count == 0 || !HouseManager.AnyHousesNotBurning()) {
+                    ChangeState(PersonState.WANDER);
+                } else {
+                    if(HouseManager.burningHouses.Count == 0) {
+                        goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                    }else {
+                        goalIndex = HouseManager.burningHouses[0];
+                        while(HouseManager.burningHouses.Contains(goalIndex)) {
+                            goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                        }
+                    }
+                    path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
+                }
+                return true;
             case PersonState.STALL:
                 StopAllCoroutines();
                 StartCoroutine(Stall());
-                break;
+                return false;
             case PersonState.ATTACK:
+                StopAllCoroutines();
                 Attack();
-                break;
+                return false;
             case PersonState.WANDER_SET:
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
-                break;
+                return true;
             default:
                 path = Pathfinder.FindPath(state, personLoc);
-                break;
+                return true;
         }
     }
 
@@ -231,6 +252,7 @@ public class Person : MonoBehaviour {
     private IEnumerator PlayAnimation(){
         int frameIndex = 0;
         while (true) {
+            if(spriteRenderer == null) yield return null;
         	spriteRenderer.sprite = spritesByDirection[(int)direction][frameIndex];
 			frameIndex = (frameIndex + 1) % 2;
         	yield return new WaitForSeconds(1f/animationFPS);
@@ -242,11 +264,11 @@ public class Person : MonoBehaviour {
     }
 
     protected void MoveToPosition(Vector3 pos) {
-        prevPos = transform.position;
+        if(pos != prevPos) prevPos = transform.position;
         StartCoroutine(TranslateToPos(pos));
     }
 
-    protected void ResetPosition() {
+    public void ResetPosition() {
         MoveToPosition(prevPos);
     }
 
@@ -255,9 +277,9 @@ public class Person : MonoBehaviour {
         float dist = dir.magnitude;
         dir = dir.normalized;
         while(dist > 0) {
-            transform.Translate(dir * 0.1f);
-            dist -= 0.1f;
-            yield return new WaitForSeconds(0.5f);
+            transform.Translate(dir * 0.05f);
+            dist -= 0.05f;
+            yield return new WaitForSeconds(0.05f);
         }
     }
 

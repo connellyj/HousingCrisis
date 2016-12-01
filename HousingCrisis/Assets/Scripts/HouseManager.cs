@@ -10,7 +10,8 @@ public class HouseManager : MonoBehaviour {
     public GameObject mansion;
     public GameObject store;
 
-    public static List<House> houses;
+    public static Dictionary<int, House> houses;
+    public static List<int> burningHouses;
 
     private static HouseManager instance;
 
@@ -18,7 +19,8 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        houses = new List<House>();
+        houses = new Dictionary<int, House>();
+        burningHouses = new List<int>();
     }
 
     public static void Build(Vector3 position, HouseType type) {
@@ -47,8 +49,7 @@ public class HouseManager : MonoBehaviour {
         }
         house.Buy();
         house.RemoveTriggers(adjacentPaths);
-        houses.Add(house);
-        AddHouseToGrid(position);
+        AddHouse(house);
     }
 
     public static bool CanBuild(HouseType type) {
@@ -71,17 +72,33 @@ public class HouseManager : MonoBehaviour {
         }
     }
 
-    public static void AddHouseToGrid(Vector3 pos) {
-        GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+    public static void AddBurningHouse(House h) {
+        burningHouses.Add(GridManager.CoordsToIndex(h.X(), h.Y()));
+    }
+
+    public static void RemoveBurningHouse(House h) {
+        burningHouses.Remove(GridManager.CoordsToIndex(h.X(), h.Y()));
+    }
+
+    public static void AddHouse(House h) {
+        int idx = GridManager.CoordsToIndex(h.X(), h.Y());
+        houses.Add(idx, h);
     }
 
     public static void RemoveHouse(House house) {
-        Vector3 pos = house.transform.position;
-        if(house.burnState > 0) {
-            GridManager.burningHouses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
-        }else {
-            GridManager.houses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+        int idx = GridManager.CoordsToIndex(house.X(), house.Y());
+        houses.Remove(idx);
+        if(burningHouses.Contains(idx)) burningHouses.Remove(idx);
+    }
+
+    public static bool AnyStallSpaceAnywhere() {
+        foreach(House h in houses.Values) {
+            if(h.HasAvailableStallSpace()) return true;
         }
-        houses.Remove(house);
+        return false;
+    }
+
+    public static bool AnyHousesNotBurning() {
+        return houses.Count != burningHouses.Count;
     }
 }

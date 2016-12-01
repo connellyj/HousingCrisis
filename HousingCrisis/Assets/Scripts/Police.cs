@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class Police : Person {
+public class Police : Person { 
 
     protected override void Start() {
         state = PersonState.WANDER;
@@ -14,21 +14,17 @@ public class Police : Person {
     }
 
     protected override void Attack() {
-        int hIndex = GridManager.houses.IndexOf(goalIndex);
-        House h;
-        if(hIndex < 0) {
-            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
-        } else {
-            h = HouseManager.houses[hIndex];
-        }
-        if(h.HasAvailableStallSpace()) {
-            //MoveToPosition(h.AddStalledPerson(this));
-            StartCoroutine(Shoot(h));
+        if(HouseManager.houses.ContainsKey(goalIndex)) {
+            House h = HouseManager.houses[goalIndex];
+            if(h.HasAvailableStallSpace()) {
+                MoveToPosition(h.AddStalledPerson(this));
+                StartCoroutine(Shoot(h));
+            } else CompletePath();
         } else CompletePath();
     }
 
     private IEnumerator Shoot(House h) {
-        while(HouseManager.houses.Contains(h)) {
+        while(HouseManager.houses.ContainsKey(goalIndex)) {
             h.DamageHouse(attackValue);
             yield return new WaitForSeconds(attackStallTime);
         }
@@ -43,7 +39,7 @@ public class Police : Person {
         }else if(state == PersonState.TARGET_SET) {
             ChangeState(PersonState.ATTACK);
         } else if(state == PersonState.ATTACK) {
-            //ResetPosition();
+            UnHighlight();
             ChangeState(PersonState.WANDER);
         } else if(state == PersonState.WANDER_SET) {
             ChangeState(PersonState.STALL);
