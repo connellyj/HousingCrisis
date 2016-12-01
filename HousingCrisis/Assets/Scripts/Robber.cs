@@ -3,7 +3,7 @@
     public int minDamage; // damage done to house if it is already burning
 
     protected override void Start() {
-        state = PersonState.TARGET_RANDOM;
+        state = PersonState.TARGET_RANDOM_NOTBURNING;
         base.Start();
     }
 
@@ -21,7 +21,7 @@
 
     protected override void CompletePath() {
         base.CompletePath();
-        if(state == PersonState.TARGET_RANDOM) {
+        if(state == PersonState.TARGET_RANDOM_NOTBURNING) {
             ChangeState(PersonState.ATTACK);
         }else if(state == PersonState.ATTACK) {
             ChangeState(PersonState.PANIC);

@@ -33,7 +33,7 @@ public class Person : MonoBehaviour {
 	private Sprite[] eastSprites;
 	private Sprite[][] spritesByDirection;
 	// AI and pathing
-	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET }
+	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET, TARGET_RANDOM_NOTBURNING }
     public PersonState state;
 	protected List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
@@ -192,7 +192,22 @@ public class Person : MonoBehaviour {
                 } else if(!HouseManager.AnyStallSpaceAnywhere()) {
                     ChangeState(PersonState.WANDER);
                 } else {
-                    goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count - 1));
+                    goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                    path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
+                }
+                return true;
+            case PersonState.TARGET_RANDOM_NOTBURNING:
+                if(HouseManager.houses.Count == 0 || !HouseManager.AnyHousesNotBurning()) {
+                    ChangeState(PersonState.WANDER);
+                } else {
+                    if(HouseManager.burningHouses.Count == 0) {
+                        goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                    }else {
+                        goalIndex = HouseManager.burningHouses[0];
+                        while(HouseManager.burningHouses.Contains(goalIndex)) {
+                            goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                        }
+                    }
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 }
                 return true;

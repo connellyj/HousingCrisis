@@ -95,4 +95,8 @@ public class HouseManager : MonoBehaviour {
         }
         return false;
     }
+
+    public static bool AnyHousesNotBurning() {
+        return houses.Count != burningHouses.Count;
+    }
 }
