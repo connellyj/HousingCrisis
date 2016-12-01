@@ -5,6 +5,8 @@ public class Population : MonoBehaviour {
   
     private static List<Person> people;
     private static List<Person> toBeEaten;
+    private static Person[] toBePulled;
+    private static float[] closestPeople;
 
     void Awake() {
         people = new List<Person>();
@@ -26,7 +28,7 @@ public class Population : MonoBehaviour {
         people.Clear();
     }
 
-    public static void AlertAffectedPeople(Direction d, int[] houseLocXY, float eatRadius, int noticeThreshold) {
+    public static void AlertPeopleAffectedByEat(Direction d, int[] houseLocXY, float eatRadius, int noticeThreshold) {
         toBeEaten = new List<Person>();
         foreach(Person p in people) {
             if(PersonInRangeToEat(p, d, eatRadius, houseLocXY)) toBeEaten.Add(p);
@@ -93,5 +95,32 @@ public class Population : MonoBehaviour {
 
     private static bool PersonInRangeSameY(int difX, Person p, int yLoc, int noticeThreshold) {
         return p.Y() == yLoc && Mathf.Abs(difX) < noticeThreshold;
+    }
+
+    public static void AlertPeopleAffectedByStore(HouseManager.HouseType type, float alertRadius, int numPeople, Vector3 storePos) {
+        if(numPeople == 0) return;
+        toBePulled = new Person[numPeople];
+        closestPeople = new float[numPeople];
+        for(int i = 0; i < numPeople; i++) {
+            closestPeople[i] = float.MaxValue;
+        }
+        int greatestIndex = 0;
+        foreach(Person p in people) {
+            float dist = (p.transform.position - storePos).magnitude;
+            if(dist < alertRadius && p.state != Person.PersonState.STALL) {
+                if(dist < closestPeople[greatestIndex]) {
+                    closestPeople[greatestIndex] = dist;
+                    toBePulled[greatestIndex] = p;
+                    for(int i = 0; i < numPeople; i++) {
+                        if(closestPeople[greatestIndex] < closestPeople[i]) {
+                            greatestIndex = i;
+                        }
+                    }
+                }
+            }
+        }
+        foreach(Person toPull in toBePulled) {
+            if(toPull != null) toPull.OnStorePull(GridManager.CoordsToIndex((int)Mathf.Round(storePos.x), (int)Mathf.Round(storePos.y)));
+        }
     }
 }

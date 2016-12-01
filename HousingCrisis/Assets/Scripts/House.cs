@@ -5,10 +5,10 @@ using System.Collections.Generic;
 
 public class House : Builder {
 
-    private static readonly int MAX_STALL = 3;
+    protected static readonly int MAX_STALL = 3;
 
     public int houseCost;
-    public int noticeThreshold;
+    public int alertRadius;
 
     public static int cost = 0;
 
@@ -109,7 +109,7 @@ public class House : Builder {
             isChewing = true;
             DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
-            Population.AlertAffectedPeople(d, gridPos, eatRadius, noticeThreshold);
+            Population.AlertPeopleAffectedByEat(d, gridPos, eatRadius, alertRadius);
         }
     }
 
@@ -320,9 +320,9 @@ public class House : Builder {
 
     public void RemoveStalledPerson(Person p) {
         numStalled--;
+        p.ResetPosition();
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
-            p.ResetPosition();
         }
     }
 

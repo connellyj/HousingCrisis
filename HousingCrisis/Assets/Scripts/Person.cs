@@ -128,6 +128,7 @@ public class Person : MonoBehaviour {
                 CompletePath();
             } else CompletePath();
         } else CompletePath();
+        UnHighlight();
     }
 
     public void FaceGoal() {
@@ -308,8 +309,12 @@ public class Person : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    public void Highlight() {
+    public void HighlightEat() {
         spriteRenderer.color = Color.red;
+    }
+
+    public void HighlightStore() {
+        spriteRenderer.color = Color.blue;
     }
 
     public void UnHighlight() {
@@ -323,6 +328,12 @@ public class Person : MonoBehaviour {
 
     public virtual void OnSeeHouse(int houseIndex) {
         Panic();
+    }
+
+    public void OnStorePull(int index) {
+        goalIndex = index;
+        HighlightStore();
+        ChangeState(PersonState.WANDER_SET);
     }
 
     public int X() {

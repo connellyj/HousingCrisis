@@ -41,6 +41,10 @@ public class Soldier : Person {
             ChangeState(PersonState.TARGET_RANDOM);
         }else if(state == PersonState.WANDER) {
             RemovePerson();
+        } else if(state == PersonState.WANDER_SET) {
+            ChangeState(PersonState.STALL);
+        } else if(state == PersonState.STALL) {
+            ChangeState(PersonState.WANDER);
         }
     }
 }

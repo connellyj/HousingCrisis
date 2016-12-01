@@ -15,7 +15,7 @@ public class EatingArea : MonoBehaviour {
         if(other.tag == "Person") {
             numPeopleInArea++;
             Person p = other.gameObject.GetComponent<Person>();
-            p.Highlight();
+            p.HighlightEat();
         }
     }
 
