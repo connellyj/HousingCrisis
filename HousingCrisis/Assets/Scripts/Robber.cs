@@ -28,6 +28,10 @@
             ChangeState(PersonState.PANIC);
         }else if(state == PersonState.PANIC) {
             RemovePerson();
+        } else if(state == PersonState.WANDER_SET) {
+            ChangeState(PersonState.STALL);
+        } else if(state == PersonState.STALL) {
+            ChangeState(PersonState.WANDER);
         }
     }
 }
