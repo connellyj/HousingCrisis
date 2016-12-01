@@ -25,6 +25,7 @@ public class Police : Person {
 
     private IEnumerator Shoot(House h) {
         while(HouseManager.houses.ContainsKey(goalIndex)) {
+            ShootFireball();
             h.DamageHouse(attackValue);
             yield return new WaitForSeconds(attackStallTime);
         }
