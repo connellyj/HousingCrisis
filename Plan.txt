@@ -6,26 +6,32 @@ Julia
 * debug people
 * shooting animation
 - store/donut/bank functionality
-- apartment functionality
-- finalize build menus
 
 Connor
 * finish burning
 * rob house
 * woman
-- design wanted level and difficulty curve
 * all sprites
-- start and win buttons, losing
+* finalize build menus
+- apartment functionality
 - mansion functionality
 - wanted level and difficulty curve
 - level design
 
 UI
-- polish $ counter
-- info popups
+- losing
+- start and win buttons
 - scene transitions
+- info popups
 - help menu
-- edible person highlight
+- polish 
+	- $ counter
+	- edible person highlight
+
+Write Ups
+- design document
+- architecture document
+- schedule
 
 
 

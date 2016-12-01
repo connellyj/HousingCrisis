@@ -1,0 +1,8 @@
+Bug Log
+
+Unassigned
+- people (especially soldiers) occasionally run diagonally off the road
+
+Julia
+
+Connor

@@ -15,7 +15,7 @@ public class House : Builder {
     public float chewingTime;
 
     // sprites and renderer
-    SpriteRenderer spriteRenderer;
+    protected SpriteRenderer spriteRenderer;
     public GameObject spriteWrapper;
     public Sprite defaultSprite;
     public Sprite eatingSprite;
@@ -103,7 +103,7 @@ public class House : Builder {
         return (!isChewing) && (burnState == 0);
     }
 
-    public void Eat(Direction d) {
+    public virtual void Eat(Direction d) {
         if (CanEat())
         {
             isChewing = true;
@@ -123,7 +123,7 @@ public class House : Builder {
         CalculateStallPositions(adjacent);
     }
 
-    private IEnumerator EatAnimation(Direction d)
+    protected virtual IEnumerator EatAnimation(Direction d)
     {
         Vector3 origin = spriteWrapper.transform.position;
         Vector3 v = GridManager.DirectionToVector(d) / 2;   
@@ -139,7 +139,7 @@ public class House : Builder {
         EnableEatingAreas();
     }
 
-    private IEnumerator ChewAnimation()
+    protected IEnumerator ChewAnimation()
     {
         int frameIndex = 0;
         float chewingFPS = 6f;
@@ -150,7 +150,7 @@ public class House : Builder {
         }
     }
 
-    private void EnableEatingAreas()
+    protected void EnableEatingAreas()
     {
         if (CanEat()) 
         {   
@@ -162,7 +162,7 @@ public class House : Builder {
         }
     }
 
-    private void DisableEatingAreas()
+    protected void DisableEatingAreas()
     {
         if (!CanEat())
         {
