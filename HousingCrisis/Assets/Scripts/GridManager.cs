@@ -80,7 +80,7 @@ public class GridManager : MonoBehaviour {
             case Direction.EAST:
                 return Vector3.right;
             default:
-                throw new System.InvalidOperationException("Direction cannot be converted to vector");
+                throw new InvalidOperationException("Direction cannot be converted to vector");
         }
     }
 

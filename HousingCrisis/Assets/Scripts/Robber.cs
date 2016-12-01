@@ -12,16 +12,11 @@
     }
 
     protected override void Attack() {
-        int hIndex = GridManager.houses.IndexOf(goalIndex);
-        House h;
-        if(hIndex < 0) {
-            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
-        } else {
-            h = HouseManager.houses[hIndex];
-        }
-        MoveToPosition(h.transform.position);
-        h.RobHouse(minDamage);
-        CompletePath();
+        if(HouseManager.houses.ContainsKey(goalIndex)) {
+            House h = HouseManager.houses[goalIndex];
+            h.RobHouse(minDamage);
+            CompletePath();
+        } else CompletePath();
     }
 
     protected override void CompletePath() {
@@ -29,7 +24,6 @@
         if(state == PersonState.TARGET_RANDOM) {
             ChangeState(PersonState.ATTACK);
         }else if(state == PersonState.ATTACK) {
-            ResetPosition();
             ChangeState(PersonState.PANIC);
         }else if(state == PersonState.PANIC) {
             RemovePerson();

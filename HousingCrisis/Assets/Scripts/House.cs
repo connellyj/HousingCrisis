@@ -56,7 +56,6 @@ public class House : MonoBehaviour {
             // display build options
         } else {
             // put out fire
-            Debug.Log("Healing House");
             HealHouse(healingPerTap);
         }
     }
@@ -68,25 +67,25 @@ public class House : MonoBehaviour {
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x - 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                        positions[i] = new Vector3(transform.position.x - 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + 0.5f, transform.position.y + ((i - 1) * 0.3f));
+                        positions[i] = new Vector3(transform.position.x + 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex - 1, positions);
                     break;
                 case Direction.NORTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y - 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.3f);
                     }
                     stalledPositions.Add(houseIndex - GridManager.MAX_COL, positions);
                     break;
                 case Direction.SOUTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.3f), transform.position.y + 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.3f);
                     }
                     stalledPositions.Add(houseIndex + GridManager.MAX_COL, positions);
                     break;
@@ -222,7 +221,6 @@ public class House : MonoBehaviour {
 
     private void StartBurning() 
     {
-        Debug.Log("Burning started");
         DisableEatingAreas();
         GridManager.AddBurningHouse(this);
         StartCoroutine(BurnDown());
@@ -230,7 +228,6 @@ public class House : MonoBehaviour {
 
     private void StopBurning() 
     {
-        Debug.Log("Burning stopped");
         EnableEatingAreas();
         GridManager.RemoveBurningHouse(this);
         StopCoroutine("BurnDown");
@@ -319,6 +316,7 @@ public class House : MonoBehaviour {
         numStalled--;
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
+            p.ResetPosition();
         }
     }
 }

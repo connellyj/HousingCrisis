@@ -10,7 +10,7 @@ public class HouseManager : MonoBehaviour {
     public GameObject mansion;
     public GameObject store;
 
-    public static List<House> houses;
+    public static Dictionary<int, House> houses;
 
     private static HouseManager instance;
 
@@ -18,7 +18,7 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        houses = new List<House>();
+        houses = new Dictionary<int, House>();
     }
 
     public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
@@ -45,8 +45,7 @@ public class HouseManager : MonoBehaviour {
         }
         house.Buy();
         house.RemoveTriggers(adjacentPaths);
-        houses.Add(house);
-        AddHouseToGrid(position);
+        AddHouse(position, house);
     }
 
     public static bool CanBuildHouse(HouseType type) {
@@ -69,17 +68,27 @@ public class HouseManager : MonoBehaviour {
         }
     }
 
-    public static void AddHouseToGrid(Vector3 pos) {
-        GridManager.houses.Add(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+    public static void AddHouse(Vector3 pos, House h) {
+        int idx = GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y)));
+        GridManager.houses.Add(idx);
+        houses.Add(idx, h);
     }
 
     public static void RemoveHouse(House house) {
         Vector3 pos = house.transform.position;
+        int idx = GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y)));
         if(house.burnState > 0) {
-            GridManager.burningHouses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+            GridManager.burningHouses.Remove(idx);
         }else {
-            GridManager.houses.Remove(GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y))));
+            GridManager.houses.Remove(idx);
         }
-        houses.Remove(house);
+        houses.Remove(idx);
+    }
+
+    public static bool AnyStallSpaceAnywhere() {
+        foreach(House h in houses.Values) {
+            if(h.HasAvailableStallSpace()) return true;
+        }
+        return false;
     }
 }
