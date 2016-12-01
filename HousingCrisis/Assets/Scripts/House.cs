@@ -46,7 +46,7 @@ public class House : MonoBehaviour {
     }
     
     void Start() {
-        DamageHouse(100);
+        
     }
 
     void OnMouseDown() 
