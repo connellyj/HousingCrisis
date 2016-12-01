@@ -22,10 +22,6 @@ public class Pathfinder {
                 goalType = GoalType.EXIT;
                 strategy = new Strategy.DFS();
                 break;
-            case Person.PersonState.TARGET_RANDOM:
-                goalType = GoalType.HOUSE;
-                strategy = new Strategy.DFS();
-                break;
             case Person.PersonState.PANIC:
                 goalType = GoalType.EXIT;
                 strategy = new Strategy.Greedy();

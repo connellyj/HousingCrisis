@@ -14,6 +14,7 @@
     protected override void Attack() {
         if(HouseManager.houses.ContainsKey(goalIndex)) {
             House h = HouseManager.houses[goalIndex];
+            ShootFireball();
             h.RobHouse(minDamage);
             CompletePath();
         } else CompletePath();

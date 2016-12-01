@@ -42,6 +42,7 @@ public class Person : MonoBehaviour {
     private Vector3 prevPos;
     public int attackValue;
     public int attackStallTime;
+    public GameObject fireball;
     
     protected virtual void Start () {
         // set and start path
@@ -127,6 +128,19 @@ public class Person : MonoBehaviour {
                 CompletePath();
             } else CompletePath();
         } else CompletePath();
+    }
+
+    public void FaceGoal() {
+        int curIdx = GridManager.CoordsToIndex((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y));
+        if(curIdx + 1 == goalIndex) {
+            direction = Direction.EAST;
+        }else if(curIdx - 1 == goalIndex) {
+            direction = Direction.WEST;
+        } else if(curIdx + GridManager.MAX_COL == goalIndex) {
+            direction = Direction.SOUTH;
+        } else if(curIdx - GridManager.MAX_COL == goalIndex) {
+            direction = Direction.NORTH;
+        }
     }
 
 	private IEnumerator FollowPath(Vector3 v)
@@ -250,6 +264,7 @@ public class Person : MonoBehaviour {
     }
 
     private IEnumerator PlayAnimation(){
+        FaceGoal();
         int frameIndex = 0;
         while (true) {
             if(spriteRenderer == null) yield return null;
@@ -261,6 +276,11 @@ public class Person : MonoBehaviour {
 
     protected virtual void Attack() {
         return;
+    }
+
+    protected void ShootFireball() {
+        Fireball fB = ((GameObject)Instantiate(fireball, transform.position, Quaternion.identity)).GetComponent<Fireball>();
+        fB.Shoot(direction);
     }
 
     protected void MoveToPosition(Vector3 pos) {

@@ -67,13 +67,13 @@ public class House : MonoBehaviour {
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x - 0.3f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x + 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + 0.3f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x - 0.3f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex - 1, positions);
                     break;
