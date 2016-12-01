@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public class Person : MonoBehaviour {
 
@@ -117,18 +118,14 @@ public class Person : MonoBehaviour {
 	}
 
     protected virtual IEnumerator Stall() {
-        int hIndex = GridManager.houses.IndexOf(goalIndex);
-        House h;
-        if(hIndex < 0) {
-            h = HouseManager.houses[GridManager.burningHouses.IndexOf(goalIndex)];
-        } else {
-            h = HouseManager.houses[hIndex];
-        }
-        if(h.HasAvailableStallSpace()) {
-            MoveToPosition(h.AddStalledPerson(this));
-            yield return new WaitForSeconds(stallTime);
-            h.RemoveStalledPerson(this);
-            CompletePath();
+        if(HouseManager.houses.ContainsKey(goalIndex)) {
+            House h = HouseManager.houses[goalIndex];
+            if(h.HasAvailableStallSpace()) {
+                MoveToPosition(h.AddStalledPerson(this));
+                yield return new WaitForSeconds(stallTime);
+                h.RemoveStalledPerson(this);
+                CompletePath();
+            } else CompletePath();
         } else CompletePath();
     }
 
@@ -190,12 +187,12 @@ public class Person : MonoBehaviour {
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 return true;
             case PersonState.TARGET_RANDOM:
-                if(GridManager.houses.Count == 0) {
+                if(HouseManager.houses.Count == 0) {
                     ChangeState(PersonState.WANDER);
                 } else if(!HouseManager.AnyStallSpaceAnywhere()) {
                     ChangeState(PersonState.WANDER);
                 } else {
-                    goalIndex = GridManager.houses[UnityEngine.Random.Range(0, GridManager.houses.Count)];
+                    goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count - 1));
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 }
                 return true;

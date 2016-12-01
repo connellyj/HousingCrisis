@@ -222,14 +222,14 @@ public class House : MonoBehaviour {
     private void StartBurning() 
     {
         DisableEatingAreas();
-        GridManager.AddBurningHouse(this);
+        HouseManager.AddBurningHouse(this);
         StartCoroutine(BurnDown());
     }
 
     private void StopBurning() 
     {
         EnableEatingAreas();
-        GridManager.RemoveBurningHouse(this);
+        HouseManager.RemoveBurningHouse(this);
         StopCoroutine("BurnDown");
     }
 
@@ -318,6 +318,14 @@ public class House : MonoBehaviour {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
             p.ResetPosition();
         }
+    }
+
+    public int X() {
+        return gridPos[0];
+    }
+
+    public int Y() {
+        return gridPos[1];
     }
 }
 

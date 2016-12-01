@@ -11,6 +11,7 @@ public class HouseManager : MonoBehaviour {
     public GameObject store;
 
     public static Dictionary<int, House> houses;
+    public static List<int> burningHouses;
 
     private static HouseManager instance;
 
@@ -19,6 +20,7 @@ public class HouseManager : MonoBehaviour {
     void Awake() {
         instance = this;
         houses = new Dictionary<int, House>();
+        burningHouses = new List<int>();
     }
 
     public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
@@ -45,7 +47,7 @@ public class HouseManager : MonoBehaviour {
         }
         house.Buy();
         house.RemoveTriggers(adjacentPaths);
-        AddHouse(position, house);
+        AddHouse(house);
     }
 
     public static bool CanBuildHouse(HouseType type) {
@@ -68,21 +70,23 @@ public class HouseManager : MonoBehaviour {
         }
     }
 
-    public static void AddHouse(Vector3 pos, House h) {
-        int idx = GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y)));
-        GridManager.houses.Add(idx);
+    public static void AddBurningHouse(House h) {
+        burningHouses.Add(GridManager.CoordsToIndex(h.X(), h.Y()));
+    }
+
+    public static void RemoveBurningHouse(House h) {
+        burningHouses.Remove(GridManager.CoordsToIndex(h.X(), h.Y()));
+    }
+
+    public static void AddHouse(House h) {
+        int idx = GridManager.CoordsToIndex(h.X(), h.Y());
         houses.Add(idx, h);
     }
 
     public static void RemoveHouse(House house) {
-        Vector3 pos = house.transform.position;
-        int idx = GridManager.CoordsToIndex(((int) Mathf.Round(pos.x)), ((int) Mathf.Round(pos.y)));
-        if(house.burnState > 0) {
-            GridManager.burningHouses.Remove(idx);
-        }else {
-            GridManager.houses.Remove(idx);
-        }
+        int idx = GridManager.CoordsToIndex(house.X(), house.Y());
         houses.Remove(idx);
+        if(burningHouses.Contains(idx)) burningHouses.Remove(idx);
     }
 
     public static bool AnyStallSpaceAnywhere() {
