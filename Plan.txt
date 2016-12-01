@@ -3,8 +3,8 @@ Housing Crisis
 * = done
 
 Julia
-- debug people
-- shooting animation
+* debug people
+* shooting animation
 - store/donut/bank functionality
 - apartment functionality
 - finalize build menus
@@ -15,8 +15,6 @@ Connor
 * woman
 - design wanted level and difficulty curve
 * all sprites
-	- apartment, donut, bank (single sprites)
-	- mansion (full set)
 - start and win buttons, losing
 - mansion functionality
 - wanted level and difficulty curve

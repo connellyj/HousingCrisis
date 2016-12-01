@@ -15,7 +15,7 @@ public class HouseManager : MonoBehaviour {
 
     private static HouseManager instance;
 
-    public enum HouseType { HOUSE, APARTMENT, MANSION, STORE, DONUT, BANK, PLOT }
+    public enum HouseType { HOUSE, APARTMENT, MANSION, STORE, DONUT, BANK, PLOT, LOCKED }
 
     void Awake() {
         instance = this;
@@ -54,6 +54,7 @@ public class HouseManager : MonoBehaviour {
 
     public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
+        if (!ContentManager.isBuildingUnlocked(type)) return false;
         switch(type) {
             case HouseType.HOUSE:
                 return money >= House.cost;

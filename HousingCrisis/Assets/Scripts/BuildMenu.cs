@@ -69,19 +69,30 @@ public class BuildMenu : MonoBehaviour {
             GUI.Box(backgroundRect, "");
             HouseManager.HouseType firstType = buildOptions[0];
             HouseManager.HouseType secondType = buildOptions[1];
-            if (GUI.Button(firstBuildRect, firstType.ToString())) {
+            if (firstType == HouseManager.HouseType.LOCKED)
+            {
+            	GUI.Box(firstBuildRect, "LOCKED", textStyle);
+            } else {
             	if (HouseManager.CanBuild(firstType)) {
-                    Close();
-                    Build(HouseManager.HouseType.HOUSE);
+                    if (GUI.Button(firstBuildRect, firstType.ToString())) {
+                    	Close();
+                    	Build(firstType);
+                    }
                 } else {
-                	GUI.Box(firstBuildRect, "Not enough $$", textStyle);
+                	GUI.Box(firstBuildRect, "NEED $$$", textStyle);
                 }
-            } else if (GUI.Button(secondBuildRect, secondType.ToString())) {
+            }
+            if (secondType == HouseManager.HouseType.LOCKED)
+            {
+            	GUI.Box(secondBuildRect, "LOCKED", textStyle);
+            } else {
             	if (HouseManager.CanBuild(secondType)) {
-                    Close();
-                    Build(HouseManager.HouseType.HOUSE);
+                    if (GUI.Button(secondBuildRect, secondType.ToString())) {
+                    	Close();
+                    	Build(secondType);
+                    }
                 } else {
-                	GUI.Box(secondBuildRect, "Not enough $$", textStyle);
+                	GUI.Box(firstBuildRect, "NEED $$$", textStyle);
                 }
             // } else if (GUI.Button(closeRect, "Close")) {
             // 	Close();
@@ -89,7 +100,7 @@ public class BuildMenu : MonoBehaviour {
         }
     }
 
-    public void Build(HouseManager.HouseType type)
+    private void Build(HouseManager.HouseType type)
     {
     	builder.OnBuild();
     	HouseManager.Build(worldPos, HouseManager.HouseType.HOUSE);
@@ -100,16 +111,26 @@ public class BuildMenu : MonoBehaviour {
     {
     	if (type == HouseManager.HouseType.PLOT)
     	{
-    		buildOptions[0] = HouseManager.HouseType.HOUSE;
-    		buildOptions[1] = HouseManager.HouseType.STORE;
+    		buildOptions[0] = CheckLocked(HouseManager.HouseType.HOUSE);
+    		buildOptions[1] = CheckLocked(HouseManager.HouseType.STORE);
     	} else if (type == HouseManager.HouseType.HOUSE) {
-			buildOptions[0] = HouseManager.HouseType.APARTMENT;
-    		buildOptions[1] = HouseManager.HouseType.MANSION;
+			buildOptions[0] = CheckLocked(HouseManager.HouseType.APARTMENT);
+    		buildOptions[1] = CheckLocked(HouseManager.HouseType.MANSION);
     	} else if (type == HouseManager.HouseType.STORE) {
-    		buildOptions[0] = HouseManager.HouseType.DONUT;
-    		buildOptions[1] = HouseManager.HouseType.BANK;
+    		buildOptions[0] = CheckLocked(HouseManager.HouseType.DONUT);
+    		buildOptions[1] = CheckLocked(HouseManager.HouseType.BANK);
     	} else {
     		Debug.Log("Error: Invalid callType passed to BuildMenu");
+    	}
+    }
+
+    private static HouseManager.HouseType CheckLocked(HouseManager.HouseType type)
+    {
+    	if (ContentManager.isBuildingUnlocked(type))
+    	{
+    		return type;
+    	} else {
+    		return HouseManager.HouseType.LOCKED;
     	}
     }
 
