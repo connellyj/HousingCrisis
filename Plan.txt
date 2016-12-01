@@ -14,10 +14,10 @@ Connor
 * rob house
 * woman
 - design wanted level and difficulty curve
-- all sprites
+* all sprites
 	- apartment, donut, bank (single sprites)
 	- mansion (full set)
-- start and win buttons
+- start and win buttons, losing
 - mansion functionality
 - wanted level and difficulty curve
 - level design

@@ -42,10 +42,6 @@ public class Person : MonoBehaviour {
     public int attackValue;
     public int attackStallTime;
 
-    // HEY CONNOR!!
-    // You have to account for the case where the person is on an exit when they panic
-    // Because in that case the path will be an empty list
-    // I didn't wanna try and fix it because I don't entirely know what's going on
     protected virtual void Start () {
         // set and start path
         gridXY[0] = (int)Math.Round(transform.position.x);
