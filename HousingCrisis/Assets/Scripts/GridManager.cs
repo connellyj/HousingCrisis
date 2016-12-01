@@ -45,7 +45,7 @@ public class GridManager : MonoBehaviour {
         return (MAX_ROW - 1 - y) * MAX_COL + x;
     }
 
-    public static List<Direction> GetAdjacentPathDirections(int x, int y, GameObject tmp) {
+    public static List<Direction> GetAdjacentPathDirections(int x, int y) {
         int data = CoordsToIndex(x, y);
         List<Direction> adjacentPaths = new List<Direction>();
         if(CellIsPath(data + 1)) adjacentPaths.Add(Direction.EAST);

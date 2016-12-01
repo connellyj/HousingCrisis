@@ -43,7 +43,7 @@ public class Person : MonoBehaviour {
     public int attackValue;
     public int attackStallTime;
     public GameObject fireball;
-    
+
     protected virtual void Start () {
         // set and start path
         gridXY[0] = (int)Math.Round(transform.position.x);

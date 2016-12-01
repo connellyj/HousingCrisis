@@ -3,7 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-public class House : MonoBehaviour {
+public class House : Builder {
 
     private static readonly int MAX_STALL = 3;
 
@@ -46,7 +46,7 @@ public class House : MonoBehaviour {
     }
     
     void Start() {
-        
+        type = HouseManager.HouseType.HOUSE;
     }
 
     void OnMouseDown() 
@@ -54,6 +54,7 @@ public class House : MonoBehaviour {
         if (burnState == 0)
         {
             // display build options
+            BuildMenu.Open(this);
         } else {
             // put out fire
             HealHouse(healingPerTap);
@@ -288,6 +289,11 @@ public class House : MonoBehaviour {
             Destroy(fire);
         }
         fires.Clear();
+    }
+
+    public override void OnBuild()
+    {
+        RemoveHouse();
     }
 
     private void RemoveHouse() {

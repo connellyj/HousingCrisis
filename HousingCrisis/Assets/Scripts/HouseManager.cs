@@ -15,7 +15,7 @@ public class HouseManager : MonoBehaviour {
 
     private static HouseManager instance;
 
-    public enum HouseType { HOUSE, APARTMENT, BANK, DONUT, MANSION, STORE }
+    public enum HouseType { HOUSE, APARTMENT, MANSION, STORE, DONUT, BANK, PLOT }
 
     void Awake() {
         instance = this;
@@ -23,8 +23,10 @@ public class HouseManager : MonoBehaviour {
         burningHouses = new List<int>();
     }
 
-    public static void BuildHouse(Vector3 position, HouseType type, List<Direction> adjacentPaths) {
+    public static void Build(Vector3 position, HouseType type) {
         House house = null;
+        List<Direction> adjacentPaths = GridManager.GetAdjacentPathDirections((int)Mathf.Round(position.x), 
+                                                                              (int)Mathf.Round(position.y));
         switch(type) {
             case HouseType.HOUSE:
                 house = ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
@@ -50,7 +52,7 @@ public class HouseManager : MonoBehaviour {
         AddHouse(house);
     }
 
-    public static bool CanBuildHouse(HouseType type) {
+    public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
         switch(type) {
             case HouseType.HOUSE:
