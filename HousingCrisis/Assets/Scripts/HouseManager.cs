@@ -102,4 +102,49 @@ public class HouseManager : MonoBehaviour {
     public static bool AnyHousesNotBurning() {
         return houses.Count != burningHouses.Count;
     }
+
+    public static void UpdateSprinklers()
+    {
+        foreach (House h in houses.Values) {
+            h.SprinklersOn(isAdjacentToMansion(h));
+        }
+    }
+
+    public static bool isAdjacentToMansion(House h) //includes houses on diagonal
+    {
+        foreach (House g in adjacentHouses( h.X() , h.Y() ))
+        {
+            if (g.type == HouseType.MANSION) return true;
+        }
+        return false;
+    }
+
+    private static List<House> adjacentHouses(int x, int y) //includes houses on diagonal
+    {
+        List<House> adjacent = new List<House>();
+        int[] adjacentIndexes = GetAdjacentIndexes(x,y);
+        for (int i = 0; i < adjacentIndexes.Length; i++)
+        {
+            if (houses.ContainsKey(adjacentIndexes[i]))
+            {
+                adjacent.Add(houses[adjacentIndexes[i]]);
+            }
+        }
+        return adjacent;
+    }
+
+    private static int[] GetAdjacentIndexes(int x, int y)
+    {
+        int[] adjacentIndexes = new int[8];
+        adjacentIndexes[0] = GridManager.CoordsToIndex(x,y+1);      // north
+        adjacentIndexes[1] = GridManager.CoordsToIndex(x,y-1);      // south
+        adjacentIndexes[2] = GridManager.CoordsToIndex(x+1,y);      // east
+        adjacentIndexes[3] = GridManager.CoordsToIndex(x-1,y);      // west
+        adjacentIndexes[4] = GridManager.CoordsToIndex(x+1,y+1);    // northeast
+        adjacentIndexes[5] = GridManager.CoordsToIndex(x-1,y+1);    // northwest
+        adjacentIndexes[6] = GridManager.CoordsToIndex(x+1,y-1);    // southeast
+        adjacentIndexes[7] = GridManager.CoordsToIndex(x-1,y-1);    // southwest
+        return adjacentIndexes;
+    }
+
 }

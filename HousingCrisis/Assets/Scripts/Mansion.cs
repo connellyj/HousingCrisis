@@ -2,9 +2,25 @@
 
 public class Mansion : House {
 
+	public static int sprinklerStrength = 100;
+
     protected override void Awake() {
         base.Awake();
-        transform.position += new Vector3(0,0.1f,0);
+        spriteWrapper.transform.position += new Vector3(0,0.1f,0);
+        HouseManager.UpdateSprinklers();
+    }
+
+    protected override void Start()
+    {
+    	base.Start();
+    	HouseManager.UpdateSprinklers();
+    }
+
+    protected override void RemoveHouse()
+    {
+		HouseManager.RemoveHouse(this);
+		HouseManager.UpdateSprinklers();
+        Destroy(gameObject);
     }
 
     /* 
@@ -13,9 +29,13 @@ public class Mansion : House {
     updates when a mansion is build or burns down.
 
     calculate adjacent mansions runs in HouseManager and sets the sprinkler boolean for each non-mansion building
-    this occurs whenever a mansion is built or destoyed
+    	this occurs whenever a mansion is built or destoyed 
+    	or another building is built (but then just for that building)
 
-    mansions always have the sprinkler property on
+    sprinklers should lower the minimum totalDamage of buildings to 0 - Mansion.sprinklerStrength
+    this should automatically adjust totalDamage dynamically when mansions are created/destroyed or other buildings are created in range
+
+    mansions always have the sprinkler property on and an additional burnState = -1 which is 
     */
 
 }
