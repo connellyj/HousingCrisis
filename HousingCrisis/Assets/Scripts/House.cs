@@ -29,13 +29,18 @@ public class House : Builder {
     protected float eatRadius = 0.5f;
     public bool isChewing = false;
 
-    public GameObject firePrefab;
     public int burnState = 0;
     public float attritionDPS;
     public int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     public int healingPerTap;
+    private int minDamage = 0;
+
+    private bool hasSprinklers;
+
+    public GameObject firePrefab;
+    private GameObject waterDrop;
 
     protected virtual void Awake() {
         if(cost == 0) cost = houseCost;
@@ -45,13 +50,22 @@ public class House : Builder {
         stalledPositions = new Dictionary<int, Vector3[]>();
     }
     
-    void Start() {
+    protected virtual void Start() {
         type = HouseManager.HouseType.HOUSE;
+        SetUpSprinklers();
+    }
+
+    private void SetUpSprinklers()
+    {
+        bool adjacentToMansion = HouseManager.isAdjacentToMansion(this);
+        waterDrop = transform.GetChild(4).gameObject;
+        waterDrop.SetActive(adjacentToMansion);
+        SprinklersOn(adjacentToMansion);
     }
 
     void OnMouseDown() 
     {
-        if (burnState == 0)
+        if (burnState <= 0)
         {
             // display build options
             BuildMenu.Open(this);
@@ -100,7 +114,7 @@ public class House : Builder {
 
     public bool CanEat()
     {
-        return (!isChewing) && (burnState == 0);
+        return (!isChewing) && (burnState <= 0);
     }
 
     public virtual void Eat(Direction d) {
@@ -174,14 +188,15 @@ public class House : Builder {
         }
     }
 
-    public void RobHouse(int minDamage)
+    public void RobHouse(int minRobberDamage)
     {
         if (totalDamage < 100)
         {
-            int damageToBurn = 100 - totalDamage; 
+            int damageToBurn = 100 - totalDamage;
+            if (damageToBurn > 100) damageToBurn = 100;
             DamageHouse(damageToBurn);
         } else {
-            DamageHouse(minDamage);
+            DamageHouse(minRobberDamage);
         }
     }
 
@@ -195,7 +210,7 @@ public class House : Builder {
     {
         totalDamage -= damageHealed;
         if (totalDamage < 100) {
-            totalDamage = 0;
+            totalDamage = minDamage;
         }
         OnDamageOrHeal();
     }
@@ -209,15 +224,29 @@ public class House : Builder {
             if (burnState > 3) 
             {
                 RemoveHouse();
-            }
-            if (oldState == 0)
-            {
+            } else if (oldState > 0) {
                 StartBurning();
-            } else if (burnState == 0) {
+            } else if (burnState <= 0) {
                 StopBurning();
             }
             UpdateFires();
         }
+    }
+
+    private bool DidBurnStateChange()
+    {
+        int correctBurnState = CorrectBurnState();
+        return correctBurnState != burnState;
+    }
+
+    private int CorrectBurnState()
+    {
+        int correctState = (int)Math.Floor(totalDamage / 100f);
+        if (correctState <= 0)
+        {
+            correctState = hasSprinklers ? -1 : 0;
+        }
+        return correctState;
     }
 
     private void StartBurning() 
@@ -243,21 +272,14 @@ public class House : Builder {
         }
     }
 
-    private bool DidBurnStateChange()
-    {
-        int correctBurnState = CorrectBurnState();
-        return correctBurnState != burnState;
-    }
-
-    private int CorrectBurnState()
-    {
-        return (int)Math.Floor(totalDamage / 100f);
-    }
-
     private void UpdateFires()
     {
         RemoveAllFires();
+        waterDrop.SetActive(false);
         switch(burnState) {
+            case -1:
+                waterDrop.SetActive(true);
+                break;
             case 1:
                 AddFireWithOffset(Vector3.zero);
                 break;
@@ -294,10 +316,9 @@ public class House : Builder {
     public override void OnBuild()
     {
         RemoveHouse();
-        Debug.Log("House Removed");
     }
 
-    private void RemoveHouse() {
+    protected virtual void RemoveHouse() {
         HouseManager.RemoveHouse(this);
         Destroy(gameObject);
     }
@@ -325,6 +346,19 @@ public class House : Builder {
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
         }
+    }
+
+    public void SprinklersOn(bool turnOn)
+    {
+        if (!hasSprinklers && turnOn)
+        {
+            totalDamage -= Mansion.sprinklerStrength;
+            OnDamageOrHeal();
+        } else if (hasSprinklers && !turnOn) {
+            if (totalDamage < 0) totalDamage = 0;
+            OnDamageOrHeal();
+        }
+        hasSprinklers = turnOn;
     }
 
     public int X() {

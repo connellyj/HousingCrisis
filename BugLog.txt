@@ -2,10 +2,20 @@ Bug Log
 
 Unassigned
 - people (especially soldiers) occasionally run diagonally off the road
-- apartments can eat when there are no people to eat
+- can’t click on plots after building is destroyed
+- tapping fires to put them out doesn’t seem to be working
 - when putting out fires it is easy to accidentally upgrade the building
 	tap => tap => tap => build menu opens => upgrade accidentally
+	SOLUTION: smoke animation after fire is put out
+- house costs mean nothing, art is a lie, nothing is real
+- sometimes eating fails to remove the person
 
 Julia
+- highlighting is messed up with stalling buildings
+- stores should not attract people that are currently attacking it
 
 Connor
+- water drops not showing correctly, 
+	they seem to appear after chewing regardless of mansion location
+- people are still getting highlighted when houses are on fire
+- apartments can eat when there are no people to eat
