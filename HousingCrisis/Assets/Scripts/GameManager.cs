@@ -2,14 +2,13 @@
 using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour {
-    
-    public int startingMoney;
 
     private static GameManager instance;
 
     private int currentScene;
     private int wantedLevel;
     private int moneyAmount;
+    private bool levelStarted = false;
     private LevelUIController levelUI;
 
     void Awake() {
@@ -26,6 +25,13 @@ public class GameManager : MonoBehaviour {
         UpdateLevel();
     }
 
+    void Update() {
+        if(levelStarted) {
+            if(HouseManager.houses.Count == 0) LoseLevel();
+            if(moneyAmount >= ContentManager.moneyToWinS) WinLevel();
+        } else if(HouseManager.houses.Count > 0) levelStarted = true;
+    }
+
     // Automatically called when the scene is loaded
     private void OnSceneLoaded(Scene sceneIndex, LoadSceneMode loadSceneMode) {
         UpdateLevel();
@@ -33,11 +39,20 @@ public class GameManager : MonoBehaviour {
 
     // Updates values when a new level starts
     private void UpdateLevel() {
+        levelStarted = false;
         UpdateUI();
         Population.ClearPeople();
         moneyAmount = 0;
         wantedLevel = 0;
-        UpdateMoney(startingMoney);
+        UpdateMoney(ContentManager.startingMoneyS);
+    }
+
+    private void LoseLevel() {
+        levelUI.LoseLevel();
+    }
+
+    private void WinLevel() {
+        levelUI.WinLevel();
     }
 
     // Updates the UI when a new level starts

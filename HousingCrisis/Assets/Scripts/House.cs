@@ -68,25 +68,25 @@ public class House : Builder {
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + 0.5f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x + 0.6f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x - 0.5f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x - 0.6f, transform.position.y + ((i - 1) * 0.4f));
                     }
                     stalledPositions.Add(houseIndex - 1, positions);
                     break;
                 case Direction.NORTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.6f);
                     }
                     stalledPositions.Add(houseIndex - GridManager.MAX_COL, positions);
                     break;
                 case Direction.SOUTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.5f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.6f);
                     }
                     stalledPositions.Add(houseIndex + GridManager.MAX_COL, positions);
                     break;
@@ -294,7 +294,6 @@ public class House : Builder {
     public override void OnBuild()
     {
         RemoveHouse();
-        Debug.Log("House Removed");
     }
 
     private void RemoveHouse() {

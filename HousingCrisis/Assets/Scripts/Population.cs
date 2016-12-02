@@ -106,7 +106,7 @@ public class Population : MonoBehaviour {
 
         if(type == HouseManager.HouseType.STORE) AlertPeopleAffectedNormalStore(alertRadius, storePos);
         else if(type == HouseManager.HouseType.DONUT) AlertPeopleAffectedSpecialStore(alertRadius, storePos, "PersonPolice");
-        else if(type == HouseManager.HouseType.DONUT) AlertPeopleAffectedSpecialStore(alertRadius, storePos, "PersonBanker");
+        else if(type == HouseManager.HouseType.BANK) AlertPeopleAffectedSpecialStore(alertRadius, storePos, "PersonBanker");
         else return;
 
         foreach(Person toPull in toBePulled) {

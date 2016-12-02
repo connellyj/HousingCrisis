@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class ContentManager : MonoBehaviour {
 
@@ -9,6 +8,8 @@ public class ContentManager : MonoBehaviour {
 	public bool donutUnlocked;
 	public bool mansionUnlocked;
 	public bool bankUnlocked;
+    public int startingMoney;
+    public int moneyToWin;
 
 	public static bool houseUnlockedS = true;
 	public static bool storeUnlockedS;
@@ -16,8 +17,10 @@ public class ContentManager : MonoBehaviour {
 	public static bool donutUnlockedS;
 	public static bool mansionUnlockedS;
 	public static bool bankUnlockedS;
+    public static int startingMoneyS;
+    public static int moneyToWinS;
 
-	void Awake ()
+    void Awake ()
 	{
 		houseUnlockedS = houseUnlocked;
 		storeUnlockedS = storeUnlocked;
@@ -25,6 +28,8 @@ public class ContentManager : MonoBehaviour {
 		donutUnlockedS = donutUnlocked;
 		mansionUnlockedS = mansionUnlocked;
 		bankUnlockedS = bankUnlocked;
+        startingMoneyS = startingMoney;
+        moneyToWinS = moneyToWin;
 	}
 
 	public static bool isBuildingUnlocked(HouseManager.HouseType type)
