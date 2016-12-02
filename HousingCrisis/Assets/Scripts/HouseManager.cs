@@ -10,7 +10,7 @@ public class HouseManager : MonoBehaviour {
     public GameObject mansion;
     public GameObject store;
 
-    public static Dictionary<int, House> houses;
+    public static Dictionary<int, House> houses = new Dictionary<int, House>();
     public static List<int> burningHouses;
 
     private static HouseManager instance;
@@ -19,7 +19,7 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        houses = new Dictionary<int, House>();
+        //houses = new Dictionary<int, House>();
         burningHouses = new List<int>();
     }
 

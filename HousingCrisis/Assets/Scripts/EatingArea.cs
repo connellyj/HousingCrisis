@@ -12,7 +12,7 @@ public class EatingArea : MonoBehaviour {
     }
 
     void OnTriggerEnter2D(Collider2D other) {
-        if(other.tag == "Person") {
+        if(other.tag.Contains("Person")) {
             numPeopleInArea++;
             Person p = other.gameObject.GetComponent<Person>();
             p.HighlightEat();
@@ -20,7 +20,7 @@ public class EatingArea : MonoBehaviour {
     }
 
     void OnTriggerExit2D(Collider2D other) {
-        if(other.tag == "Person") {
+        if(other.tag.Contains("Person")) {
             numPeopleInArea--;
             Person p = other.gameObject.GetComponent<Person>();
             p.UnHighlight();

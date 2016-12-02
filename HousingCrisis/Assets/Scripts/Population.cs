@@ -121,6 +121,42 @@ public class Population : MonoBehaviour {
         for(int i = 0; i < numPeople; i++) {
             closestPeople[i] = float.MaxValue;
         }
+
+        if(type == HouseManager.HouseType.STORE) AlertPeopleAffectedNormalStore(alertRadius, storePos);
+        else if(type == HouseManager.HouseType.DONUT) AlertPeopleAffectedSpecialStore(alertRadius, storePos, "PersonPolice");
+        else if(type == HouseManager.HouseType.DONUT) AlertPeopleAffectedSpecialStore(alertRadius, storePos, "PersonBanker");
+        else return;
+
+        foreach(Person toPull in toBePulled) {
+            if(toPull != null) toPull.OnStorePull(GridManager.CoordsToIndex((int)Mathf.Round(storePos.x), (int)Mathf.Round(storePos.y)));
+        }
+    }
+
+    public static void AlertPeopleAffectedSpecialStore(float alertRadius, Vector3 storePos, string personType) {
+        int greatestIndex = 0;
+        foreach(Person p in people) {
+            float dist = (p.transform.position - storePos).magnitude;
+            if(dist < alertRadius && p.state != Person.PersonState.STALL) {
+                if(toBePulled[greatestIndex] == null || 
+                    (dist < closestPeople[greatestIndex] && p.tag == toBePulled[greatestIndex].tag) || 
+                    (toBePulled[greatestIndex].tag != personType && p.tag == personType)) {
+                    closestPeople[greatestIndex] = dist;
+                    toBePulled[greatestIndex] = p;
+                    for(int i = 0; i < closestPeople.Length; i++) {
+                        if(toBePulled[i] == null) {
+                            greatestIndex = i;
+                            break;
+                        }else if((closestPeople[greatestIndex] < closestPeople[i] && toBePulled[greatestIndex].tag == toBePulled[i].tag) ||
+                            (toBePulled[greatestIndex].tag == personType && toBePulled[i].tag != personType)) {
+                            greatestIndex = i;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void AlertPeopleAffectedNormalStore(float alertRadius, Vector3 storePos) {
         int greatestIndex = 0;
         foreach(Person p in people) {
             float dist = (p.transform.position - storePos).magnitude;
@@ -128,16 +164,13 @@ public class Population : MonoBehaviour {
                 if(dist < closestPeople[greatestIndex]) {
                     closestPeople[greatestIndex] = dist;
                     toBePulled[greatestIndex] = p;
-                    for(int i = 0; i < numPeople; i++) {
+                    for(int i = 0; i < closestPeople.Length; i++) {
                         if(closestPeople[greatestIndex] < closestPeople[i]) {
                             greatestIndex = i;
                         }
                     }
                 }
             }
-        }
-        foreach(Person toPull in toBePulled) {
-            if(toPull != null) toPull.OnStorePull(GridManager.CoordsToIndex((int)Mathf.Round(storePos.x), (int)Mathf.Round(storePos.y)));
         }
     }
 }

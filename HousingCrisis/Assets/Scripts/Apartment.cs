@@ -18,7 +18,7 @@ public class Apartment : House {
             isChewing = true;
             DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
-            Population.AlertAffectedPeopleApartment(d, gridPos, eatRadius, noticeThreshold);
+            Population.AlertAffectedPeopleApartment(d, gridPos, eatRadius, alertRadius);
         }
     }
 
