@@ -5,12 +5,17 @@ public class LevelUIController : MonoBehaviour {
 
     public Text moneyText;
     public Text wantedLevelText;
+    public Text startWinButtonText;
+    public Button startWinButton;
+    public GameObject[] peopleSpawners;
 
     private readonly int WIDTH = 400;
     private readonly int HEIGHT = 400;
 
     private bool paused = false;
     private bool wonLevel = false;
+    private bool canWinLevel = false;
+    private bool levelStarted = false;
     private string menuText = "Paused";
     private Vector2 center;
     private Rect backgroundRect;
@@ -21,6 +26,15 @@ public class LevelUIController : MonoBehaviour {
     private GUIStyle textStyle;
 
     void Start() {
+        startWinButton.onClick.AddListener(() => {
+            if(canWinLevel) WinLevel();
+            if(!levelStarted) {
+                levelStarted = true;
+                startWinButtonText.text = "";
+                StartLevel();
+            }
+        });
+
         center = new Vector2(Screen.width / 2, Screen.height / 2);
         backgroundRect = new Rect(center[0] - WIDTH / 2, center[1] - HEIGHT / 2, WIDTH, HEIGHT);
         nextLevelRect = new Rect(center[0] - WIDTH / 4, center[1] - HEIGHT / 16 - HEIGHT * 3 / 8, WIDTH / 2, HEIGHT / 8);
@@ -37,34 +51,6 @@ public class LevelUIController : MonoBehaviour {
             if(paused) UnPause();
             else Pause();
         }
-    }
-
-    public void UpdateMoney(string money) {
-        moneyText.text = money;
-    }
-
-    public void UpdateWantedLevel(string wantedLevel) {
-        wantedLevelText.text = wantedLevel;
-    }
-
-    public void LoseLevel() {
-        menuText = "Level Failed";
-        Pause();
-    }
-
-    public void WinLevel() {
-        wonLevel = true;
-        Pause();
-    }
-
-    void Pause() {
-        Time.timeScale = 0;
-        paused = true;
-    }
-
-    void UnPause() {
-        Time.timeScale = 1;
-        paused = false;
     }
 
     void OnGUI() {
@@ -85,5 +71,42 @@ public class LevelUIController : MonoBehaviour {
                 GameManager.Exit();
             }
         }
+    }
+
+    public void UpdateMoney(string money) {
+        moneyText.text = money;
+    }
+
+    public void UpdateWantedLevel(string wantedLevel) {
+        wantedLevelText.text = wantedLevel;
+    }
+
+    private void StartLevel() {
+        foreach(GameObject spawn in peopleSpawners) spawn.SetActive(true);
+    }
+
+    public void LoseLevel() {
+        menuText = "Level Failed";
+        Pause();
+    }
+
+    public void SetCanWinLevel() {
+        canWinLevel = true;
+        startWinButtonText.text = "WIN!";
+    }
+
+    public void WinLevel() {
+        wonLevel = true;
+        Pause();
+    }
+
+    private void Pause() {
+        Time.timeScale = 0;
+        paused = true;
+    }
+
+    private void UnPause() {
+        Time.timeScale = 1;
+        paused = false;
     }
 }
