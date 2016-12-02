@@ -24,6 +24,7 @@ public class HouseManager : MonoBehaviour {
     }
 
     public static void Build(Vector3 position, HouseType type) {
+        Debug.LogFormat("Building {0}", type.ToString());
         House house = null;
         List<Direction> adjacentPaths = GridManager.GetAdjacentPathDirections((int)Mathf.Round(position.x), 
                                                                               (int)Mathf.Round(position.y));
@@ -32,19 +33,19 @@ public class HouseManager : MonoBehaviour {
                 house = ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.APARTMENT:
-                house = ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<Apartment>();
                 break;
             case HouseType.BANK:
                 house = ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Bank>();
                 break;
             case HouseType.DONUT:
-                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Donut>();
                 break;
             case HouseType.MANSION:
-                house = ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<Mansion>();
                 break;
             case HouseType.STORE:
-                house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<House>();
+                house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
                 break;
         }
         house.Buy();

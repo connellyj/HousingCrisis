@@ -294,6 +294,7 @@ public class House : Builder {
     public override void OnBuild()
     {
         RemoveHouse();
+        Debug.Log("House Removed");
     }
 
     private void RemoveHouse() {

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Builder : MonoBehaviour {
+public abstract class Builder : MonoBehaviour {
 
 	public HouseManager.HouseType type;
 
-	public virtual void OnBuild() {}
+	public abstract void OnBuild();
 
 }
