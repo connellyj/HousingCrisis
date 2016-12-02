@@ -30,8 +30,6 @@ public class HouseManager : MonoBehaviour {
 
     public static void Build(Vector3 position, HouseType type) {
         House house = null;
-        List<Direction> adjacentPaths = GridManager.GetAdjacentPathDirections((int)Mathf.Round(position.x), 
-                                                                              (int)Mathf.Round(position.y));
         switch(type) {
             case HouseType.HOUSE:
                 house = ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
@@ -52,8 +50,6 @@ public class HouseManager : MonoBehaviour {
                 house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
                 break;
         }
-        house.Buy();
-        house.RemoveTriggers(adjacentPaths);
         AddHouse(house);
     }
 

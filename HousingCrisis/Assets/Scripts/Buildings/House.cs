@@ -27,8 +27,11 @@ public class House : Builder {
 
     // house info
     protected int[] gridPos;
+    protected int gridIndex;
     protected float eatRadius = 0.5f;
     protected bool isChewing = false;
+    private List<Direction> adjacentPaths;
+    private bool hasSprinklers;
 
     // fire info
     protected int burnState = 0;
@@ -36,21 +39,23 @@ public class House : Builder {
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     private int minDamage = 0;
-
-    private bool hasSprinklers;
-
     private GameObject firePrefab;
     private GameObject waterDrop;
 
     protected virtual void Awake() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
+        gridIndex = GridManager.CoordsToIndex(X(), Y());
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
         stalledPeople = new Person[MAX_STALL];
         stalledPositions = new Dictionary<int, Vector3[]>();
+        adjacentPaths = GridManager.GetAdjacentPathDirections(X(), Y());
     }
     
     protected virtual void Start() {
         firePrefab = HouseManager.GetFirePrefab();
+        Buy();
+        RemoveTriggers();
+        CalculateStallPositions();
         SetUpSprinklers();
     }
 
@@ -74,34 +79,33 @@ public class House : Builder {
         }
     }
 
-    private void CalculateStallPositions(List<Direction> adjPaths) {
-        int houseIndex = GridManager.CoordsToIndex(gridPos[0], gridPos[1]);
-        foreach(Direction d in adjPaths) {
+    private void CalculateStallPositions() {
+        foreach(Direction d in adjacentPaths) {
             Vector3[] positions = new Vector3[MAX_STALL];
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
                         positions[i] = new Vector3(transform.position.x + 0.6f, transform.position.y + ((i - 1) * 0.4f));
                     }
-                    stalledPositions.Add(houseIndex + 1, positions);
+                    stalledPositions.Add(gridIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
                         positions[i] = new Vector3(transform.position.x - 0.6f, transform.position.y + ((i - 1) * 0.4f));
                     }
-                    stalledPositions.Add(houseIndex - 1, positions);
+                    stalledPositions.Add(gridIndex - 1, positions);
                     break;
                 case Direction.NORTH:
                     for(int i = 0; i < MAX_STALL; i++) {
                         positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.6f);
                     }
-                    stalledPositions.Add(houseIndex - GridManager.MAX_COL, positions);
+                    stalledPositions.Add(gridIndex - GridManager.MAX_COL, positions);
                     break;
                 case Direction.SOUTH:
                     for(int i = 0; i < MAX_STALL; i++) {
                         positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.6f);
                     }
-                    stalledPositions.Add(houseIndex + GridManager.MAX_COL, positions);
+                    stalledPositions.Add(gridIndex + GridManager.MAX_COL, positions);
                     break;
             }
         }
@@ -126,14 +130,13 @@ public class House : Builder {
         }
     }
 
-    public void RemoveTriggers(List<Direction> adjacent) {
+    public void RemoveTriggers() {
         foreach(Transform t in transform) {
             EatingArea e = t.GetComponent<EatingArea>();
             if(e != null) {
-                if(!adjacent.Contains(e.direction)) Destroy(t.gameObject);
+                if(!adjacentPaths.Contains(e.direction)) Destroy(t.gameObject);
             }
         }
-        CalculateStallPositions(adjacent);
     }
 
     protected virtual IEnumerator EatAnimation(Direction d)
@@ -331,9 +334,8 @@ public class House : Builder {
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == null) {
                 stalledPeople[i] = p;
-                int idx = GridManager.CoordsToIndex(p.X(), p.Y());
                 Vector3[] value;
-                if(stalledPositions.TryGetValue(idx, out value)) return value[i];
+                if(stalledPositions.TryGetValue(gridIndex, out value)) return value[i];
             }
         }
         return Vector3.zero;
