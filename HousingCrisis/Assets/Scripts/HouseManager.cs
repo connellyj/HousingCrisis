@@ -10,7 +10,7 @@ public class HouseManager : MonoBehaviour {
     public GameObject mansion;
     public GameObject store;
 
-    public static Dictionary<int, House> houses = new Dictionary<int, House>();
+    public static Dictionary<int, House> houses;
     public static List<int> burningHouses;
 
     private static HouseManager instance;
@@ -19,12 +19,11 @@ public class HouseManager : MonoBehaviour {
 
     void Awake() {
         instance = this;
-        //houses = new Dictionary<int, House>();
+        houses = new Dictionary<int, House>();
         burningHouses = new List<int>();
     }
 
     public static void Build(Vector3 position, HouseType type) {
-        Debug.LogFormat("Building {0}", type.ToString());
         House house = null;
         List<Direction> adjacentPaths = GridManager.GetAdjacentPathDirections((int)Mathf.Round(position.x), 
                                                                               (int)Mathf.Round(position.y));
@@ -36,10 +35,10 @@ public class HouseManager : MonoBehaviour {
                 house = ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<Apartment>();
                 break;
             case HouseType.BANK:
-                house = ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Bank>();
+                house = ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Store>();
                 break;
             case HouseType.DONUT:
-                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Donut>();
+                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Store>();
                 break;
             case HouseType.MANSION:
                 house = ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<Mansion>();

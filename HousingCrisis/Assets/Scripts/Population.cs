@@ -7,33 +7,32 @@ public class Population : MonoBehaviour {
     private static List<Person> toBeEaten;
     private static Person[] toBePulled;
     private static float[] closestPeople;
+    private static int numEnumerations = 0;
 
     void Awake() {
         people = new List<Person>();
     }
 
     public static void AddPerson(Person p) {
-        people.Add(p);
+        if(numEnumerations == 0) people.Add(p);
     }
 
     public static void RemovePerson(Person p) {
-        people.Remove(p);
-    }
-
-    public static List<Person> GetAllPeople() {
-        return people;
+        if(numEnumerations == 0) people.Remove(p);
     }
 
     public static void ClearPeople() {
-        people.Clear();
+        if(numEnumerations == 0) people.Clear();
     }
 
     public static void AlertPeopleAffectedByEat(Direction d, int[] houseLocXY, float eatRadius, int noticeThreshold) {
         toBeEaten = new List<Person>();
+        numEnumerations++;
         foreach(Person p in people) {
             if(PersonInRangeToEat(p, d, eatRadius, houseLocXY)) toBeEaten.Add(p);
             else if(PersonInRangeToSee(p, d, noticeThreshold, houseLocXY)) p.OnSeeHouse(GridManager.CoordsToIndex(houseLocXY[0], houseLocXY[1]));
         }
+        numEnumerations--;
         foreach(Person p in toBeEaten) {
             people.Remove(p);
             p.OnEaten();
@@ -117,6 +116,7 @@ public class Population : MonoBehaviour {
 
     public static void AlertPeopleAffectedSpecialStore(float alertRadius, Vector3 storePos, string personType) {
         int greatestIndex = 0;
+        numEnumerations++;
         foreach(Person p in people) {
             float dist = (p.transform.position - storePos).magnitude;
             if(dist < alertRadius && p.state != Person.PersonState.STALL) {
@@ -137,10 +137,12 @@ public class Population : MonoBehaviour {
                 }
             }
         }
+        numEnumerations--;
     }
 
     public static void AlertPeopleAffectedNormalStore(float alertRadius, Vector3 storePos) {
         int greatestIndex = 0;
+        numEnumerations++;
         foreach(Person p in people) {
             float dist = (p.transform.position - storePos).magnitude;
             if(dist < alertRadius && p.state != Person.PersonState.STALL) {
@@ -155,5 +157,6 @@ public class Population : MonoBehaviour {
                 }
             }
         }
+        numEnumerations--;
     }
 }

@@ -1,7 +1,4 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
-
-public class Plot : Builder {
+﻿public class Plot : Builder {
 
     private bool occupied = false;
 
@@ -19,7 +16,6 @@ public class Plot : Builder {
 
     public override void OnBuild() {
         occupied = true;
-        Debug.Log("plot is occupied");
     }
 
 }
