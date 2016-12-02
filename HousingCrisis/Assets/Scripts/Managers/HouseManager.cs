@@ -50,7 +50,6 @@ public class HouseManager : MonoBehaviour {
                 house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
                 break;
         }
-        AddHouse(house);
     }
 
     public static bool CanBuild(HouseType type) {

@@ -53,6 +53,7 @@ public class House : Builder {
     
     protected virtual void Start() {
         firePrefab = HouseManager.GetFirePrefab();
+        HouseManager.AddHouse(this);
         Buy();
         RemoveTriggers();
         CalculateStallPositions();
@@ -335,7 +336,7 @@ public class House : Builder {
             if(stalledPeople[i] == null) {
                 stalledPeople[i] = p;
                 Vector3[] value;
-                if(stalledPositions.TryGetValue(gridIndex, out value)) return value[i];
+                if(stalledPositions.TryGetValue(GridManager.CoordsToIndex(p.X(), p.Y()), out value)) return value[i];
             }
         }
         return Vector3.zero;
