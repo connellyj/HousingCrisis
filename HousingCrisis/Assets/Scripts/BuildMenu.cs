@@ -103,7 +103,7 @@ public class BuildMenu : MonoBehaviour {
     private void Build(HouseManager.HouseType type)
     {
     	builder.OnBuild();
-    	HouseManager.Build(worldPos, HouseManager.HouseType.HOUSE);
+    	HouseManager.Build(worldPos, type);
     }
 
 

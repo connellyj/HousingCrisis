@@ -2,6 +2,9 @@ Bug Log
 
 Unassigned
 - people (especially soldiers) occasionally run diagonally off the road
+- apartments can eat when there are no people to eat
+- when putting out fires it is easy to accidentally upgrade the building
+	tap => tap => tap => build menu opens => upgrade accidentally
 
 Julia
 

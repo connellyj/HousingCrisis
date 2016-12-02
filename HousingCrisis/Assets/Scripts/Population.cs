@@ -40,23 +40,6 @@ public class Population : MonoBehaviour {
         }
     }
 
-    public static void AlertAffectedPeopleApartment(Direction d, int[] houseLocXY, float eatRadius, int noticeThreshold) {
-        toBeEaten = new List<Person>();
-        foreach(Person p in people) {
-            if(PersonInApartmentRangeToEat(p, d, eatRadius, houseLocXY)) toBeEaten.Add(p);
-            else if(PersonInRangeToSee(p, d, noticeThreshold, houseLocXY)) p.OnSeeHouse(GridManager.CoordsToIndex(houseLocXY[0], houseLocXY[1]));
-        }
-        foreach(Person p in toBeEaten) {
-            people.Remove(p);
-            p.OnEaten();
-        }
-    }
-
-    private static bool PersonInApartmentRangeToEat(Person p, Direction d, float eatRadius, int[] gridPos) {
-        Vector3 pos = p.transform.position;
-        return Mathf.Abs(pos.x - gridPos[0]) <= eatRadius && Mathf.Abs(pos.y - gridPos[1]) <= eatRadius;
-    }
-
     private static bool PersonInRangeToEat(Person p, Direction d, float eatRadius, int[] gridPos) {
         Vector3 pos = p.transform.position;
         switch(d) {
