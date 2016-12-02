@@ -28,26 +28,25 @@ public class HouseManager : MonoBehaviour {
         return instance.firePrefab;
     }
 
-    public static void Build(Vector3 position, HouseType type) {
-        House house = null;
+    public static void Build(Vector3 position, HouseType type) { 
         switch(type) {
             case HouseType.HOUSE:
-                house = ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
+                ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
                 break;
             case HouseType.APARTMENT:
-                house = ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<Apartment>();
+                ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<Apartment>();
                 break;
             case HouseType.BANK:
-                house = ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Store>();
+                ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Store>();
                 break;
             case HouseType.DONUT:
-                house = ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Store>();
+                ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Store>();
                 break;
             case HouseType.MANSION:
-                house = ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<Mansion>();
+                ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<Mansion>();
                 break;
             case HouseType.STORE:
-                house = ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
+                ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
                 break;
         }
     }
@@ -112,14 +111,14 @@ public class HouseManager : MonoBehaviour {
 
     public static bool isAdjacentToMansion(House h) //includes houses on diagonal
     {
-        foreach (House g in adjacentHouses( h.X() , h.Y() ))
+        foreach (House g in AdjacentHouses( h.X() , h.Y() ))
         {
             if (g.type == HouseType.MANSION) return true;
         }
         return false;
     }
 
-    private static List<House> adjacentHouses(int x, int y) //includes houses on diagonal
+    private static List<House> AdjacentHouses(int x, int y) //includes houses on diagonal
     {
         List<House> adjacent = new List<House>();
         int[] adjacentIndexes = GetAdjacentIndexes(x,y);

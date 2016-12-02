@@ -6,14 +6,16 @@ using System.Linq;
 
 public class Person : MonoBehaviour {
 
+    // static info
+    protected static readonly float stallTime = 2;
+    protected static readonly int value = 10;
+    protected static float speed = 2;
+    protected static readonly float alertSpeed = 4;
+    protected static readonly float animationFPS = 10;
+    protected static readonly float motionFPS = 30;
+
 	// script component variables
-	public Direction direction;
-    public float stallTime;
-    public int value;
-	public float speed;
-	public float alertSpeed;
-	public float animationFPS;
-	private float motionFPS = 30;
+	[HideInInspector] public Direction direction;
     protected int goalIndex;
 	// component references
 	SpriteRenderer spriteRenderer;
@@ -33,16 +35,17 @@ public class Person : MonoBehaviour {
 	private Sprite[] eastSprites;
 	private Sprite[][] spritesByDirection;
 	// AI and pathing
-	public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET, TARGET_RANDOM_NOTBURNING }
-    public PersonState state;
+    [HideInInspector] public PersonState state;
 	protected List<Direction> path = new List<Direction>();
 	private int pathIndex = 0;
-	public Vector3 gridXY;
+	protected Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
     private Vector3 prevPos;
     public int attackValue;
     public int attackStallTime;
     public GameObject fireball;
+
+    public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET, TARGET_RANDOM_NOTBURNING }
 
     protected virtual void Start () {
         // set and start path
@@ -322,7 +325,8 @@ public class Person : MonoBehaviour {
     }
 
     public void OnEaten() {
-        GameManager.UpdateMoney(value);
+        if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
+        else GameManager.UpdateMoney(value);
         Destroy(gameObject);
     }
 
