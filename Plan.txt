@@ -14,7 +14,7 @@ Connor
 * all sprites
 * finalize build menus
 * apartment functionality
-- mansion functionality
+* mansion functionality
 - wanted level and difficulty curve
 - level design
 
