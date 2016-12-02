@@ -5,14 +5,13 @@ using System.Collections.Generic;
 
 public class House : Builder {
 
+    // static info
+    public static readonly int cost = 10;
     protected static readonly int MAX_STALL = 3;
-
-    public int houseCost;
-    public int alertRadius;
-
-    public static int cost = 0;
-
-    public float chewingTime;
+    protected static readonly int alertRadius = 5;
+    protected static readonly int healingPerTap = 20;
+    protected static readonly float chewingTime = 5;
+    protected static readonly float attritionDPS = 20f;
 
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
@@ -21,29 +20,29 @@ public class House : Builder {
     public Sprite eatingSprite;
     public Sprite[] chewingSprites = new Sprite[4];
 
+    // stalled people info
     protected Person[] stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
     protected int numStalled = 0;
 
+    // house info
     protected int[] gridPos;
     protected float eatRadius = 0.5f;
-    public bool isChewing = false;
+    protected bool isChewing = false;
 
-    public int burnState = 0;
-    public float attritionDPS;
-    public int totalDamage = 0;
+    // fire info
+    protected int burnState = 0;
+    private int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
-    public int healingPerTap;
     private int minDamage = 0;
 
     private bool hasSprinklers;
 
-    public GameObject firePrefab;
+    private GameObject firePrefab;
     private GameObject waterDrop;
 
     protected virtual void Awake() {
-        if(cost == 0) cost = houseCost;
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
         stalledPeople = new Person[MAX_STALL];
@@ -51,7 +50,7 @@ public class House : Builder {
     }
     
     protected virtual void Start() {
-        type = HouseManager.HouseType.HOUSE;
+        firePrefab = HouseManager.GetFirePrefab();
         SetUpSprinklers();
     }
 
@@ -109,7 +108,7 @@ public class House : Builder {
     }
 
     public void Buy() {
-        GameManager.UpdateMoney(-1 * houseCost);
+        GameManager.UpdateMoney(-1 * cost);
     }
 
     public bool CanEat()
@@ -146,7 +145,7 @@ public class House : Builder {
         yield return new WaitForSeconds(.5f);
         spriteWrapper.transform.position = origin;
         StartCoroutine(ChewAnimation());
-        yield return new WaitForSeconds(chewingTime);
+        yield return new WaitForSeconds(chewingTime - ChewTimeOffset());
         isChewing = false;
         StopCoroutine("ChewingAnimation");
         spriteRenderer.sprite = defaultSprite;
@@ -367,6 +366,10 @@ public class House : Builder {
 
     public int Y() {
         return gridPos[1];
+    }
+
+    protected virtual float ChewTimeOffset() {
+        return 0f;
     }
 }
 

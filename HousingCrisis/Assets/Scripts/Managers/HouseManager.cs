@@ -9,6 +9,7 @@ public class HouseManager : MonoBehaviour {
     public GameObject donut;
     public GameObject mansion;
     public GameObject store;
+    public GameObject firePrefab;
 
     public static Dictionary<int, House> houses;
     public static List<int> burningHouses;
@@ -21,6 +22,10 @@ public class HouseManager : MonoBehaviour {
         instance = this;
         houses = new Dictionary<int, House>();
         burningHouses = new List<int>();
+    }
+
+    public static GameObject GetFirePrefab() {
+        return instance.firePrefab;
     }
 
     public static void Build(Vector3 position, HouseType type) {

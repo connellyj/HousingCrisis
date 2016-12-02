@@ -9,7 +9,9 @@ public class Store : House {
         base.Awake();
     }
 
-    protected virtual void Start() {
+    protected override void Start() {
+        base.Start();
+        spriteWrapper.SetActive(true); // idk why I need this...
         StartCoroutine(Pulse());
     }
 
