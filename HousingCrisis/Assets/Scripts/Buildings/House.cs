@@ -8,10 +8,11 @@ public class House : Builder {
     // static info
     public static readonly int cost = 10;
     protected static readonly int MAX_STALL = 3;
-    protected static readonly int alertRadius = 5;
+    public static readonly int alertRadius = 5;
     protected static readonly int healingPerTap = 20;
     protected static readonly float chewingTime = 5;
     protected static readonly float attritionDPS = 20f;
+    public static readonly float eatRadius = 0.5f;
 
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
@@ -28,7 +29,6 @@ public class House : Builder {
     // house info
     protected int[] gridPos;
     protected int gridIndex;
-    protected float eatRadius = 0.5f;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
     private bool hasSprinklers;
@@ -127,7 +127,7 @@ public class House : Builder {
             isChewing = true;
             DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
-            Population.AlertPeopleAffectedByEat(d, gridPos, eatRadius, alertRadius);
+            Population.AlertPeopleAffectedByEat(d, X(), Y());
         }
     }
 

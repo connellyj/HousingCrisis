@@ -330,7 +330,7 @@ public class Person : MonoBehaviour {
         Destroy(gameObject);
     }
 
-    public virtual void OnSeeHouse(int houseIndex) {
+    public virtual void OnSeeHouse() {
         Panic();
     }
 
