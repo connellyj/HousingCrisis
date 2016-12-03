@@ -8,10 +8,11 @@ public class House : Builder {
     // static info
     public static readonly int cost = 10;
     protected static readonly int MAX_STALL = 3;
-    protected static readonly int alertRadius = 5;
+    public static readonly int alertRadius = 5;
     protected static readonly int healingPerTap = 20;
     protected static readonly float chewingTime = 5;
     protected static readonly float attritionDPS = 20f;
+    public static readonly float eatRadius = 0.5f;
 
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
@@ -54,6 +55,7 @@ public class House : Builder {
     
     protected virtual void Start() {
         firePrefab = HouseManager.GetFirePrefab();
+        HouseManager.AddHouse(this);
         Buy();
         RemoveTriggers();
         CalculateStallPositions();
@@ -127,7 +129,7 @@ public class House : Builder {
             isChewing = true;
             DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
-            Population.AlertPeopleAffectedByEat(d, gridPos, eatRadius, alertRadius);
+            Population.AlertPeopleAffectedByEat(d, X(), Y());
         }
     }
 
@@ -336,7 +338,7 @@ public class House : Builder {
             if(stalledPeople[i] == null) {
                 stalledPeople[i] = p;
                 Vector3[] value;
-                if(stalledPositions.TryGetValue(gridIndex, out value)) return value[i];
+                if(stalledPositions.TryGetValue(GridManager.CoordsToIndex(p.X(), p.Y()), out value)) return value[i];
             }
         }
         return Vector3.zero;

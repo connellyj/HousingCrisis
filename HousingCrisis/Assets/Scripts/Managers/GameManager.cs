@@ -44,7 +44,6 @@ public class GameManager : MonoBehaviour {
     // Updates values when a new level starts
     private void UpdateLevel() {
         levelStarted = false;
-        Population.ClearPeople();
         moneyAmount = 0;
         wantedLevel = 0;
         UpdateMoney(ContentManager.startingMoneyS);
