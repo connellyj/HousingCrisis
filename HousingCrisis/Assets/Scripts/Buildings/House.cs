@@ -7,7 +7,7 @@ public class House : Builder {
 
     // static info
     public static readonly int cost = 10;
-    protected static readonly int MAX_STALL = 3;
+    public static readonly int MAX_STALL = 3;
     public static readonly int alertRadius = 5;
     protected static readonly int healingPerTap = 20;
     protected static readonly float chewingTime = 5;
@@ -26,7 +26,7 @@ public class House : Builder {
     // stalled people info
     protected List<Person> stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
-    protected int numStalled = 0;
+    [HideInInspector] public int numStalled = 0;
 
     // house info
     protected int[] gridPos;

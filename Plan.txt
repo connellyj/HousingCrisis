@@ -19,8 +19,8 @@ Connor
 - level design
 
 UI
-- losing
-- start and win buttons
+* losing
+* start and win buttons
 - scene transitions
 - info popups
 - help menu

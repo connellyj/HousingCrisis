@@ -8,10 +8,9 @@ Unassigned
 - house costs mean nothing, art is a lie, nothing is real
 - sometimes eating fails to remove the person
 
-Julia
-- sometimes soldiers make the game freeze (seems to happen when house gets destroyed)
+Julia:
 
-Connor
+Connor:
 - people are still getting highlighted when houses are on fire
 - apartments can eat when there are no people to eat
 - tapping houses to put out fires or build doesn’t always work

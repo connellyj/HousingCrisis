@@ -143,4 +143,10 @@ public class HouseManager : MonoBehaviour {
         return adjacentIndexes;
     }
 
+    public static bool AnyStallSpaceAnywhere() {
+        foreach(House h in houses.Values) {
+            if(h.numStalled < House.MAX_STALL) return true;
+        }
+        return false;
+    }
 }

@@ -98,7 +98,7 @@ public class Person : MonoBehaviour {
             if(path != null && path.Count != 0) {
                 FollowNewPath(path[0]);
                 LogPath();
-            }else {
+            } else {
                 CompletePath();
             }
         }
@@ -202,8 +202,9 @@ public class Person : MonoBehaviour {
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 return true;
             case PersonState.TARGET_RANDOM:
-                if(HouseManager.houses.Count == 0) {
-                    ChangeState(PersonState.WANDER);
+                if(HouseManager.houses.Count == 0 || !HouseManager.AnyStallSpaceAnywhere()) {
+                    state = PersonState.WANDER;
+                    goto default;
                 } else {
                     goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
@@ -211,7 +212,8 @@ public class Person : MonoBehaviour {
                 return true;
             case PersonState.TARGET_RANDOM_NOTBURNING:
                 if(HouseManager.houses.Count == 0 || !HouseManager.AnyHousesNotBurning()) {
-                    ChangeState(PersonState.WANDER);
+                    state = PersonState.WANDER;
+                    goto default;
                 } else {
                     if(HouseManager.burningHouses.Count == 0) {
                         goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
