@@ -11,7 +11,7 @@ Unassigned
 
 Julia
 - highlighting is messed up with stalling buildings
-- stores should not attract people that are currently attacking it
+- sometimes soldiers make the game freeze (seems to happen when house gets destroyed)
 
 Connor
 - people are still getting highlighted when houses are on fire

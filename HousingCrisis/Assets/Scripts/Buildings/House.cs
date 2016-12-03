@@ -24,14 +24,13 @@ public class House : Builder {
     public Sprite[] chewingSprites = new Sprite[4];
 
     // stalled people info
-    protected Person[] stalledPeople;
+    protected List<Person> stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
     protected int numStalled = 0;
 
     // house info
     protected int[] gridPos;
     protected int gridIndex;
-    protected float eatRadius = 0.5f;
     protected int numNonEatAreaChildren = 2;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
@@ -42,7 +41,6 @@ public class House : Builder {
     private int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
-    private int minDamage = 0;
     private GameObject firePrefab;
     protected GameObject waterDrop;
 
@@ -50,7 +48,7 @@ public class House : Builder {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         gridIndex = GridManager.CoordsToIndex(X(), Y());
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
-        stalledPeople = new Person[MAX_STALL];
+        stalledPeople = new List<Person>(MAX_STALL) {null, null, null};
         stalledPositions = new Dictionary<int, Vector3[]>();
         adjacentPaths = GridManager.GetAdjacentPathDirections(X(), Y());
     }
@@ -336,7 +334,7 @@ public class House : Builder {
 
     public Vector3 AddStalledPerson(Person p) {
         numStalled++;
-        for(int i = 0; i < stalledPeople.Length; i++) {
+        for(int i = 0; i < stalledPeople.Count; i++) {
             if(stalledPeople[i] == null) {
                 stalledPeople[i] = p;
                 Vector3[] value;
@@ -348,7 +346,7 @@ public class House : Builder {
 
     public void RemoveStalledPerson(Person p) {
         numStalled--;
-        for(int i = 0; i < stalledPeople.Length; i++) {
+        for(int i = 0; i < stalledPeople.Count; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
         }
     }

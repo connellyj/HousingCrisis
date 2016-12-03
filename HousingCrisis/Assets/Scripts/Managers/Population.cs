@@ -102,12 +102,12 @@ public class Population : MonoBehaviour {
     }
 
     // Loops through all the people and alerts those attracted by the store
-    public static void AlertPeopleAffectedByStore(HouseManager.HouseType type, int numPeople, Vector3 storePos) {
+    public static void AlertPeopleAffectedByStore(HouseManager.HouseType type, int numPeople, Vector3 storePos, List<Person> stalledPeople) {
         if(numPeople == 0) return;
         Person[] toBePulled;
-        if(type == HouseManager.HouseType.STORE) toBePulled = GetPeopleAffectedNormalStore(storePos, numPeople);
-        else if(type == HouseManager.HouseType.DONUT) toBePulled = GetPeopleAffectedSpecialStore(storePos, "PersonPolice", numPeople);
-        else if(type == HouseManager.HouseType.BANK) toBePulled = GetPeopleAffectedSpecialStore(storePos, "PersonBanker", numPeople);
+        if(type == HouseManager.HouseType.STORE) toBePulled = GetPeopleAffectedNormalStore(storePos, numPeople, stalledPeople);
+        else if(type == HouseManager.HouseType.DONUT) toBePulled = GetPeopleAffectedSpecialStore(storePos, "PersonPolice", numPeople, stalledPeople);
+        else if(type == HouseManager.HouseType.BANK) toBePulled = GetPeopleAffectedSpecialStore(storePos, "PersonBanker", numPeople, stalledPeople);
         else return;
         foreach(Person toPull in toBePulled) {
             if(toPull != null) toPull.OnStorePull(GridManager.CoordsToIndex((int)Mathf.Round(storePos.x), (int)Mathf.Round(storePos.y)));
@@ -115,7 +115,7 @@ public class Population : MonoBehaviour {
     }
 
     // Determines which people should be affected by the special stores (bank, donut)
-    public static Person[] GetPeopleAffectedSpecialStore(Vector3 storePos, string personType, int numPeople) {
+    public static Person[] GetPeopleAffectedSpecialStore(Vector3 storePos, string personType, int numPeople, List<Person> stalledPeople) {
         Person[] toBePulled = new Person[numPeople];
         float[] closestPeople = new float[numPeople];
         for(int i = 0; i < numPeople; i++) {
@@ -128,7 +128,7 @@ public class Population : MonoBehaviour {
                 float dist = (p.transform.position - storePos).magnitude;
 
                 // if the person is within the alert radius and is not already stalled...
-                if(dist < House.alertRadius && p.state != Person.PersonState.STALL) {
+                if(dist < House.alertRadius && p.state != Person.PersonState.STALL && !stalledPeople.Contains(p)) {
                     // if the greatestIndex person is null or...
                     if(toBePulled[greatestIndex] == null ||
                         // if the person is the same type of person as the greatestIndex person
@@ -158,7 +158,7 @@ public class Population : MonoBehaviour {
     }
 
     // Determines which people should be affected by the normal store
-    public static Person[] GetPeopleAffectedNormalStore(Vector3 storePos, int numPeople) {
+    public static Person[] GetPeopleAffectedNormalStore(Vector3 storePos, int numPeople, List<Person> stalledPeople) {
         Person[] toBePulled = new Person[numPeople];
         float[] closestPeople = new float[numPeople];
         for(int i = 0; i < numPeople; i++) {
@@ -169,7 +169,7 @@ public class Population : MonoBehaviour {
         foreach(Person p in people) {
             if(p != null) {
                 float dist = (p.transform.position - storePos).magnitude;
-                if(p.state != Person.PersonState.STALL && dist < closestPeople[greatestIndex]) {
+                if(p.state != Person.PersonState.STALL && dist < closestPeople[greatestIndex] && !stalledPeople.Contains(p)) {
                     closestPeople[greatestIndex] = dist;
                     toBePulled[greatestIndex] = p;
                     for(int i = 0; i < closestPeople.Length; i++) {
