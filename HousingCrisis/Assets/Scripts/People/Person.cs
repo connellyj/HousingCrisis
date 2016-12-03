@@ -13,9 +13,12 @@ public class Person : MonoBehaviour {
     protected static readonly float alertSpeed = 4;
     protected static readonly float animationFPS = 10;
     protected static readonly float motionFPS = 30;
+    protected static readonly Color eatColor = Color.red;
+    protected static readonly Color storeColor = Color.blue;
+    protected static readonly Color normalColor = Color.white;
 
-	// script component variables
-	[HideInInspector] public Direction direction;
+    // script component variables
+    [HideInInspector] public Direction direction;
     protected int goalIndex;
 	// component references
 	SpriteRenderer spriteRenderer;
@@ -67,7 +70,9 @@ public class Person : MonoBehaviour {
 
         Population.AddPerson(this);
         gameObject.layer = 2;
-	}
+        spriteRenderer.color = normalColor;
+
+    }
 	
 	protected virtual void Update () {
 		if(Input.GetKeyDown(KeyCode.P)) {
@@ -120,10 +125,10 @@ public class Person : MonoBehaviour {
                 MoveToPosition(h.AddStalledPerson(this));
                 yield return new WaitForSeconds(stallTime);
                 h.RemoveStalledPerson(this);
+                if(spriteRenderer.color == storeColor) UnHighlight();
                 CompletePath();
             } else CompletePath();
         } else CompletePath();
-        UnHighlight();
     }
 
     public void FaceGoal() {
@@ -298,15 +303,15 @@ public class Person : MonoBehaviour {
     }
 
     public void HighlightEat() {
-        spriteRenderer.color = Color.red;
+        spriteRenderer.color = eatColor;
     }
 
     public void HighlightStore() {
-        spriteRenderer.color = Color.blue;
+        spriteRenderer.color = storeColor;
     }
 
     public void UnHighlight() {
-        spriteRenderer.color = Color.white;
+        spriteRenderer.color = normalColor;
     }
 
     public void OnEaten() {
@@ -321,7 +326,7 @@ public class Person : MonoBehaviour {
 
     public void OnStorePull(int index) {
         goalIndex = index;
-        HighlightStore();
+        if(spriteRenderer.color == normalColor) HighlightStore();
         ChangeState(PersonState.WANDER_SET);
     }
 

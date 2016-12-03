@@ -14,7 +14,7 @@ public class House : Builder {
     protected static readonly float attritionDPS = 20f;
     public static readonly float eatRadius = 0.5f;
     private static readonly float personStallOffset = 0.3f;
-    private static readonly float houseStallOffset = 0.6f;
+    private static readonly float houseStallOffset = 0.7f;
 
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
@@ -325,6 +325,7 @@ public class House : Builder {
 
     protected virtual void RemoveHouse() {
         HouseManager.RemoveHouse(this);
+        foreach(Person p in stalledPeople) if(p != null) p.UnHighlight();
         Destroy(gameObject);
     }
 

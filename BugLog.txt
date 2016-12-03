@@ -1,7 +1,6 @@
 Bug Log
 
 Unassigned
-- people (especially soldiers) occasionally run diagonally off the road
 - can’t click on plots after building is destroyed
 - when putting out fires it is easy to accidentally upgrade the building
 	tap => tap => tap => build menu opens => upgrade accidentally
@@ -10,7 +9,6 @@ Unassigned
 - sometimes eating fails to remove the person
 
 Julia
-- highlighting is messed up with stalling buildings
 - sometimes soldiers make the game freeze (seems to happen when house gets destroyed)
 
 Connor
