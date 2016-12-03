@@ -31,9 +31,11 @@ public class House : Builder {
     // house info
     protected int[] gridPos;
     protected int gridIndex;
+    protected float eatRadius = 0.5f;
+    protected int numNonEatAreaChildren = 2;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
-    private bool hasSprinklers;
+    protected bool hasSprinklers;
 
     // fire info
     protected int burnState = 0;
@@ -42,7 +44,7 @@ public class House : Builder {
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     private int minDamage = 0;
     private GameObject firePrefab;
-    private GameObject waterDrop;
+    protected GameObject waterDrop;
 
     protected virtual void Awake() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
@@ -173,7 +175,7 @@ public class House : Builder {
     {
         if (CanEat()) 
         {   
-            for(int i = 0; i < transform.childCount - 1; i++)
+            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++)
             {
                 GameObject eatingArea = transform.GetChild(i).gameObject;
                 eatingArea.SetActive(true);
@@ -185,7 +187,7 @@ public class House : Builder {
     {
         if (!CanEat())
         {
-            for(int i = 0; i < transform.childCount - 1; i++)
+            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++)
             {
                 GameObject eatingArea = transform.GetChild(i).gameObject;
                 eatingArea.SetActive(false);
@@ -215,7 +217,7 @@ public class House : Builder {
     {
         totalDamage -= damageHealed;
         if (totalDamage < 100) {
-            totalDamage = minDamage;
+            totalDamage = (hasSprinklers) ? (-1 * Mansion.sprinklerStrength) : 0;
         }
         OnDamageOrHeal();
     }
@@ -229,9 +231,9 @@ public class House : Builder {
             if (burnState > 3) 
             {
                 RemoveHouse();
-            } else if (oldState > 0) {
+            } else if (oldState <= 0 && burnState > 0) {
                 StartBurning();
-            } else if (burnState <= 0) {
+            } else if (oldState >= 0 && burnState <= 0) {
                 StopBurning();
             }
             UpdateFires();
@@ -246,12 +248,12 @@ public class House : Builder {
 
     private int CorrectBurnState()
     {
-        int correctState = (int)Math.Floor(totalDamage / 100f);
-        if (correctState <= 0)
+        if (totalDamage < 0)
         {
-            correctState = hasSprinklers ? -1 : 0;
+            return (hasSprinklers) ? -1 : 0;
+        } else {
+            return (int)Math.Floor(totalDamage / 100f);
         }
-        return correctState;
     }
 
     private void StartBurning() 
@@ -356,12 +358,13 @@ public class House : Builder {
         if (!hasSprinklers && turnOn)
         {
             totalDamage -= Mansion.sprinklerStrength;
+            hasSprinklers = true;
             OnDamageOrHeal();
         } else if (hasSprinklers && !turnOn) {
             if (totalDamage < 0) totalDamage = 0;
+            hasSprinklers = false;
             OnDamageOrHeal();
         }
-        hasSprinklers = turnOn;
     }
 
     public int X() {

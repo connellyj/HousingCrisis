@@ -106,7 +106,11 @@ public class HouseManager : MonoBehaviour {
     {
         foreach (House g in AdjacentHouses( h.X() , h.Y() ))
         {
-            if (g.type == HouseType.MANSION) return true;
+            if (g.type == HouseType.MANSION) 
+            {
+                Debug.LogFormat("House at {0},{1} is adjacent to a Mansion", h.X(), h.Y());
+                return true;
+            }
         }
         return false;
     }
