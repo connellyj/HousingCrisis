@@ -13,6 +13,8 @@ public class House : Builder {
     protected static readonly float chewingTime = 5;
     protected static readonly float attritionDPS = 20f;
     public static readonly float eatRadius = 0.5f;
+    private static readonly float personStallOffset = 0.3f;
+    private static readonly float houseStallOffset = 0.6f;
 
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
@@ -86,25 +88,25 @@ public class House : Builder {
             switch(d) {
                 case Direction.EAST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + 0.6f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x + houseStallOffset, transform.position.y + ((i - 1) * personStallOffset));
                     }
                     stalledPositions.Add(gridIndex + 1, positions);
                     break;
                 case Direction.WEST:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x - 0.6f, transform.position.y + ((i - 1) * 0.4f));
+                        positions[i] = new Vector3(transform.position.x - houseStallOffset, transform.position.y + ((i - 1) * personStallOffset));
                     }
                     stalledPositions.Add(gridIndex - 1, positions);
                     break;
                 case Direction.NORTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y + 0.6f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * personStallOffset), transform.position.y + houseStallOffset);
                     }
                     stalledPositions.Add(gridIndex - GridManager.MAX_COL, positions);
                     break;
                 case Direction.SOUTH:
                     for(int i = 0; i < MAX_STALL; i++) {
-                        positions[i] = new Vector3(transform.position.x + ((i - 1) * 0.4f), transform.position.y - 0.6f);
+                        positions[i] = new Vector3(transform.position.x + ((i - 1) * personStallOffset), transform.position.y - houseStallOffset);
                     }
                     stalledPositions.Add(gridIndex + GridManager.MAX_COL, positions);
                     break;
@@ -344,7 +346,6 @@ public class House : Builder {
 
     public void RemoveStalledPerson(Person p) {
         numStalled--;
-        p.ResetPosition();
         for(int i = 0; i < stalledPeople.Length; i++) {
             if(stalledPeople[i] == p) stalledPeople[i] = null;
         }

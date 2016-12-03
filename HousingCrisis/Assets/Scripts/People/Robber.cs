@@ -31,6 +31,7 @@
         } else if(state == PersonState.WANDER_SET) {
             ChangeState(PersonState.STALL);
         } else if(state == PersonState.STALL) {
+            speed = alertSpeed / 2;
             ChangeState(PersonState.WANDER);
         }
     }

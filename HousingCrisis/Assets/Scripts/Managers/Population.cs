@@ -29,12 +29,11 @@ public class Population : MonoBehaviour {
         foreach(Person p in people) {
             if(p != null) {
                 if(PersonInRangeToEat(p, d, hX, hY)) toBeEaten.Add(p);
-                else if(PersonInRangeToSee(p, d, hX, hY)) p.OnSeeHouse();
+                else if(PersonInRangeToSee(p, d, hX, hY)) p.OnSeeHouse(GridManager.CoordsToIndex(hX, hY));
             }
         }
         numEnumerations--;
         foreach(Person p in toBeEaten) {
-            RemovePerson(p);
             p.OnEaten();
         }
     }

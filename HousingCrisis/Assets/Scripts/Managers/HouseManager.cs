@@ -91,13 +91,6 @@ public class HouseManager : MonoBehaviour {
         if(burningHouses.Contains(idx)) burningHouses.Remove(idx);
     }
 
-    public static bool AnyStallSpaceAnywhere() {
-        foreach(House h in houses.Values) {
-            if(h.HasAvailableStallSpace()) return true;
-        }
-        return false;
-    }
-
     public static bool AnyHousesNotBurning() {
         return houses.Count != burningHouses.Count;
     }

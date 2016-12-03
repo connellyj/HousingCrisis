@@ -26,6 +26,7 @@ public class LevelUIController : MonoBehaviour {
     private GUIStyle textStyle;
 
     void Start() {
+        UnPause();
         startWinButton.onClick.AddListener(() => {
             if(canWinLevel) WinLevel();
             if(!levelStarted) {

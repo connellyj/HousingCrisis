@@ -11,7 +11,6 @@ public class Store : House {
 
     protected override void Start() {
         base.Start();
-        spriteWrapper.SetActive(true); // idk why I need this...
         StartCoroutine(Pulse());
     }
 
