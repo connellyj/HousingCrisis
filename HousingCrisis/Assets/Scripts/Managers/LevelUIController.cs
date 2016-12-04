@@ -9,8 +9,6 @@ public class LevelUIController : MonoBehaviour {
     public Text startWinButtonText;
     public Button startWinButton;
     public Button helpButton;
-    // People spawners
-    public GameObject[] peopleSpawners;
     // Game state info
     private bool paused = false;
     private bool wonLevel = false;
@@ -91,7 +89,7 @@ public class LevelUIController : MonoBehaviour {
             if(!levelStarted) {
                 levelStarted = true;
                 startWinButtonText.text = "";
-                StartLevel();
+                GameManager.BeginSpawning();
             }
         });
         helpButton.onClick.AddListener(() => {
@@ -143,11 +141,6 @@ public class LevelUIController : MonoBehaviour {
     // Updates the onscreen wanted value
     public void UpdateWantedLevel(string wantedLevel) {
         wantedLevelText.text = wantedLevel;
-    }
-
-    // Starts the level by starting to spawn people
-    private void StartLevel() {
-        foreach(GameObject spawn in peopleSpawners) spawn.SetActive(true);
     }
 
     // Ends the level

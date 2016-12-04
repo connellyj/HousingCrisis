@@ -17,6 +17,11 @@ public class ContentManager : MonoBehaviour {
         instance = this;
 	}
 
+    // Returns how much the palyer starts the level with
+    public static int StartingMoney() {
+        return instance.startingMoney;
+    }
+
     // Returns how much money is needed to win
     public static int MoneyToWin() {
         return instance.moneyToWin;

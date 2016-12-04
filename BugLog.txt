@@ -2,12 +2,15 @@ Bug Log
 
 Unassigned 
 - sometimes eating fails to remove the person
+
+Refactoring Notes
 - fire instantiating maybe terrible?
 - builder on build method thing needed?
 
-Julia:
+Julia
 
-Connor:
+
+Connor
 - people are still getting highlighted when houses are on fire
 - apartments can eat when there are no people to eat
 - tapping houses to put out fires or build doesn’t always work

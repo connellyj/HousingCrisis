@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour {
     private void UpdateLevel() {
         levelStarted = false;
         moneyAmount = 0;
-        UpdateMoney(ContentManager.MoneyToWin());
+        UpdateMoney(ContentManager.StartingMoney());
         UpdateDiffManager();
     }
 
@@ -78,6 +78,12 @@ public class GameManager : MonoBehaviour {
         if(dM != null) {
             difficultyManager = dM.GetComponent<DifficultyManager>();
         } else difficultyManager = null;
+    }
+
+    // tells DifficultyManager to tell spawnpoints to start spawning
+    public static void BeginSpawning()
+    {
+        instance.difficultyManager.ActivateSpawners();
     }
 
     // Loads the next scene
