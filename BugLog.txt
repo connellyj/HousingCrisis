@@ -1,6 +1,6 @@
 Bug Log
 
-Unassigned
+Unassigned 
 - sometimes eating fails to remove the person
 - fire instantiating maybe terrible?
 - builder on build method thing needed?
