@@ -14,27 +14,23 @@ public class House : Builder {
     public static readonly float eatRadius = 0.5f;
     private static readonly float personStallOffset = 0.3f;
     private static readonly float houseStallOffset = 0.7f;
-
+    protected static readonly int numNonEatAreaChildren = 2;
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
     public GameObject spriteWrapper;
     public Sprite defaultSprite;
     public Sprite eatingSprite;
     public Sprite[] chewingSprites = new Sprite[4];
-
     // stalled people info
     protected List<Person> stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
     [HideInInspector] public int numStalled = 0;
-
     // house info
     protected int[] gridPos;
     [HideInInspector] public int gridIndex;
-    protected int numNonEatAreaChildren = 2;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
     protected bool hasSprinklers;
-
     // fire info
     protected int burnState = 0;
     private int totalDamage = 0;
@@ -61,18 +57,9 @@ public class House : Builder {
         SetUpSprinklers();
     }
 
-    private void SetUpSprinklers()
-    {
-        bool adjacentToMansion = HouseManager.isAdjacentToMansion(this);
-        waterDrop = transform.GetChild(4).gameObject;
-        waterDrop.SetActive(adjacentToMansion);
-        SprinklersOn(adjacentToMansion);
-    }
-
-    void OnMouseDown() 
-    {
-        if (burnState <= 0)
-        {
+    // When clicked, opens a menu or heals the house
+    void OnMouseDown() {
+        if(burnState <= 0) {
             // display build options
             BuildMenu.Open(this);
         } else {
@@ -81,6 +68,22 @@ public class House : Builder {
         }
     }
 
+    // Updates the money based on the house cost
+    public void Buy() {
+        GameManager.UpdateMoney(-1 * HouseManager.GetCost(type));
+    }
+
+    // Removes all the eatingArea triggers that aren't over a path
+    public void RemoveTriggers() {
+        foreach(Transform t in transform) {
+            EatingArea e = t.GetComponent<EatingArea>();
+            if(e != null) {
+                if(!adjacentPaths.Contains(e.direction)) Destroy(t.gameObject);
+            }
+        }
+    }
+
+    // Calculates all the vector3 positions where people can stall outside this house
     private void CalculateStallPositions() {
         foreach(Direction d in adjacentPaths) {
             Vector3[] positions = new Vector3[MAX_STALL];
@@ -113,18 +116,22 @@ public class House : Builder {
         }
     }
 
-    public void Buy() {
-        GameManager.UpdateMoney(-1 * HouseManager.GetCost(type));
+    // Initializes the sprinklers
+    private void SetUpSprinklers() {
+        bool adjacentToMansion = HouseManager.isAdjacentToMansion(this);
+        waterDrop = transform.GetChild(4).gameObject;
+        waterDrop.SetActive(adjacentToMansion);
+        SprinklersOn(adjacentToMansion);
     }
 
-    public bool CanEat()
-    {
+    // Returns whether or not the house can eat
+    public bool CanEat() {
         return (!isChewing) && (burnState <= 0);
     }
 
+    // Makes the house eat
     public virtual void Eat(Direction d) {
-        if (CanEat())
-        {
+        if (CanEat()) {
             isChewing = true;
             DisableEatingAreas();
             StartCoroutine(EatAnimation(d));
@@ -132,17 +139,8 @@ public class House : Builder {
         }
     }
 
-    public void RemoveTriggers() {
-        foreach(Transform t in transform) {
-            EatingArea e = t.GetComponent<EatingArea>();
-            if(e != null) {
-                if(!adjacentPaths.Contains(e.direction)) Destroy(t.gameObject);
-            }
-        }
-    }
-
-    protected virtual IEnumerator EatAnimation(Direction d)
-    {
+    // Animates the house while it eats
+    protected virtual IEnumerator EatAnimation(Direction d) {
         Vector3 origin = spriteWrapper.transform.position;
         Vector3 v = GridManager.DirectionToVector(d) / 2;   
         spriteWrapper.transform.position += v;
@@ -157,8 +155,8 @@ public class House : Builder {
         EnableEatingAreas();
     }
 
-    protected IEnumerator ChewAnimation()
-    {
+    // Animates the house while it chews
+    protected IEnumerator ChewAnimation() {
         int frameIndex = 0;
         float chewingFPS = 6f;
         while (isChewing) {
@@ -168,34 +166,29 @@ public class House : Builder {
         }
     }
 
-    protected void EnableEatingAreas()
-    {
-        if (CanEat()) 
-        {   
-            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++)
-            {
+    // Enables the eating areas
+    protected void EnableEatingAreas() {
+        if (CanEat()) {   
+            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++) {
                 GameObject eatingArea = transform.GetChild(i).gameObject;
                 eatingArea.SetActive(true);
             }
         }
     }
 
-    protected void DisableEatingAreas()
-    {
-        if (!CanEat())
-        {
-            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++)
-            {
+    // Disables the eating areas
+    protected void DisableEatingAreas() {
+        if (!CanEat()) {
+            for(int i = 0; i < transform.childCount - numNonEatAreaChildren; i++) {
                 GameObject eatingArea = transform.GetChild(i).gameObject;
                 eatingArea.SetActive(false);
             }
         }
     }
 
-    public void RobHouse(int minRobberDamage)
-    {
-        if (totalDamage < 100)
-        {
+    // If not burning, sets the house on fire, otherwise just damages it
+    public void RobHouse(int minRobberDamage) {
+        if (totalDamage < 100) {
             int damageToBurn = 100 - totalDamage;
             if (damageToBurn > 100) damageToBurn = 100;
             DamageHouse(damageToBurn);
@@ -204,14 +197,14 @@ public class House : Builder {
         }
     }
 
-    public void DamageHouse(int damage)
-    {
+    // Damages the house the given amount
+    public void DamageHouse(int damage) {
         totalDamage += damage;
         OnDamageOrHeal();
     }
 
-    public void HealHouse(int damageHealed)
-    {
+    // Heals the house the given amount
+    public void HealHouse(int damageHealed) {
         totalDamage -= damageHealed;
         if (totalDamage < 100) {
             totalDamage = (hasSprinklers) ? (-1 * Mansion.sprinklerStrength) : 0;
@@ -219,14 +212,12 @@ public class House : Builder {
         OnDamageOrHeal();
     }
 
-    private void OnDamageOrHeal()
-    {
-        if (DidBurnStateChange())
-        {
+    // Updates the burning state if needed
+    private void OnDamageOrHeal() {
+        if (DidBurnStateChange()) {
             int oldState = burnState;
             burnState = CorrectBurnState();
-            if (burnState > 3) 
-            {
+            if (burnState > 3) {
                 RemoveHouse();
             } else if (oldState <= 0 && burnState > 0) {
                 StartBurning();
@@ -237,46 +228,44 @@ public class House : Builder {
         }
     }
 
-    private bool DidBurnStateChange()
-    {
+    // Returns whether or not the burn state has changed
+    private bool DidBurnStateChange() {
         int correctBurnState = CorrectBurnState();
         return correctBurnState != burnState;
     }
 
-    private int CorrectBurnState()
-    {
-        if (totalDamage < 0)
-        {
+    // Returns the currect burn state based on damage and sprinklers
+    private int CorrectBurnState() {
+        if (totalDamage < 0) {
             return (hasSprinklers) ? -1 : 0;
         } else {
             return (int)Math.Floor(totalDamage / 100f);
         }
     }
 
-    private void StartBurning() 
-    {
+    // Makes the house start burning
+    private void StartBurning() {
         DisableEatingAreas();
         HouseManager.AddBurningHouse(gridIndex);
         StartCoroutine(BurnDown());
     }
-
-    private void StopBurning() 
-    {
+    
+    // Makes the house stop burning
+    private void StopBurning() {
         EnableEatingAreas();
         HouseManager.RemoveBurningHouse(gridIndex);
     }
 
-    private IEnumerator BurnDown()
-    {
-        while (burnState > 0)
-        {
+    // Slowly damages the house while it burns
+    private IEnumerator BurnDown() {
+        while (burnState > 0) {
             DamageHouse(1);
             yield return new WaitForSeconds(1f / attritionDPS);
         }
     }
 
-    private void UpdateFires()
-    {
+    // Updates the fire and water drop sprites based on burn state
+    private void UpdateFires() {
         RemoveAllFires();
         waterDrop.SetActive(false);
         switch(burnState) {
@@ -299,38 +288,40 @@ public class House : Builder {
         }
     }
 
-    private void AddFireWithOffset(Vector3 individualOffset)
-    {
+    // Creates a fire object at the given distance away from the house's center
+    private void AddFireWithOffset(Vector3 individualOffset) {
         Vector3 firePosition = transform.position + individualOffset + fireOffset;
         GameObject fire = (GameObject)Instantiate(firePrefab, firePosition, Quaternion.Euler(0,0,270));
         fires.Add(fire);
     }
 
-    private void RemoveAllFires()
-    {
-        for (int i = 0; i < fires.Count; i++)
-        {
+    // Removes all the fire objetcs
+    private void RemoveAllFires() {
+        for (int i = 0; i < fires.Count; i++) {
             GameObject fire = fires[i];
             Destroy(fire);
         }
         fires.Clear();
     }
 
-    public override void OnBuild()
-    {
+    // Called when something is built on the area
+    public override void OnBuild() {
         RemoveHouse();
     }
 
+    // Removes and destroys the house
     protected virtual void RemoveHouse() {
         HouseManager.RemoveHouse(this);
         foreach(Person p in stalledPeople) if(p != null) p.UnHighlight();
         Destroy(gameObject);
     }
 
+    // Returns whether or not there's an open place in front of the house
     public bool HasAvailableStallSpace() {
         return numStalled < MAX_STALL;
     }
 
+    // Returns the location the new stalled person should move to
     public Vector3 AddStalledPerson(Person p) {
         numStalled++;
         for(int i = 0; i < stalledPeople.Count; i++) {
@@ -340,9 +331,10 @@ public class House : Builder {
                 if(stalledPositions.TryGetValue(GridManager.CoordsToIndex(p.X(), p.Y()), out value)) return value[i];
             }
         }
-        return Vector3.zero;
+        return p.transform.position;
     }
 
+    // Removes the given person when they're no longer stalled
     public void RemoveStalledPerson(Person p) {
         numStalled--;
         for(int i = 0; i < stalledPeople.Count; i++) {
@@ -350,10 +342,9 @@ public class House : Builder {
         }
     }
 
-    public void SprinklersOn(bool turnOn)
-    {
-        if (!hasSprinklers && turnOn)
-        {
+    // Turns the sprinklers on or off based on whether the house has sprinklers
+    public void SprinklersOn(bool turnOn) {
+        if (!hasSprinklers && turnOn) {
             totalDamage -= Mansion.sprinklerStrength;
             hasSprinklers = true;
             OnDamageOrHeal();
@@ -364,16 +355,18 @@ public class House : Builder {
         }
     }
 
+    // Returns the grid x position of the house
     public int X() {
         return gridPos[0];
     }
 
+    // Returns the grid y position of the house
     public int Y() {
         return gridPos[1];
     }
 
+    // Used to offset the chewing time in inherited classes
     protected virtual float ChewTimeOffset() {
         return 0f;
     }
 }
-
