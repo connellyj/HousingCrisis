@@ -306,7 +306,7 @@ public class House : Builder {
 
     // Called when something is built on the area
     public override void OnBuild() {
-        RemoveHouse();
+        Destroy(gameObject);
     }
 
     // Removes and destroys the house

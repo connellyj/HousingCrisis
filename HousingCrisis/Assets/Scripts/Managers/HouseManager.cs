@@ -55,7 +55,11 @@ public class HouseManager : MonoBehaviour {
 
     // Adds a house to the dictionary of houses
     public static void AddHouse(House h) {
-        houses.Add(h.gridIndex, h);
+        if (houses.ContainsKey(h.gridIndex)) {
+            houses[h.gridIndex] = h;
+        } else {
+            houses.Add(h.gridIndex, h);
+        }
     }
 
     // Removes a house from the dictionary of houses and the list of burning houses
