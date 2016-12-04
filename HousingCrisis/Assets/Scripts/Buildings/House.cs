@@ -30,7 +30,7 @@ public class House : Builder {
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
     protected bool hasSprinklers;
-    protected int numNonEatAreaChildren = 2;
+    protected int numNonEatAreaChildren = 3;
     // fire info
     public int burnState = 0;
     public int totalDamage = 0;
@@ -38,11 +38,18 @@ public class House : Builder {
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     private GameObject firePrefab;
     protected GameObject waterDrop;
+    private Sprite[] smokeSprites;
+    private bool isSmoking = false;
+    private float smokeTime;
+    public GameObject smokeWrapper;
+    private SpriteRenderer smokeRenderer;
 
     protected virtual void Awake() {
         gridPos = new int[2] { (int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y) };
         gridIndex = GridManager.CoordsToIndex(X(), Y());
         spriteRenderer = spriteWrapper.GetComponent<SpriteRenderer>();
+        smokeRenderer = smokeWrapper.GetComponent<SpriteRenderer>();
+        smokeWrapper.SetActive(false);
         stalledPeople = new List<Person>(MAX_STALL) {null, null, null};
         stalledPositions = new Dictionary<int, Vector3[]>();
         adjacentPaths = GridManager.GetAdjacentPathDirections(X(), Y());
@@ -50,6 +57,8 @@ public class House : Builder {
     
     protected virtual void Start() {
         firePrefab = HouseManager.GetFirePrefab();
+        smokeTime = HouseManager.GetSmokeTime();
+        smokeSprites = HouseManager.GetSmokeSprites();
         HouseManager.AddHouse(this);
         Buy();
         RemoveTriggers();
@@ -59,7 +68,7 @@ public class House : Builder {
 
     // When clicked, opens a menu or heals the house
     void OnMouseDown() {
-        if(burnState <= 0) {
+        if(burnState <= 0 && !isSmoking) {
             // display build options
             BuildMenu.Open(this);
         } else {
@@ -252,8 +261,24 @@ public class House : Builder {
     
     // Makes the house stop burning
     private void StopBurning() {
-        EnableEatingAreas();
+        isSmoking = true;
+        StartCoroutine(StartSmoking());
         HouseManager.RemoveBurningHouse(gridIndex);
+    }
+
+    private IEnumerator StartSmoking() {
+        smokeWrapper.SetActive(true);
+        float time = smokeTime;
+        int spriteIndex = 0;
+        while(time > 0) {
+            smokeRenderer.sprite = smokeSprites[spriteIndex % smokeSprites.Length];
+            spriteIndex++;
+            time -= 0.1f;
+            yield return new WaitForSeconds(0.1f);
+        }
+        isSmoking = false;
+        smokeWrapper.SetActive(false);
+        EnableEatingAreas();
     }
 
     // Slowly damages the house while it burns

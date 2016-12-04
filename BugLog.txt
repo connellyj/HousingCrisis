@@ -6,8 +6,12 @@ Unassigned
 	SOLUTION: smoke animation after fire is put out
 - sometimes eating fails to remove the person
 - should soldiers move from one house to the next closest house?
+- fire instantiating maybe terrible?
+- builder on build method thing needed?
 
 Julia:
+- soldiers don't get pulled by stores
+- stores only pull normaly people 
 
 Connor:
 - people are still getting highlighted when houses are on fire

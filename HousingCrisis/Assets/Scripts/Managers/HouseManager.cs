@@ -5,6 +5,8 @@ using System.Linq;
 public class HouseManager : MonoBehaviour {
     
     public GameObject firePrefab;
+    public Sprite[] smokeSprites;
+    public float smokeTime;
     public GameObject[] buildings;
     public int[] houseCosts;
 
@@ -19,6 +21,16 @@ public class HouseManager : MonoBehaviour {
         instance = this;
         houses = new Dictionary<int, House>();
         burningHouses = new List<int>();
+    }
+
+    // Returns the time for which a building should be smoking
+    public static float GetSmokeTime() {
+        return instance.smokeTime;
+    }
+
+    // Returns the smoke sprites
+    public static Sprite[] GetSmokeSprites() {
+        return instance.smokeSprites;
     }
 
     // Returns the fire prefab for the houses when they'e burning
