@@ -58,13 +58,13 @@ public abstract class Person : MonoBehaviour {
         Vector3 v = GridManager.DirectionToVector(direction);
         StartCoroutine(FollowPath(v));
         // create sprite arrays and start animation
-        spriteRenderer.color = normalColor;
         northSprites = new Sprite[] {spriteNorthA, spriteNorthB};
 		southSprites = new Sprite[] {spriteSouthA, spriteSouthB};
 		westSprites = new Sprite[] {spriteWestA, spriteWestB};
 		eastSprites = new Sprite[] {spriteEastA, spriteEastB};
 		spritesByDirection = new Sprite[][] {northSprites, southSprites, westSprites, eastSprites};
 		spriteRenderer = GetComponent<SpriteRenderer>();
+        spriteRenderer.color = normalColor;
         StartCoroutine(PlayAnimation());
         // make it so the people don't interact with mouse clicks
         gameObject.layer = 2;

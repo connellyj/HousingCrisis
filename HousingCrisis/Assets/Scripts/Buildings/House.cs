@@ -14,7 +14,6 @@ public class House : Builder {
     public static readonly float eatRadius = 0.5f;
     private static readonly float personStallOffset = 0.3f;
     private static readonly float houseStallOffset = 0.7f;
-    protected static readonly int numNonEatAreaChildren = 2;
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
     public GameObject spriteWrapper;
@@ -31,6 +30,7 @@ public class House : Builder {
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
     protected bool hasSprinklers;
+    protected int numNonEatAreaChildren = 2;
     // fire info
     protected int burnState = 0;
     private int totalDamage = 0;
