@@ -6,10 +6,10 @@ public class GameManager : MonoBehaviour {
     private static GameManager instance;
 
     private int currentScene;
-    private int wantedLevel;
     private int moneyAmount;
     private bool levelStarted = false;
     private LevelUIController levelUI;
+    private DifficultyManager difficultyManager;
 
     void Awake() {
         if(instance == null) {
@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour {
     private void UpdateLevel() {
         levelStarted = false;
         moneyAmount = 0;
-        wantedLevel = 0;
         UpdateMoney(ContentManager.MoneyToWin());
+        UpdateDiffManager();
     }
 
     // Loses the level
@@ -70,6 +70,14 @@ public class GameManager : MonoBehaviour {
         if(ui != null) {
             levelUI = ui.GetComponent<LevelUIController>();
         } else levelUI = null;
+    }
+
+    // Updates difficulty manager when a new level starts
+    private void UpdateDiffManager() {
+        GameObject dM = GameObject.FindGameObjectWithTag("DifficultyManager"); // putting DiffManager on LevelUI for the moment
+        if(dM != null) {
+            difficultyManager = dM.GetComponent<DifficultyManager>();
+        } else difficultyManager = null;
     }
 
     // Loads the next scene
@@ -94,11 +102,10 @@ public class GameManager : MonoBehaviour {
         Application.Quit();
     }
 
-    // Updates the wanted level by the given amount
+    // Updates the escapeCount by the given amount which updates the wanted level accordingly
     public static void UpdateWantedLevel(int change) {
-        if(instance.wantedLevel + change < 0) instance.wantedLevel = 0;
-        else instance.wantedLevel += change;
-        instance.levelUI.UpdateWantedLevel(instance.wantedLevel.ToString());
+        instance.difficultyManager.ChangeEscapeCount(change);
+        instance.levelUI.UpdateWantedLevel(instance.difficultyManager.wantedLevel.ToString());
     }
 
     // Updates the money amount based on the given amount

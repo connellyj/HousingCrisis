@@ -32,8 +32,8 @@ public class House : Builder {
     protected bool hasSprinklers;
     protected int numNonEatAreaChildren = 2;
     // fire info
-    protected int burnState = 0;
-    private int totalDamage = 0;
+    public int burnState = 0;
+    public int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     private GameObject firePrefab;
@@ -115,7 +115,7 @@ public class House : Builder {
             }
         }
     }
-
+    
     // Initializes the sprinklers
     private void SetUpSprinklers() {
         bool adjacentToMansion = HouseManager.isAdjacentToMansion(this);
