@@ -36,10 +36,13 @@ public class DifficultyManager : MonoBehaviour {
 	public void ChangeProgressCount(int amount)
 	{
 		progressCount += amount;
-		if (progressCount >= progressThreshholds[wantedLevel])
+		if (wantedLevel < wantedLevelCap)
 		{
-			if (wantedLevel < wantedLevelCap) wantedLevel++;
-			UpdateSpawnPoints();
+			if (progressCount >= progressThreshholds[wantedLevel])
+			{
+				wantedLevel++;
+				UpdateSpawnPoints();
+			}
 		}
 	}
 
