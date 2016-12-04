@@ -2,6 +2,7 @@ Bug Log
 
 Unassigned 
 - sometimes eating fails to remove the person
+- show $ to win in win button text
 
 Refactoring Notes
 - fire instantiating maybe terrible?

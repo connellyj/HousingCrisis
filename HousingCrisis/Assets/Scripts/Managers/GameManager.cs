@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour {
     private int currentScene;
     private int moneyAmount;
     private bool levelStarted = false;
+    private int frameCounter = 0;
     private LevelUIController levelUI;
     private DifficultyManager difficultyManager;
 
@@ -31,6 +32,12 @@ public class GameManager : MonoBehaviour {
             if(levelStarted) {
                 if(HouseManager.houses.Count == 0) LoseLevel();
                 if(moneyAmount >= ContentManager.MoneyToWin()) WinLevel();
+                frameCounter++;
+                if (frameCounter > 60) 
+                {
+                    frameCounter = 0;
+                    GameManager.UpdateWantedLevel(1);
+                }
             } else if(HouseManager.houses.Count > 0) levelStarted = true;
         }
     }
@@ -110,8 +117,10 @@ public class GameManager : MonoBehaviour {
 
     // Updates the escapeCount by the given amount which updates the wanted level accordingly
     public static void UpdateWantedLevel(int change) {
-        instance.difficultyManager.ChangeEscapeCount(change);
-        instance.levelUI.UpdateWantedLevel(instance.difficultyManager.wantedLevel.ToString());
+        instance.difficultyManager.ChangeProgressCount(change);
+        instance.levelUI.UpdateWantedLevelAndProgress(instance.difficultyManager.wantedLevel.ToString(), 
+                                           instance.difficultyManager.progressCount.ToString());
+        Debug.Log("Wanted+Progress updated");
     }
 
     // Updates the money amount based on the given amount
