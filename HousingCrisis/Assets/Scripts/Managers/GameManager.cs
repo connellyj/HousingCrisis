@@ -120,7 +120,6 @@ public class GameManager : MonoBehaviour {
         instance.difficultyManager.ChangeProgressCount(change);
         instance.levelUI.UpdateWantedLevelAndProgress(instance.difficultyManager.wantedLevel.ToString(), 
                                            instance.difficultyManager.progressCount.ToString());
-        Debug.Log("Wanted+Progress updated");
     }
 
     // Updates the money amount based on the given amount
