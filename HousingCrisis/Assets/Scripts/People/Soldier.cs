@@ -1,40 +1,19 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-public class Soldier : Person {
+﻿public class Soldier : Police {
 
     protected override void Start() {
         state = PersonState.TARGET_RANDOM;
         base.Start();
     }
 
+    // Doesn't care about seeing houses because they're always attacking anyways
     public override void OnSeeHouse(int houseIndex) {
         return;
     }
 
-    protected override void Attack() {
-        if(HouseManager.houses.ContainsKey(goalIndex)) {
-            House h = HouseManager.houses[goalIndex];
-            if(h.HasAvailableStallSpace()) {
-                MoveToPosition(h.AddStalledPerson(this));
-                StartCoroutine(Shoot(h));
-            } else CompletePath();
-        } else CompletePath();
-    }
-
-    private IEnumerator Shoot(House h) {
-        while(HouseManager.houses.ContainsKey(goalIndex)) {
-            ShootFireball();
-            h.DamageHouse(attackValue);
-            yield return new WaitForSeconds(attackStallTime);
-        }
-        h.RemoveStalledPerson(this);
-        CompletePath();
-    }
-
+    // Handles state changes:
+    // Soldiers will immediately attack a house until it's destroyed then attack another one unless distracted by a store
     protected override void CompletePath() {
-        base.CompletePath();
+        StopAllCoroutines();
         if(state == PersonState.TARGET_RANDOM) {
             ChangeState(PersonState.ATTACK);
         }else if(state == PersonState.ATTACK) {

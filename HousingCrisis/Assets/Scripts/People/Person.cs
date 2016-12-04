@@ -2,9 +2,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
-public class Person : MonoBehaviour {
+public abstract class Person : MonoBehaviour {
 
     // static info
     protected static readonly float stallTime = 2;
@@ -16,7 +15,6 @@ public class Person : MonoBehaviour {
     protected static readonly Color eatColor = Color.red;
     protected static readonly Color storeColor = Color.blue;
     protected static readonly Color normalColor = Color.white;
-
     // script component variables
     [HideInInspector] public Direction direction;
     protected int goalIndex;
@@ -43,6 +41,7 @@ public class Person : MonoBehaviour {
 	private int pathIndex = 0;
 	protected Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
+    // attack details
     public int attackValue;
     public int attackStallTime;
     public GameObject fireball;
@@ -55,57 +54,51 @@ public class Person : MonoBehaviour {
     	gridXY[1] = (int)Math.Round(transform.position.y);
     	gridXY[2] = 0;
         SetAction();
-        LogPath();
         direction = path[0];
         Vector3 v = GridManager.DirectionToVector(direction);
         StartCoroutine(FollowPath(v));
         // create sprite arrays and start animation
-		northSprites = new Sprite[] {spriteNorthA, spriteNorthB};
+        spriteRenderer.color = normalColor;
+        northSprites = new Sprite[] {spriteNorthA, spriteNorthB};
 		southSprites = new Sprite[] {spriteSouthA, spriteSouthB};
 		westSprites = new Sprite[] {spriteWestA, spriteWestB};
 		eastSprites = new Sprite[] {spriteEastA, spriteEastB};
 		spritesByDirection = new Sprite[][] {northSprites, southSprites, westSprites, eastSprites};
 		spriteRenderer = GetComponent<SpriteRenderer>();
         StartCoroutine(PlayAnimation());
-
-        Population.AddPerson(this);
+        // make it so the people don't interact with mouse clicks
         gameObject.layer = 2;
-        spriteRenderer.color = normalColor;
-
+        // add the person to the population
+        Population.AddPerson(this);
     }
-	
-	protected virtual void Update () {
-		if(Input.GetKeyDown(KeyCode.P)) {
-			Panic();
-		}
-	}
 
-	public void Panic()
-	{
-		if (state != PersonState.PANIC)
-		{
+    protected abstract void CompletePath();
+    protected abstract void Attack();
+
+    // Changes the person speed and switches to the panic state
+    public void Panic() {
+		if (state != PersonState.PANIC) {
 			speed = alertSpeed;
 			ChangeState(PersonState.PANIC);
 		}
 	}
 
-	protected void ChangeState(PersonState newState)
-	{
+    // Updates everything to change states
+	protected void ChangeState(PersonState newState) {
 		StopAllCoroutines();
 		StartCoroutine(PlayAnimation());
 		state = newState;
         if(SetAction()) {
             if(path != null && path.Count != 0) {
                 FollowNewPath(path[0]);
-                LogPath();
             } else {
                 CompletePath();
             }
         }
 	}
 
-	private void FollowNewPath(Direction newDirection)
-	{
+    // Starts following a new path accouting for the person's imperfect position
+	private void FollowNewPath(Direction newDirection) {
             Vector3 targetTile = gridXY;
             if(direction == newDirection) {
                 targetTile += GridManager.DirectionToVector(direction);
@@ -118,6 +111,26 @@ public class Person : MonoBehaviour {
             StartCoroutine(FollowPath(tileAdjust));
 	}
 
+    // Follows the path
+	private IEnumerator FollowPath(Vector3 v) {
+		float walkTime = 1f / speed;
+		int totalFrames = Mathf.CeilToInt(walkTime * motionFPS);
+		for (int i = 0; i < totalFrames; i++) {
+			transform.position += (v / totalFrames);
+			yield return new WaitForSeconds(walkTime / totalFrames);
+		}
+		SnapPositionToGrid();
+		pathIndex++;
+		if (pathIndex < path.Count) {
+			direction = path[pathIndex];
+			Vector3 newV = GridManager.DirectionToVector(direction);
+			StartCoroutine(FollowPath(newV));
+		} else {
+			CompletePath();
+		}
+	}
+
+    // Stalls the person at its goal house
     protected virtual IEnumerator Stall() {
         if(HouseManager.houses.ContainsKey(goalIndex)) {
             House h = HouseManager.houses[goalIndex];
@@ -131,11 +144,12 @@ public class Person : MonoBehaviour {
         } else CompletePath();
     }
 
+    // Makes the person face its goal
     public void FaceGoal() {
-        int curIdx = GridManager.CoordsToIndex((int)Mathf.Round(transform.position.x), (int)Mathf.Round(transform.position.y));
+        int curIdx = GridManager.CoordsToIndex((int) Mathf.Round(transform.position.x), (int) Mathf.Round(transform.position.y));
         if(curIdx + 1 == goalIndex) {
             direction = Direction.EAST;
-        }else if(curIdx - 1 == goalIndex) {
+        } else if(curIdx - 1 == goalIndex) {
             direction = Direction.WEST;
         } else if(curIdx + GridManager.MAX_COL == goalIndex) {
             direction = Direction.SOUTH;
@@ -144,42 +158,16 @@ public class Person : MonoBehaviour {
         }
     }
 
-	private IEnumerator FollowPath(Vector3 v)
-	{
-		float walkTime = 1f / speed;
-		int totalFrames = Mathf.CeilToInt(walkTime * motionFPS);
-		for (int i = 0; i < totalFrames; i++)
-		{
-			transform.position += (v / totalFrames);
-			yield return new WaitForSeconds(walkTime / totalFrames);
-		}
-		SnapPositionToGrid();
-		pathIndex++;
-		if (pathIndex < path.Count)
-		{
-			direction = path[pathIndex];
-			Vector3 newV = GridManager.DirectionToVector(direction);
-			StartCoroutine(FollowPath(newV));
-		} else {
-			CompletePath();
-		}
-	}
-
-	protected virtual void CompletePath()
-	{
-		StopAllCoroutines();
-    }
-
-	private void SnapPositionToGrid()
-	{
+    // Moves the person to an integer position
+	private void SnapPositionToGrid() {
 		gridXY[0] = (int)Math.Round(transform.position.x);
     	gridXY[1] = (int)Math.Round(transform.position.y);
     	gridXY[2] = 0;
 		transform.position = gridXY + positionOffset;
 	}
 
-	private Direction Opposite(Direction d)
-	{
+    // Gets the opposite direction
+	private Direction Opposite(Direction d) {
 		switch (d) {
 			case Direction.NORTH:
 				return Direction.SOUTH;
@@ -194,76 +182,59 @@ public class Person : MonoBehaviour {
 		}
 	}
 
-    private bool SetAction()
-    {
+    // Sets the next action based on the person's state
+    private bool SetAction() {
     	int personLoc = PersonLocFromPosition();
         switch(state) {
             case PersonState.TARGET_SET:
+                goto case PersonState.WANDER_SET;
+            // Finds a path to the goal
+            case PersonState.WANDER_SET:
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 return true;
+            // Finds a path to a random goal if there are houses and available space, otherwise changes to wander
             case PersonState.TARGET_RANDOM:
                 if(HouseManager.houses.Count == 0 || !HouseManager.AnyStallSpaceAnywhere()) {
                     state = PersonState.WANDER;
                     goto default;
                 } else {
-                    goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
+                    goalIndex = HouseManager.GetRandomHouse();
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 }
                 return true;
+            // Finds a path to a random not burning house if there are houses that aren't burning, otherwise changes to wander
             case PersonState.TARGET_RANDOM_NOTBURNING:
                 if(HouseManager.houses.Count == 0 || !HouseManager.AnyHousesNotBurning()) {
                     state = PersonState.WANDER;
                     goto default;
                 } else {
-                    if(HouseManager.burningHouses.Count == 0) {
-                        goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
-                    }else {
-                        goalIndex = HouseManager.burningHouses[0];
-                        while(HouseManager.burningHouses.Contains(goalIndex)) {
-                            goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
-                        }
-                    }
+                    goalIndex = HouseManager.GetRandomNotBurningHouse();
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 }
                 return true;
+            // Stalls
             case PersonState.STALL:
                 StopAllCoroutines();
                 StartCoroutine(Stall());
                 return false;
+            // Attacks
             case PersonState.ATTACK:
                 StopAllCoroutines();
                 Attack();
                 return false;
-            case PersonState.WANDER_SET:
-                path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
-                return true;
+            // Finds a path to an exit
             default:
                 path = Pathfinder.FindPath(state, personLoc);
                 return true;
         }
     }
 
-    protected int PersonLocFromPosition()
-    {
+    // Returns the grid index of the person
+    protected int PersonLocFromPosition() {
         return GridManager.CoordsToIndex((int)gridXY[0], (int)gridXY[1]);
     }
 
-    private void LogPath()
-    {
-        Direction last = path[0];
-    	int c = 0;
-    	for (int i = 0; i < path.Count; i++)
-    	{
-    		Direction next = path[i];
-    		if (next != last)
-    		{
-    			last = next;
-    			c = 0;
-    		}
-    		c++;
-    	}
-    }
-
+    // Animates the person
     private IEnumerator PlayAnimation(){
         FaceGoal();
         int frameIndex = 0;
@@ -275,19 +246,18 @@ public class Person : MonoBehaviour {
         }
     }
 
-    protected virtual void Attack() {
-        return;
-    }
-
+    // Shoots a fireball
     protected void ShootFireball() {
         Fireball fB = ((GameObject)Instantiate(fireball, transform.position, Quaternion.identity)).GetComponent<Fireball>();
         fB.Shoot(direction);
     }
 
+    // Moves the person to the given position
     protected void MoveToPosition(Vector3 pos) {
         StartCoroutine(TranslateToPos(pos));
     }
 
+    // Incrementally translates the person to the given location
     private IEnumerator TranslateToPos(Vector3 pos) {
         Vector3 dir = pos - transform.position;
         float dist = dir.magnitude;
@@ -299,43 +269,52 @@ public class Person : MonoBehaviour {
         }
     }
 
+    // Removes the person from the game
     protected void RemovePerson() {
         Population.RemovePerson(this);
         Destroy(gameObject);
     }
 
+    // Turns the person red
     public void HighlightEat() {
         spriteRenderer.color = eatColor;
     }
 
+    // Turns the person blue
     public void HighlightStore() {
         spriteRenderer.color = storeColor;
     }
 
+    // Removes any coloration
     public void UnHighlight() {
         spriteRenderer.color = normalColor;
     }
 
+    // When eaten, updates the money and removes the person
     public void OnEaten() {
         if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
         else GameManager.UpdateMoney(value);
         RemovePerson();
     }
 
+    // When the person sees a house eat, freak out
     public virtual void OnSeeHouse(int houseIndex) {
         Panic();
     }
 
+    // When pulled by a store, change state
     public void OnStorePull(int index) {
         goalIndex = index;
         if(spriteRenderer.color == normalColor) HighlightStore();
         ChangeState(PersonState.WANDER_SET);
     }
 
+    // Returns the person's grid x position
     public int X() {
         return (int)gridXY[0];
     }
 
+    // Returns the person's grid y position
     public int Y() {
         return (int)gridXY[1];
     }

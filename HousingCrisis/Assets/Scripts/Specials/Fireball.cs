@@ -7,11 +7,13 @@ public class Fireball : MonoBehaviour {
 
     private static readonly float shootDistance = 0.5f;
 
+    // Shoots a fireball in the given direction
 	public void Shoot(Direction d) {
         direction = GridManager.DirectionToVector(d);
         StartCoroutine(PlayAnimation());
     }
 
+    // Animates the fireball
     private IEnumerator PlayAnimation() {
         float dist = shootDistance;
         while(dist > 0) {

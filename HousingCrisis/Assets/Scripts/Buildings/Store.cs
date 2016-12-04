@@ -14,10 +14,11 @@ public class Store : House {
         StartCoroutine(Pulse());
     }
 
+    // Attracts people to the store every pulse interval if it's not burning
     protected IEnumerator Pulse() {
         while(true) {
             yield return new WaitForSeconds(pulseInterval);
-            if(burnState == 0) Population.AlertPeopleAffectedByStore(type, MAX_STALL - numStalled, transform.position, stalledPeople);
+            if(burnState <= 0) Population.AlertPeopleAffectedByStore(type, MAX_STALL - numStalled, transform.position, stalledPeople);
         }
     }
 }

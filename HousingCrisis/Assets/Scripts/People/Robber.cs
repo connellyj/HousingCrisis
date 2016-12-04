@@ -1,16 +1,13 @@
 ﻿public class Robber : Person {
 
-    public int minDamage; // damage done to house if it is already burning
+    public int minDamage;
 
     protected override void Start() {
         state = PersonState.TARGET_RANDOM_NOTBURNING;
         base.Start();
     }
 
-    protected override void Update() {
-        base.Update();
-    }
-
+    // If the targeted house exists, sets it on fire
     protected override void Attack() {
         if(HouseManager.houses.ContainsKey(goalIndex)) {
             House h = HouseManager.houses[goalIndex];
@@ -20,8 +17,10 @@
         } else CompletePath();
     }
 
+    // Handles state changes:
+    // Targets a not-burning house and sets it on fire, unless distracted by a store or freaked out by a house eating
     protected override void CompletePath() {
-        base.CompletePath();
+        StopAllCoroutines();
         if(state == PersonState.TARGET_RANDOM_NOTBURNING) {
             ChangeState(PersonState.ATTACK);
         }else if(state == PersonState.ATTACK) {

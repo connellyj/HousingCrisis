@@ -5,12 +5,15 @@
         base.Start();
     }
 
-    protected override void Update() {
-        base.Update();
+    // Pedestrians don't attack houses
+    protected override void Attack() {
+        return;
     }
 
+    // Handles the state changes:
+    // Pedestrians will wander around until they are attracted by stores or scared by houses
     protected override void CompletePath() {
-        base.CompletePath();
+        StopAllCoroutines();
         if(state == PersonState.PANIC) {
             GameManager.UpdateWantedLevel(1);
             RemovePerson();

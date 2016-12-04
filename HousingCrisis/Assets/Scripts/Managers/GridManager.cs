@@ -21,6 +21,7 @@ public class GridManager : MonoBehaviour {
         ParseGrid();
     }	
 
+    // Parses the provided info into data structures
     void ParseGrid() {
         int x;
         int y;
@@ -35,16 +36,19 @@ public class GridManager : MonoBehaviour {
         Pathfinder.InitExitDistanceArray();
     }
     
+    // Returns whether or not the given index is a path
     public static bool CellIsPath(int idx) {
         if(idx < 0 || idx >= MAX_COL * MAX_ROW) return false;
         if(paths.Contains(idx)) return true;
         return false;
     }
 
+    // Converts (x, y) coordinates to grid index
     public static int CoordsToIndex(int x, int y) {
         return (MAX_ROW - 1 - y) * MAX_COL + x;
     }
 
+    // Returns the directions in which the given coordinates has adjacent paths
     public static List<Direction> GetAdjacentPathDirections(int x, int y) {
         int data = CoordsToIndex(x, y);
         List<Direction> adjacentPaths = new List<Direction>();
@@ -55,6 +59,7 @@ public class GridManager : MonoBehaviour {
         return adjacentPaths;
     }
 
+    // Returns the indeces adjacent to the given index
     public static List<int> GetAdjacentIndeces(int idx) {
         List<int> adj = new List<int>();
         adj.Add(idx + 1);
@@ -64,8 +69,8 @@ public class GridManager : MonoBehaviour {
         return adj;
     }
 
-    public static Vector3 DirectionToVector(Direction d)
-    {
+    // Converts from Direction to Vector3
+    public static Vector3 DirectionToVector(Direction d) {
         switch (d) {
             case Direction.NORTH:
                 return Vector3.up;

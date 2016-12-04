@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class HouseManager : MonoBehaviour {
     
@@ -115,5 +116,23 @@ public class HouseManager : MonoBehaviour {
         adjacentIndexes[6] = GridManager.CoordsToIndex(x+1,y-1);    // southeast
         adjacentIndexes[7] = GridManager.CoordsToIndex(x-1,y-1);    // southwest
         return adjacentIndexes;
+    }
+
+    // Returns a random house index that isn't burning
+    public static int GetRandomNotBurningHouse() {
+        if(burningHouses.Count == 0) {
+            return houses.Keys.ElementAt(Random.Range(0, houses.Count));
+        } else {
+            int goalIndex = burningHouses[0];
+            while(burningHouses.Contains(goalIndex)) {
+                goalIndex = houses.Keys.ElementAt(Random.Range(0, houses.Count));
+            }
+            return goalIndex;
+        }
+    }
+
+    // Returns a random house index
+    public static int GetRandomHouse() {
+        return houses.Keys.ElementAt(Random.Range(0, houses.Count));
     }
 }

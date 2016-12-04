@@ -16,6 +16,7 @@ public class PersonSpawner : MonoBehaviour {
     public GameObject policePrefab;
     public GameObject bankerPrefab;
 	
+    // Spawns people randomly based on provided chances
 	void Update () {
 		spawnCounter++;
 		if (spawnCounter == 60)
@@ -25,12 +26,12 @@ public class PersonSpawner : MonoBehaviour {
                 float rand = Random.value;
                 if(rand < policeChance) {
                     Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance && HouseManager.houses.Count > 0) {
-                    Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance + policeChance && HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()){
-                    Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance + policeChance + bankerChance) {
+                } else if(rand < policeChance + bankerChance) {
                     Instantiate(bankerPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                } else if(rand < soldierChance + policeChance + bankerChance && HouseManager.houses.Count > 0) {
+                    Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                } else if(rand < soldierChance + robberChance + policeChance + bankerChance && HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()) {
+                    Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
                 } else {
                     float genderRoll = Random.value;
                     if (genderRoll < .5)

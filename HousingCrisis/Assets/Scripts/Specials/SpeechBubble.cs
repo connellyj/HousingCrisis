@@ -17,6 +17,7 @@ public class SpeechBubble : MonoBehaviour {
         });
     }
 
+    // Switches to the next section of text or destroys the bubble when there's no more text
     private bool NextText() {
         if(wordIndex < words.Length) {
             speechText.text = words[wordIndex];

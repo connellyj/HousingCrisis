@@ -8,11 +8,13 @@ public class Police : Person {
         base.Start();
     }
 
+    // When they see a house eating, go attack that house
     public override void OnSeeHouse(int houseIndex) {
         goalIndex = houseIndex;
         ChangeState(PersonState.TARGET_SET);
     }
 
+    // If the targeted house exists and has open space, go attack it
     protected override void Attack() {
         if(HouseManager.houses.ContainsKey(goalIndex)) {
             House h = HouseManager.houses[goalIndex];
@@ -23,6 +25,7 @@ public class Police : Person {
         } else CompletePath();
     }
 
+    // Shoots and damages the given house until it's destroyed
     private IEnumerator Shoot(House h) {
         while(HouseManager.houses.ContainsKey(goalIndex)) {
             ShootFireball();
@@ -33,8 +36,10 @@ public class Police : Person {
         CompletePath();
     }
 
+    // Handles the state changes:
+    // Police wander until they see a house eat, then they'll attack until it's destroyed or they get distracted by a store
     protected override void CompletePath() {
-        base.CompletePath();
+        StopAllCoroutines();
         if(state == PersonState.WANDER) {
             RemovePerson();
         }else if(state == PersonState.TARGET_SET) {

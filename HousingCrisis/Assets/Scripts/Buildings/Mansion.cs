@@ -10,16 +10,15 @@ public class Mansion : House {
         HouseManager.UpdateSprinklers();
     }
 
-    protected override void Start()
-    {
+    protected override void Start() {
     	base.Start();
     	HouseManager.UpdateSprinklers();
         hasSprinklers = true;
         waterDrop.SetActive(true);
     }
 
-    protected override void RemoveHouse()
-    {
+    // Removes and destroys the mansion
+    protected override void RemoveHouse() {
 		HouseManager.RemoveHouse(this);
 		HouseManager.UpdateSprinklers();
         Destroy(gameObject);
@@ -37,7 +36,5 @@ public class Mansion : House {
     sprinklers should lower the minimum totalDamage of buildings to 0 - Mansion.sprinklerStrength
     this is handled with an additional burnState = -1 which is indicated to the player with the waterDrop icon
     this should automatically adjust totalDamage dynamically when mansions are created/destroyed or other buildings are created in range
-
     */
-
 }
