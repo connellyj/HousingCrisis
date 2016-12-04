@@ -1,6 +1,6 @@
 Bug Log
 
-Unassigned
+Unassigned 
 - sometimes eating fails to remove the person
 - show $ to win in win button text
 

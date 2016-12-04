@@ -99,7 +99,7 @@ public class LevelUIController : MonoBehaviour {
 
     // Initializes the rects for the pause/win/lose menu
     private void InitPauseRects() {
-        int pauseWidth = 200;
+        int pauseWidth = 300;
         int pauseHeight = 200;
         Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
         pausedBackgroundRect = new Rect(center[0] - pauseWidth / 2, center[1] - pauseHeight / 2, pauseWidth, pauseHeight);
