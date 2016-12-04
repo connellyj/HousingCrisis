@@ -6,7 +6,6 @@ using System.Collections.Generic;
 public class House : Builder {
 
     // static info
-    public static readonly int cost = 10;
     public static readonly int MAX_STALL = 3;
     public static readonly int alertRadius = 5;
     protected static readonly int healingPerTap = 20;
@@ -30,7 +29,7 @@ public class House : Builder {
 
     // house info
     protected int[] gridPos;
-    protected int gridIndex;
+    [HideInInspector] public int gridIndex;
     protected int numNonEatAreaChildren = 2;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
@@ -115,7 +114,7 @@ public class House : Builder {
     }
 
     public void Buy() {
-        GameManager.UpdateMoney(-1 * cost);
+        GameManager.UpdateMoney(-1 * HouseManager.GetCost(type));
     }
 
     public bool CanEat()
@@ -257,15 +256,14 @@ public class House : Builder {
     private void StartBurning() 
     {
         DisableEatingAreas();
-        HouseManager.AddBurningHouse(this);
+        HouseManager.AddBurningHouse(gridIndex);
         StartCoroutine(BurnDown());
     }
 
     private void StopBurning() 
     {
         EnableEatingAreas();
-        HouseManager.RemoveBurningHouse(this);
-        StopCoroutine("BurnDown");
+        HouseManager.RemoveBurningHouse(gridIndex);
     }
 
     private IEnumerator BurnDown()

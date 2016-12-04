@@ -2,14 +2,10 @@
 using System.Collections.Generic;
 
 public class HouseManager : MonoBehaviour {
-
-    public GameObject house;
-    public GameObject apartment;
-    public GameObject bank;
-    public GameObject donut;
-    public GameObject mansion;
-    public GameObject store;
+    
     public GameObject firePrefab;
+    public GameObject[] buildings;
+    public int[] houseCosts;
 
     public static Dictionary<int, House> houses;
     public static List<int> burningHouses;
@@ -24,113 +20,91 @@ public class HouseManager : MonoBehaviour {
         burningHouses = new List<int>();
     }
 
+    // Returns the fire prefab for the houses when they'e burning
     public static GameObject GetFirePrefab() {
         return instance.firePrefab;
     }
 
-    public static void Build(Vector3 position, HouseType type) { 
-        switch(type) {
-            case HouseType.HOUSE:
-                ((GameObject)Instantiate(instance.house, position, Quaternion.identity)).GetComponent<House>();
-                break;
-            case HouseType.APARTMENT:
-                ((GameObject) Instantiate(instance.apartment, position, Quaternion.identity)).GetComponent<Apartment>();
-                break;
-            case HouseType.BANK:
-                ((GameObject) Instantiate(instance.bank, position, Quaternion.identity)).GetComponent<Store>();
-                break;
-            case HouseType.DONUT:
-                ((GameObject) Instantiate(instance.donut, position, Quaternion.identity)).GetComponent<Store>();
-                break;
-            case HouseType.MANSION:
-                ((GameObject) Instantiate(instance.mansion, position, Quaternion.identity)).GetComponent<Mansion>();
-                break;
-            case HouseType.STORE:
-                ((GameObject) Instantiate(instance.store, position, Quaternion.identity)).GetComponent<Store>();
-                break;
-        }
+    // Builds the given house, assumes that you've already checked that there's enough money
+    public static void Build(Vector3 position, HouseType type) {
+        Instantiate(instance.buildings[(int)type], position, Quaternion.identity);
     }
 
+    // Returns whether or not you have enough money to build the given house
     public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
         if (!ContentManager.IsBuildingUnlocked(type)) return false;
-        switch(type) {
-            case HouseType.HOUSE:
-                return money >= House.cost;
-            case HouseType.APARTMENT:
-                return money >= House.cost;
-            case HouseType.BANK:
-                return money >= House.cost;
-            case HouseType.DONUT:
-                return money >= House.cost;
-            case HouseType.MANSION:
-                return money >= House.cost;
-            case HouseType.STORE:
-                return money >= House.cost;
-            default:
-                return false;
-        }
+        return money >= instance.houseCosts[(int)type];
     }
 
-    public static void AddBurningHouse(House h) {
-        burningHouses.Add(GridManager.CoordsToIndex(h.X(), h.Y()));
+    // Returns the cost of the given house type
+    public static int GetCost(HouseType t) {
+        return instance.houseCosts[(int) t];
     }
 
-    public static void RemoveBurningHouse(House h) {
-        burningHouses.Remove(GridManager.CoordsToIndex(h.X(), h.Y()));
+    // Adds a house to the list of burning houses
+    public static void AddBurningHouse(int index) {
+        burningHouses.Add(index);
     }
 
+    // Removes a house from the list of burning houses
+    public static void RemoveBurningHouse(int index) {
+        burningHouses.Remove(index);
+    }
+
+    // Adds a house to the dictionary of houses
     public static void AddHouse(House h) {
-        int idx = GridManager.CoordsToIndex(h.X(), h.Y());
-        houses.Add(idx, h);
+        houses.Add(h.gridIndex, h);
     }
 
-    public static void RemoveHouse(House house) {
-        int idx = GridManager.CoordsToIndex(house.X(), house.Y());
-        houses.Remove(idx);
-        if(burningHouses.Contains(idx)) burningHouses.Remove(idx);
+    // Removes a house from the dictionary of houses and the list of burning houses
+    public static void RemoveHouse(House h) {
+        houses.Remove(h.gridIndex);
+        burningHouses.Remove(h.gridIndex);
     }
 
+    // Returns whether or not any houses are not burning
     public static bool AnyHousesNotBurning() {
         return houses.Count != burningHouses.Count;
     }
 
-    public static void UpdateSprinklers()
-    {
+    // Returns whether or not there is free space in front of any house
+    public static bool AnyStallSpaceAnywhere() {
+        foreach(House h in houses.Values) {
+            if(h.numStalled < House.MAX_STALL) return true;
+        }
+        return false;
+    }
+
+    // Updates the mansion sprinklers
+    public static void UpdateSprinklers() {
         foreach (House h in houses.Values) {
             h.SprinklersOn(isAdjacentToMansion(h));
         }
     }
 
-    public static bool isAdjacentToMansion(House h) //includes houses on diagonal
-    {
-        foreach (House g in AdjacentHouses( h.X() , h.Y() ))
-        {
-            if (g.type == HouseType.MANSION) 
-            {
-                Debug.LogFormat("House at {0},{1} is adjacent to a Mansion", h.X(), h.Y());
-                return true;
-            }
+    // Returns whether or not the given house is adjacent to a mansion (includes houses on diagonal)
+    public static bool isAdjacentToMansion(House h) {
+        foreach (House g in AdjacentHouses( h.X() , h.Y() )) {
+            if (g.type == HouseType.MANSION) return true;
         }
         return false;
     }
 
-    private static List<House> AdjacentHouses(int x, int y) //includes houses on diagonal
-    {
+    // Gets the houses adjacent to the given house (includes houses on diagonal)
+    private static List<House> AdjacentHouses(int x, int y) {
         List<House> adjacent = new List<House>();
         int[] adjacentIndexes = GetAdjacentIndexes(x,y);
-        for (int i = 0; i < adjacentIndexes.Length; i++)
-        {
-            if (houses.ContainsKey(adjacentIndexes[i]))
-            {
+        for (int i = 0; i < adjacentIndexes.Length; i++) {
+            if (houses.ContainsKey(adjacentIndexes[i])) {
                 adjacent.Add(houses[adjacentIndexes[i]]);
             }
         }
         return adjacent;
     }
-
-    private static int[] GetAdjacentIndexes(int x, int y)
-    {
+    
+    // Returns an array of indeces adjacent to the given coordinates (includes coordinates on diagonal)
+    private static int[] GetAdjacentIndexes(int x, int y) {
         int[] adjacentIndexes = new int[8];
         adjacentIndexes[0] = GridManager.CoordsToIndex(x,y+1);      // north
         adjacentIndexes[1] = GridManager.CoordsToIndex(x,y-1);      // south
@@ -141,12 +115,5 @@ public class HouseManager : MonoBehaviour {
         adjacentIndexes[6] = GridManager.CoordsToIndex(x+1,y-1);    // southeast
         adjacentIndexes[7] = GridManager.CoordsToIndex(x-1,y-1);    // southwest
         return adjacentIndexes;
-    }
-
-    public static bool AnyStallSpaceAnywhere() {
-        foreach(House h in houses.Values) {
-            if(h.numStalled < House.MAX_STALL) return true;
-        }
-        return false;
     }
 }
