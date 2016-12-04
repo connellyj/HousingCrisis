@@ -1,11 +1,7 @@
 Bug Log
 
 Unassigned
-- when putting out fires it is easy to accidentally upgrade the building
-	tap => tap => tap => build menu opens => upgrade accidentally
-	SOLUTION: smoke animation after fire is put out
 - sometimes eating fails to remove the person
-- should soldiers move from one house to the next closest house?
 - fire instantiating maybe terrible?
 - builder on build method thing needed?
 
