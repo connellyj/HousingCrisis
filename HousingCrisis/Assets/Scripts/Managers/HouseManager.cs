@@ -76,8 +76,10 @@ public class HouseManager : MonoBehaviour {
 
     // Removes a house from the dictionary of houses and the list of burning houses
     public static void RemoveHouse(House h) {
-        houses.Remove(h.gridIndex);
-        burningHouses.Remove(h.gridIndex);
+        int idx = h.gridIndex;
+        GridManager.plots[idx].OnRemoveHouse();
+        houses.Remove(idx);
+        burningHouses.Remove(idx);
     }
 
     // Returns whether or not any houses are not burning

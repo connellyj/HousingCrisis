@@ -14,8 +14,13 @@
         }
     }
 
-    // Once built on, becomes occupied
+    // Once built on prevents clicks
     public override void OnBuild() {
-        return;
+        gameObject.layer = 2;
+    }
+
+    // Makes the plot clickable again
+    public void OnRemoveHouse() {
+        gameObject.layer = 0;
     }
 }

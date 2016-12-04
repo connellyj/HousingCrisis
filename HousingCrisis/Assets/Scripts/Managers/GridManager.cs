@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GridManager : MonoBehaviour {
 
     public GameObject[] pathTiles;
+    public GameObject[] plotTiles;
     public int gridHeight;
     public int gridWidth;
 
@@ -12,10 +13,12 @@ public class GridManager : MonoBehaviour {
     public static int MAX_COL;
     public static List<int> exits;
     public static List<int> paths;
+    public static Dictionary<int, Plot> plots;
     
     void Awake() {
         exits = new List<int>();
         paths = new List<int>();
+        plots = new Dictionary<int, Plot>();
         MAX_ROW = gridHeight;
         MAX_COL = gridWidth;
         ParseGrid();
@@ -32,6 +35,12 @@ public class GridManager : MonoBehaviour {
             index = CoordsToIndex(x, y);
             paths.Add(index);
             if(x == 0 || y == 0 || x == MAX_COL - 1 || y == MAX_ROW - 1) exits.Add(index);
+        }
+        foreach(GameObject plot in plotTiles) {
+            x = (int) Mathf.Round(plot.transform.position.x);
+            y = (int) Mathf.Round(plot.transform.position.y);
+            index = CoordsToIndex(x, y);
+            plots.Add(index, plot.GetComponent<Plot>());
         }
         Pathfinder.InitExitDistanceArray();
     }
