@@ -9,13 +9,16 @@ public class Person : MonoBehaviour {
     // static info
     protected static readonly float stallTime = 2;
     protected static readonly int value = 10;
-    protected static float speed = 2;
+    protected float speed = 2;
     protected static readonly float alertSpeed = 4;
     protected static readonly float animationFPS = 10;
     protected static readonly float motionFPS = 30;
+    protected static readonly Color eatColor = Color.red;
+    protected static readonly Color storeColor = Color.blue;
+    protected static readonly Color normalColor = Color.white;
 
-	// script component variables
-	[HideInInspector] public Direction direction;
+    // script component variables
+    [HideInInspector] public Direction direction;
     protected int goalIndex;
 	// component references
 	SpriteRenderer spriteRenderer;
@@ -40,7 +43,6 @@ public class Person : MonoBehaviour {
 	private int pathIndex = 0;
 	protected Vector3 gridXY;
 	public static Vector3 positionOffset = new Vector3(0,0.25f,0);
-    private Vector3 prevPos;
     public int attackValue;
     public int attackStallTime;
     public GameObject fireball;
@@ -68,7 +70,9 @@ public class Person : MonoBehaviour {
 
         Population.AddPerson(this);
         gameObject.layer = 2;
-	}
+        spriteRenderer.color = normalColor;
+
+    }
 	
 	protected virtual void Update () {
 		if(Input.GetKeyDown(KeyCode.P)) {
@@ -94,7 +98,7 @@ public class Person : MonoBehaviour {
             if(path != null && path.Count != 0) {
                 FollowNewPath(path[0]);
                 LogPath();
-            }else {
+            } else {
                 CompletePath();
             }
         }
@@ -102,12 +106,6 @@ public class Person : MonoBehaviour {
 
 	private void FollowNewPath(Direction newDirection)
 	{
-        // attempt to fix diagonal problem
-        /*if(Mathf.Abs(X() - transform.position.x) < 0.1 &&
-            Mathf.Abs((Y() + positionOffset.magnitude) - transform.position.y) < 0.1) {
-            SnapPositionToGrid();
-            StartCoroutine(FollowPath(GridManager.DirectionToVector(path[0])));
-        }else {*/
             Vector3 targetTile = gridXY;
             if(direction == newDirection) {
                 targetTile += GridManager.DirectionToVector(direction);
@@ -118,7 +116,6 @@ public class Person : MonoBehaviour {
             }
             Vector3 tileAdjust = targetTile + positionOffset - transform.position;
             StartCoroutine(FollowPath(tileAdjust));
-        //}
 	}
 
     protected virtual IEnumerator Stall() {
@@ -128,10 +125,10 @@ public class Person : MonoBehaviour {
                 MoveToPosition(h.AddStalledPerson(this));
                 yield return new WaitForSeconds(stallTime);
                 h.RemoveStalledPerson(this);
+                if(spriteRenderer.color == storeColor) UnHighlight();
                 CompletePath();
             } else CompletePath();
         } else CompletePath();
-        UnHighlight();
     }
 
     public void FaceGoal() {
@@ -205,10 +202,9 @@ public class Person : MonoBehaviour {
                 path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
                 return true;
             case PersonState.TARGET_RANDOM:
-                if(HouseManager.houses.Count == 0) {
-                    ChangeState(PersonState.WANDER);
-                } else if(!HouseManager.AnyStallSpaceAnywhere()) {
-                    ChangeState(PersonState.WANDER);
+                if(HouseManager.houses.Count == 0 || !HouseManager.AnyStallSpaceAnywhere()) {
+                    state = PersonState.WANDER;
+                    goto default;
                 } else {
                     goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
                     path = Pathfinder.FindPathToHouse(personLoc, goalIndex);
@@ -216,7 +212,8 @@ public class Person : MonoBehaviour {
                 return true;
             case PersonState.TARGET_RANDOM_NOTBURNING:
                 if(HouseManager.houses.Count == 0 || !HouseManager.AnyHousesNotBurning()) {
-                    ChangeState(PersonState.WANDER);
+                    state = PersonState.WANDER;
+                    goto default;
                 } else {
                     if(HouseManager.burningHouses.Count == 0) {
                         goalIndex = HouseManager.houses.Keys.ElementAt(UnityEngine.Random.Range(0, HouseManager.houses.Count));
@@ -288,12 +285,7 @@ public class Person : MonoBehaviour {
     }
 
     protected void MoveToPosition(Vector3 pos) {
-        if(pos != prevPos) prevPos = transform.position;
         StartCoroutine(TranslateToPos(pos));
-    }
-
-    public void ResetPosition() {
-        MoveToPosition(prevPos);
     }
 
     private IEnumerator TranslateToPos(Vector3 pos) {
@@ -313,30 +305,30 @@ public class Person : MonoBehaviour {
     }
 
     public void HighlightEat() {
-        spriteRenderer.color = Color.red;
+        spriteRenderer.color = eatColor;
     }
 
     public void HighlightStore() {
-        spriteRenderer.color = Color.blue;
+        spriteRenderer.color = storeColor;
     }
 
     public void UnHighlight() {
-        spriteRenderer.color = Color.white;
+        spriteRenderer.color = normalColor;
     }
 
     public void OnEaten() {
         if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
         else GameManager.UpdateMoney(value);
-        Destroy(gameObject);
+        RemovePerson();
     }
 
-    public virtual void OnSeeHouse() {
+    public virtual void OnSeeHouse(int houseIndex) {
         Panic();
     }
 
     public void OnStorePull(int index) {
         goalIndex = index;
-        HighlightStore();
+        if(spriteRenderer.color == normalColor) HighlightStore();
         ChangeState(PersonState.WANDER_SET);
     }
 

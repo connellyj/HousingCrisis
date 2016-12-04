@@ -40,7 +40,6 @@ public class Police : Person {
         }else if(state == PersonState.TARGET_SET) {
             ChangeState(PersonState.ATTACK);
         } else if(state == PersonState.ATTACK) {
-            UnHighlight();
             ChangeState(PersonState.WANDER);
         } else if(state == PersonState.WANDER_SET) {
             ChangeState(PersonState.STALL);

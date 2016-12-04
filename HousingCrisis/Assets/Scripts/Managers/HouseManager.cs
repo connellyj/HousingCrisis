@@ -53,7 +53,7 @@ public class HouseManager : MonoBehaviour {
 
     public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
-        if (!ContentManager.isBuildingUnlocked(type)) return false;
+        if (!ContentManager.IsBuildingUnlocked(type)) return false;
         switch(type) {
             case HouseType.HOUSE:
                 return money >= House.cost;
@@ -89,13 +89,6 @@ public class HouseManager : MonoBehaviour {
         int idx = GridManager.CoordsToIndex(house.X(), house.Y());
         houses.Remove(idx);
         if(burningHouses.Contains(idx)) burningHouses.Remove(idx);
-    }
-
-    public static bool AnyStallSpaceAnywhere() {
-        foreach(House h in houses.Values) {
-            if(h.HasAvailableStallSpace()) return true;
-        }
-        return false;
     }
 
     public static bool AnyHousesNotBurning() {
@@ -150,4 +143,10 @@ public class HouseManager : MonoBehaviour {
         return adjacentIndexes;
     }
 
+    public static bool AnyStallSpaceAnywhere() {
+        foreach(House h in houses.Values) {
+            if(h.numStalled < House.MAX_STALL) return true;
+        }
+        return false;
+    }
 }

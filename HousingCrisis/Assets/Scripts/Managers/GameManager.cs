@@ -23,11 +23,11 @@ public class GameManager : MonoBehaviour {
         currentScene = SceneManager.GetActiveScene().buildIndex;
         SceneManager.sceneLoaded += OnSceneLoaded;
         UpdateUI();
-        if(levelUI != null) UpdateLevel();
+        if(InLevel()) UpdateLevel();
     }
 
     void Update() {
-        if(levelUI != null) {
+        if(InLevel()) {
             if(levelStarted) {
                 if(HouseManager.houses.Count == 0) LoseLevel();
                 if(moneyAmount >= ContentManager.moneyToWinS) WinLevel();
@@ -38,7 +38,12 @@ public class GameManager : MonoBehaviour {
     // Automatically called when the scene is loaded
     private void OnSceneLoaded(Scene sceneIndex, LoadSceneMode loadSceneMode) {
         UpdateUI();
-        if(levelUI != null) UpdateLevel();
+        if(InLevel()) UpdateLevel();
+    }
+
+    // Returns whether or not the GameManager is currently in a level
+    private static bool InLevel() {
+        return instance.levelUI != null;
     }
 
     // Updates values when a new level starts
@@ -49,10 +54,12 @@ public class GameManager : MonoBehaviour {
         UpdateMoney(ContentManager.startingMoneyS);
     }
 
+    // Loses the level
     private void LoseLevel() {
         levelUI.LoseLevel();
     }
 
+    // Wins the level
     private void WinLevel() {
         levelUI.SetCanWinLevel();
     }

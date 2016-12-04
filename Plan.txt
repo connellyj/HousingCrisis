@@ -19,11 +19,11 @@ Connor
 - level design
 
 UI
-- losing
-- start and win buttons
+* losing
+* start and win buttons
 - scene transitions
-- info popups
-- help menu
+* info popups
+* help menu
 - polish 
 	- $ counter
 	- edible person highlight

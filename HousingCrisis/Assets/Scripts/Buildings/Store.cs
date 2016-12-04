@@ -11,14 +11,13 @@ public class Store : House {
 
     protected override void Start() {
         base.Start();
-        spriteWrapper.SetActive(true); // idk why I need this...
         StartCoroutine(Pulse());
     }
 
     protected IEnumerator Pulse() {
         while(true) {
             yield return new WaitForSeconds(pulseInterval);
-            if(burnState == 0) Population.AlertPeopleAffectedByStore(type, MAX_STALL - numStalled, transform.position);
+            if(burnState == 0) Population.AlertPeopleAffectedByStore(type, MAX_STALL - numStalled, transform.position, stalledPeople);
         }
     }
 }

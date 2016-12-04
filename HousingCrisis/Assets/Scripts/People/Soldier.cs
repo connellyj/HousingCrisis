@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Soldier : Person {
@@ -37,7 +38,6 @@ public class Soldier : Person {
         if(state == PersonState.TARGET_RANDOM) {
             ChangeState(PersonState.ATTACK);
         }else if(state == PersonState.ATTACK) {
-            UnHighlight();
             ChangeState(PersonState.TARGET_RANDOM);
         }else if(state == PersonState.WANDER) {
             RemovePerson();
