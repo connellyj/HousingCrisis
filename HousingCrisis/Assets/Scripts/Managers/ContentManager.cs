@@ -11,42 +11,32 @@ public class ContentManager : MonoBehaviour {
     public int startingMoney;
     public int moneyToWin;
 
-	public static bool houseUnlockedS = true;
-	public static bool storeUnlockedS;
-	public static bool apartmentUnlockedS;
-	public static bool donutUnlockedS;
-	public static bool mansionUnlockedS;
-	public static bool bankUnlockedS;
-    public static int startingMoneyS;
-    public static int moneyToWinS;
+    private static ContentManager instance;
 
-    void Awake ()
-	{
-		houseUnlockedS = houseUnlocked;
-		storeUnlockedS = storeUnlocked;
-		apartmentUnlockedS = apartmentUnlocked;
-		donutUnlockedS = donutUnlocked;
-		mansionUnlockedS = mansionUnlocked;
-		bankUnlockedS = bankUnlocked;
-        startingMoneyS = startingMoney;
-        moneyToWinS = moneyToWin;
+    void Awake () {
+        instance = this;
 	}
 
-	public static bool IsBuildingUnlocked(HouseManager.HouseType type)
-	{
+    // Returns how much money is needed to win
+    public static int MoneyToWin() {
+        return instance.moneyToWin;
+    }
+
+    // Returns whether or not the given house type is unlocked
+	public static bool IsBuildingUnlocked(HouseManager.HouseType type) {
 		switch(type) {
 			case HouseManager.HouseType.HOUSE:
-				return houseUnlockedS;
+				return instance.houseUnlocked;
 			case HouseManager.HouseType.APARTMENT:
-				return apartmentUnlockedS;
+				return instance.apartmentUnlocked;
 			case HouseManager.HouseType.MANSION:
-				return mansionUnlockedS;
+				return instance.mansionUnlocked;
 			case HouseManager.HouseType.STORE:
-				return storeUnlockedS;
+				return instance.storeUnlocked;
 			case HouseManager.HouseType.DONUT:
-				return donutUnlockedS;
+				return instance.donutUnlocked;
 			case HouseManager.HouseType.BANK:
-				return bankUnlockedS;
+				return instance.bankUnlocked;
 			default:
 				return false;
 		}

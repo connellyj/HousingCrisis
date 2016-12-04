@@ -30,7 +30,7 @@ public class GameManager : MonoBehaviour {
         if(InLevel()) {
             if(levelStarted) {
                 if(HouseManager.houses.Count == 0) LoseLevel();
-                if(moneyAmount >= ContentManager.moneyToWinS) WinLevel();
+                if(moneyAmount >= ContentManager.MoneyToWin()) WinLevel();
             } else if(HouseManager.houses.Count > 0) levelStarted = true;
         }
     }
@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour {
         levelStarted = false;
         moneyAmount = 0;
         wantedLevel = 0;
-        UpdateMoney(ContentManager.startingMoneyS);
+        UpdateMoney(ContentManager.MoneyToWin());
     }
 
     // Loses the level
@@ -105,7 +105,7 @@ public class GameManager : MonoBehaviour {
     public static void UpdateMoney(int change) {
         if(instance.moneyAmount + change < 0) instance.moneyAmount = 0;
         else instance.moneyAmount += change;
-        instance.levelUI.UpdateMoney("$" + instance.moneyAmount);
+        instance.levelUI.UpdateMoney(instance.moneyAmount);
     }
 
     // Returns the amount of money

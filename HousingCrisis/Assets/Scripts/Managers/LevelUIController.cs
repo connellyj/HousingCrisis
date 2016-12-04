@@ -3,39 +3,39 @@ using UnityEngine.UI;
 
 public class LevelUIController : MonoBehaviour {
 
+    // Onscreen info and buttons
     public Text moneyText;
     public Text wantedLevelText;
     public Text startWinButtonText;
     public Button startWinButton;
     public Button helpButton;
+    // People spawners
     public GameObject[] peopleSpawners;
-    public Texture[] houseImages;
-    public string[] houseInfo;
-
-    private readonly int PAUSE_WIDTH = 200;
-    private readonly int PAUSE_HEIGHT = 200;
-
+    // Game state info
     private bool paused = false;
     private bool wonLevel = false;
     private bool canWinLevel = false;
     private bool levelStarted = false;
     private bool helpMenuOpen = false;
     private int numHelpDisplayed = 0;
+    // Pause/win/lose menu
     private string menuText = "Paused";
-    private Vector2 center;
-    private Vector2 scrollPosition = Vector2.zero;
     private Rect pausedBackgroundRect;
     private Rect nextLevelRect;
     private Rect restartRect;
     private Rect exitRect;
     private Rect pausedRect;
+    private GUIStyle textStyle;
+    // Help menu
+    public Texture[] houseImages;
+    public string[] houseInfo;
     private Rect helpBackgroundRect;
     private Rect helpViewRect;
     private Rect closeHelpRect;
     private Rect[] houseImageRects;
     private Rect[] houseInfoRects;
     private Rect[] houseNameRects;
-    private GUIStyle textStyle;
+    private Vector2 scrollPosition = Vector2.zero;
 
     void Start() {
         UnPause();
@@ -52,6 +52,7 @@ public class LevelUIController : MonoBehaviour {
     }
 
     void OnGUI() {
+        // Shows the pause/win/lose menu
         if(paused) {
             GUI.Box(pausedBackgroundRect, "");
             if(wonLevel) {
@@ -69,7 +70,7 @@ public class LevelUIController : MonoBehaviour {
                 GameManager.Exit();
             }
         }
-
+        // Shows the help menu
         if(helpMenuOpen) {
             if(GUI.Button(closeHelpRect, "Close")) helpMenuOpen = false;
             GUI.skin.box.wordWrap = true;
@@ -83,6 +84,7 @@ public class LevelUIController : MonoBehaviour {
         }
     }
 
+    // Adds listeners to the start/win button and help button
     private void InitButtons() {
         startWinButton.onClick.AddListener(() => {
             if(canWinLevel) WinLevel();
@@ -97,18 +99,22 @@ public class LevelUIController : MonoBehaviour {
         });
     }
 
+    // Initializes the rects for the pause/win/lose menu
     private void InitPauseRects() {
-        center = new Vector2(Screen.width / 2, Screen.height / 2);
-        pausedBackgroundRect = new Rect(center[0] - PAUSE_WIDTH / 2, center[1] - PAUSE_HEIGHT / 2, PAUSE_WIDTH, PAUSE_HEIGHT);
-        nextLevelRect = new Rect(center[0] - PAUSE_WIDTH / 4, center[1] - PAUSE_HEIGHT / 16 - PAUSE_HEIGHT * 3 / 8, PAUSE_WIDTH / 2, PAUSE_HEIGHT / 8);
-        restartRect = new Rect(center[0] - PAUSE_WIDTH / 4, center[1] - PAUSE_HEIGHT / 16, PAUSE_WIDTH / 2, PAUSE_HEIGHT / 8);
-        exitRect = new Rect(center[0] - PAUSE_WIDTH / 4, center[1] - PAUSE_HEIGHT / 16 + PAUSE_HEIGHT * 3 / 8, PAUSE_WIDTH / 2, PAUSE_HEIGHT / 8);
-        pausedRect = new Rect(center[0] - PAUSE_WIDTH * 3 / 8, center[1] - PAUSE_HEIGHT * 3 / 8, PAUSE_WIDTH * 3 / 4, PAUSE_HEIGHT / 4);
+        int pauseWidth = 200;
+        int pauseHeight = 200;
+        Vector2 center = new Vector2(Screen.width / 2, Screen.height / 2);
+        pausedBackgroundRect = new Rect(center[0] - pauseWidth / 2, center[1] - pauseHeight / 2, pauseWidth, pauseHeight);
+        nextLevelRect = new Rect(center[0] - pauseWidth / 4, center[1] - pauseHeight / 16 - pauseHeight / 4, pauseWidth / 2, pauseHeight / 8);
+        restartRect = new Rect(center[0] - pauseWidth / 4, center[1] - pauseHeight / 16, pauseWidth / 2, pauseHeight / 8);
+        exitRect = new Rect(center[0] - pauseWidth / 4, center[1] - pauseHeight / 16 + pauseHeight / 4, pauseWidth / 2, pauseHeight / 8);
+        pausedRect = new Rect(center[0] - pauseWidth * 3 / 8, center[1] - pauseHeight * 3 / 8, pauseWidth * 3 / 4, pauseHeight / 4);
         textStyle = new GUIStyle();
         textStyle.alignment = TextAnchor.MiddleCenter;
         textStyle.fontSize = 50;
     }
 
+    // Initializes the rects for the help menu
     private void InitHelpRects() {
         for(int i = 0; i < 6; i++) {
             if(ContentManager.IsBuildingUnlocked((HouseManager.HouseType) i)) numHelpDisplayed++;
@@ -129,38 +135,46 @@ public class LevelUIController : MonoBehaviour {
         }
     }
 
-    public void UpdateMoney(string money) {
-        moneyText.text = money;
+    // Changes the onscreen money value to the provided string
+    public void UpdateMoney(int money) {
+        moneyText.text = "$" + money;
     }
 
+    // Updates the onscreen wanted value
     public void UpdateWantedLevel(string wantedLevel) {
         wantedLevelText.text = wantedLevel;
     }
 
+    // Starts the level by starting to spawn people
     private void StartLevel() {
         foreach(GameObject spawn in peopleSpawners) spawn.SetActive(true);
     }
 
+    // Ends the level
     public void LoseLevel() {
         menuText = "Level Failed";
         Pause();
     }
 
+    // Activates the win button
     public void SetCanWinLevel() {
         canWinLevel = true;
         startWinButtonText.text = "WIN!";
     }
 
+    // Wins the level
     public void WinLevel() {
         wonLevel = true;
         Pause();
     }
 
+    // Pauses the game
     private void Pause() {
         Time.timeScale = 0;
         paused = true;
     }
 
+    // Unpauses the game
     private void UnPause() {
         Time.timeScale = 1;
         paused = false;
