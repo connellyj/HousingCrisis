@@ -53,7 +53,7 @@ public class HouseManager : MonoBehaviour {
 
     public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
-        if (!ContentManager.isBuildingUnlocked(type)) return false;
+        if (!ContentManager.IsBuildingUnlocked(type)) return false;
         switch(type) {
             case HouseType.HOUSE:
                 return money >= House.cost;

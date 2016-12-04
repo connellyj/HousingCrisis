@@ -22,8 +22,8 @@ UI
 * losing
 * start and win buttons
 - scene transitions
-- info popups
-- help menu
+* info popups
+* help menu
 - polish 
 	- $ counter
 	- edible person highlight

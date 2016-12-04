@@ -32,7 +32,7 @@ public class ContentManager : MonoBehaviour {
         moneyToWinS = moneyToWin;
 	}
 
-	public static bool isBuildingUnlocked(HouseManager.HouseType type)
+	public static bool IsBuildingUnlocked(HouseManager.HouseType type)
 	{
 		switch(type) {
 			case HouseManager.HouseType.HOUSE:

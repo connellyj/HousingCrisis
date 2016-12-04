@@ -126,7 +126,7 @@ public class BuildMenu : MonoBehaviour {
 
     private static HouseManager.HouseType CheckLocked(HouseManager.HouseType type)
     {
-    	if (ContentManager.isBuildingUnlocked(type))
+    	if (ContentManager.IsBuildingUnlocked(type))
     	{
     		return type;
     	} else {
