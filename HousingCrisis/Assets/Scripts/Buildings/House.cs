@@ -29,7 +29,6 @@ public class House : Builder {
     // house info
     protected int[] gridPos;
     protected int gridIndex;
-    protected float eatRadius = 0.5f;
     protected int numNonEatAreaChildren = 2;
     protected bool isChewing = false;
     private List<Direction> adjacentPaths;
@@ -40,7 +39,6 @@ public class House : Builder {
     private int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
-    private int minDamage = 0;
     private GameObject firePrefab;
     protected GameObject waterDrop;
 
