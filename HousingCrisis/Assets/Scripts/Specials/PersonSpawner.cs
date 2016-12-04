@@ -17,6 +17,7 @@ public class PersonSpawner : MonoBehaviour {
 
     // Spawns people randomly based on provided chances
     private int spawnCounter = 0; 
+    
 	void Update () {
 		spawnCounter++;
 		if (spawnCounter == 60)

@@ -20,6 +20,15 @@ public class DifficultyManager : MonoBehaviour {
 		UpdateSpawnPoints();
 	}
 
+	public void ActivateSpawners()
+	{
+		for (int i = 0; i < transform.childCount; i++)
+		{
+			PersonSpawner spawner = transform.GetChild(i).GetComponent<PersonSpawner>();
+			spawner.gameObject.SetActive(true);
+		}
+	}
+
 	public void ChangeEscapeCount(int amount)
 	{
 		escapeCount += amount;

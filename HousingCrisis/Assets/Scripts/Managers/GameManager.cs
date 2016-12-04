@@ -80,6 +80,12 @@ public class GameManager : MonoBehaviour {
         } else difficultyManager = null;
     }
 
+    // tells DifficultyManager to tell spawnpoints to start spawning
+    public static void BeginSpawning()
+    {
+        instance.difficultyManager.ActivateSpawners();
+    }
+
     // Loads the next scene
     public static void LoadNextLevel() {
         instance.currentScene++;

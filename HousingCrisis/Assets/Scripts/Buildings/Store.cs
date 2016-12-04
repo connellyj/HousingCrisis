@@ -7,7 +7,7 @@ public class Store : House {
     public GameObject pulseSpriteObject;
 
     protected override void Awake() {
-        numNonEatAreaChildren = 3;
+        numNonEatAreaChildren = 4;
         pulseSpriteObject.transform.localScale = Vector3.zero;
         base.Awake();
     }
