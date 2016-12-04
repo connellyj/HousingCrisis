@@ -21,7 +21,7 @@ public class BuildMenu : MonoBehaviour {
         backgroundRect = new Rect(Vector2.zero, new Vector2(WIDTH, HEIGHT));
         firstBuildRect = new Rect(Vector2.zero, new Vector2(WIDTH, HEIGHT / 2));
         secondBuildRect = new Rect(Vector2.zero, new Vector2(WIDTH, HEIGHT / 2));
-        //closeRect = new Rect(Vector2.zero, new Vector2(WIDTH / 6, HEIGHT / 6));
+        closeRect = new Rect(Vector2.zero, new Vector2(WIDTH / 5, HEIGHT / 5));
         textStyle = new GUIStyle();
         textStyle.alignment = TextAnchor.MiddleCenter;
 	}
@@ -37,18 +37,16 @@ public class BuildMenu : MonoBehaviour {
     	open = false;
     }
 	
-    private static void MoveMenu(Vector3 position)
-    {
+    private static void MoveMenu(Vector3 position) {
     	worldPos = position;
     	screenPos = worldToScreenPosition(position);
     	backgroundRect.position = screenPos;
         firstBuildRect.position = screenPos;
         secondBuildRect.position = new Vector2(screenPos[0], screenPos[1] + HEIGHT / 2);
-        //closeRect.position = new Vector2(screenPos[0] + WIDTH / , screenPos[1] + HEIGHT / 2);
+        closeRect.position = new Vector2(screenPos[0] + WIDTH * 4 / 5, screenPos[1]);
     }
 
-	private static Vector2 worldToScreenPosition(Vector3 position)
-	{
+	private static Vector2 worldToScreenPosition(Vector3 position) {
 		Vector2 v = Camera.main.WorldToScreenPoint(position);
         v[0] -= WIDTH / 2;
         v[1] = Screen.height - v[1] - HEIGHT / 2;
@@ -68,12 +66,11 @@ public class BuildMenu : MonoBehaviour {
             GUI.Box(backgroundRect, "");
             HouseManager.HouseType firstType = buildOptions[0];
             HouseManager.HouseType secondType = buildOptions[1];
-            if (firstType == HouseManager.HouseType.LOCKED)
-            {
+            if (firstType == HouseManager.HouseType.LOCKED) {
             	GUI.Box(firstBuildRect, "LOCKED", textStyle);
             } else {
             	if (HouseManager.CanBuild(firstType)) {
-                    if (GUI.Button(firstBuildRect, firstType.ToString())) {
+                    if (GUI.Button(firstBuildRect, firstType.ToString() + "\n$" + HouseManager.GetCost(firstType))) {
                     	Close();
                     	Build(firstType);
                     }
@@ -81,35 +78,30 @@ public class BuildMenu : MonoBehaviour {
                 	GUI.Box(firstBuildRect, "NEED $$$", textStyle);
                 }
             }
-            if (secondType == HouseManager.HouseType.LOCKED)
-            {
+            if (secondType == HouseManager.HouseType.LOCKED) {
             	GUI.Box(secondBuildRect, "LOCKED", textStyle);
             } else {
             	if (HouseManager.CanBuild(secondType)) {
-                    if (GUI.Button(secondBuildRect, secondType.ToString())) {
+                    if (GUI.Button(secondBuildRect, secondType.ToString() + "\n" + HouseManager.GetCost(secondType))) {
                     	Close();
                     	Build(secondType);
                     }
                 } else {
-                	GUI.Box(firstBuildRect, "NEED $$$", textStyle);
+                	GUI.Box(secondBuildRect, "NEED $$$", textStyle);
                 }
-            // } else if (GUI.Button(closeRect, "Close")) {
-            // 	Close();
         	}
+            if(GUI.Button(closeRect, "x")) Close();
         }
     }
 
-    private void Build(HouseManager.HouseType type)
-    {
+    private void Build(HouseManager.HouseType type) {
     	builder.OnBuild();
     	HouseManager.Build(worldPos, type);
     }
 
 
-    private static void SetBuildOptionsForCaller(HouseManager.HouseType type)
-    {
-    	if (type == HouseManager.HouseType.PLOT)
-    	{
+    private static void SetBuildOptionsForCaller(HouseManager.HouseType type) {
+    	if (type == HouseManager.HouseType.PLOT) {
     		buildOptions[0] = CheckLocked(HouseManager.HouseType.HOUSE);
     		buildOptions[1] = CheckLocked(HouseManager.HouseType.STORE);
     	} else if (type == HouseManager.HouseType.HOUSE) {
@@ -123,10 +115,8 @@ public class BuildMenu : MonoBehaviour {
     	}
     }
 
-    private static HouseManager.HouseType CheckLocked(HouseManager.HouseType type)
-    {
-    	if (ContentManager.IsBuildingUnlocked(type))
-    	{
+    private static HouseManager.HouseType CheckLocked(HouseManager.HouseType type) {
+    	if (ContentManager.IsBuildingUnlocked(type)) {
     		return type;
     	} else {
     		return HouseManager.HouseType.LOCKED;

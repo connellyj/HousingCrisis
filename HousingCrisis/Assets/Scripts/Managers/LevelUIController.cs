@@ -88,7 +88,7 @@ public class LevelUIController : MonoBehaviour {
             if(canWinLevel) WinLevel();
             if(!levelStarted) {
                 levelStarted = true;
-                startWinButtonText.text = "";
+                startWinButtonText.text = "Goal:\n$" + ContentManager.MoneyToWin();
                 GameManager.BeginSpawning();
             }
         });
