@@ -8,7 +8,7 @@ public class DifficultyManager : MonoBehaviour {
 	public int wantedLevelCap = 3;
 	private static int maxWantedLevel = 3;
 
-	public int[] progressThreshholds = new int[maxWantedLevel + 1];
+	public int[] progressThreshholds = new int[maxWantedLevel];
 
 	public float[] spawnChances = new float[maxWantedLevel + 1];
 	public float[] robberChances = new float[maxWantedLevel + 1];
