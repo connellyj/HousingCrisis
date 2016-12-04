@@ -3,7 +3,12 @@ Bug Log
 Unassigned
 - sometimes eating fails to remove the person
 
+Refactoring Notes
+- fire instantiating maybe terrible?
+- builder on build method thing needed?
+
 Julia
+
 
 Connor
 - people are still getting highlighted when houses are on fire
