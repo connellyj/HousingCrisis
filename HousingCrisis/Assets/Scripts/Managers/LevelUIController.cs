@@ -139,8 +139,8 @@ public class LevelUIController : MonoBehaviour {
     }
 
     // Updates the onscreen wanted value
-    public void UpdateWantedLevel(string wantedLevel) {
-        wantedLevelText.text = wantedLevel;
+    public void UpdateWantedLevelAndProgress(string wantedLevel, string progress) {
+        wantedLevelText.text = string.Format("{0} . {1}", wantedLevel, progress);
     }
 
     // Ends the level

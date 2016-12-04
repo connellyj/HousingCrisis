@@ -3,18 +3,21 @@ using System.Collections;
 
 public class DifficultyManager : MonoBehaviour {
 
-	private int escapeCount = 0;
+	public int progressCount = 0;
 	public int wantedLevel = 0;
 	public int wantedLevelCap = 3;
 	private static int maxWantedLevel = 3;
 
-	public int[] escapeThreshholds = new int[maxWantedLevel + 1];
+	public int[] progressThreshholds = new int[maxWantedLevel + 1];
 
 	public float[] spawnChances = new float[maxWantedLevel + 1];
 	public float[] robberChances = new float[maxWantedLevel + 1];
 	public float[] policeChances = new float[maxWantedLevel + 1];
 	public float[] soldierChances = new float[maxWantedLevel + 1];
 	public float[] bankerChances = new float[maxWantedLevel + 1];
+
+	private int frameCounter = 0;
+	private bool isSpawning = false;
 
 	void Awake () {
 		UpdateSpawnPoints();
@@ -27,13 +30,13 @@ public class DifficultyManager : MonoBehaviour {
 			PersonSpawner spawner = transform.GetChild(i).GetComponent<PersonSpawner>();
 			spawner.gameObject.SetActive(true);
 		}
+		isSpawning = true;
 	}
 
-	public void ChangeEscapeCount(int amount)
+	public void ChangeProgressCount(int amount)
 	{
-		escapeCount += amount;
-		if (escapeCount < 0) escapeCount = 0;
-		if (escapeCount >= escapeThreshholds[wantedLevel])
+		progressCount += amount;
+		if (progressCount >= progressThreshholds[wantedLevel])
 		{
 			if (wantedLevel < wantedLevelCap) wantedLevel++;
 			UpdateSpawnPoints();
@@ -52,8 +55,6 @@ public class DifficultyManager : MonoBehaviour {
 			spawner.bankerChance = bankerChances[wantedLevel];
 		}
 	}
-
-	
 
 	/*
 	Difficulty Manager Plan

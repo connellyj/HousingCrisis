@@ -1,5 +1,7 @@
 ﻿public class Pedestrian : Person {
 
+    public int progressPerEscape;
+
     protected override void Start() {
         state = PersonState.WANDER;
         base.Start();
@@ -15,7 +17,7 @@
     protected override void CompletePath() {
         StopAllCoroutines();
         if(state == PersonState.PANIC) {
-            GameManager.UpdateWantedLevel(1);
+            GameManager.UpdateWantedLevel(progressPerEscape);
             RemovePerson();
         }else if(state == PersonState.WANDER) {
             RemovePerson();
