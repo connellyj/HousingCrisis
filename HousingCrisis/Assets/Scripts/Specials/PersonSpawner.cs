@@ -24,24 +24,38 @@ public class PersonSpawner : MonoBehaviour {
 			spawnCounter = 0;
 			if (spawnChance > Random.value) {
                 float rand = Random.value;
-                if(rand < policeChance) {
-                    Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance && HouseManager.houses.Count > 0) {
-                    Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance + policeChance && HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()){
-                    Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else if(rand < soldierChance + robberChance + policeChance + bankerChance) {
-                    Instantiate(bankerPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                } else {
-                    float genderRoll = Random.value;
-                    if (genderRoll < .5)
-                    {
-                        Instantiate(manPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                    } else {
-                        Instantiate(womanPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                if (rand < robberChance) {
+                    if (HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()) {
+                        Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                        return;
                     }
+                } else if(rand < policeChance + robberChance) {
+                    Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                    return;
+                } else if(rand < soldierChance + policeChance + robberChance) {
+                    if (HouseManager.houses.Count > 0) {
+                        Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                        return;
+                    }
+                } else if(rand < bankerChance + soldierChance + policeChance + robberChance) {
+                    Instantiate(bankerPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                    return;
                 }
-			}
-		}
-	}
+                SpawnPedestrian();
+                return;
+            }
+        }
+    }
+
+    private void SpawnPedestrian()
+    {
+        float genderRoll = Random.value;
+        if (genderRoll < .5)
+        {
+            Instantiate(manPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+        } else {
+            Instantiate(womanPrefab, transform.position + Person.positionOffset, Quaternion.identity);
+        }
+    }
+
 }

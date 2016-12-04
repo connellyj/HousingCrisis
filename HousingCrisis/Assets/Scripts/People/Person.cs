@@ -11,7 +11,7 @@ public class Person : MonoBehaviour {
     protected static readonly int value = 10;
     protected float speed = 2;
     protected static readonly float alertSpeed = 4;
-    protected static readonly float animationFPS = 10;
+    protected static readonly float animationFPS = 4;
     protected static readonly float motionFPS = 30;
     protected static readonly Color eatColor = Color.red;
     protected static readonly Color storeColor = Color.blue;

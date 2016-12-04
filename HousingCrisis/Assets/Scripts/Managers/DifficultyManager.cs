@@ -5,8 +5,8 @@ public class DifficultyManager : MonoBehaviour {
 
 	private int escapeCount = 0;
 	public int wantedLevel = 0;
-	public int wantedLevelCap = 4;
-	private static int maxWantedLevel = 4;
+	public int wantedLevelCap = 3;
+	private static int maxWantedLevel = 3;
 
 	public int[] escapeThreshholds = new int[maxWantedLevel + 1];
 

@@ -54,22 +54,7 @@ public class HouseManager : MonoBehaviour {
     public static bool CanBuild(HouseType type) {
         int money = GameManager.GetMoney();
         if (!ContentManager.IsBuildingUnlocked(type)) return false;
-        switch(type) {
-            case HouseType.HOUSE:
-                return money >= House.cost;
-            case HouseType.APARTMENT:
-                return money >= House.cost;
-            case HouseType.BANK:
-                return money >= House.cost;
-            case HouseType.DONUT:
-                return money >= House.cost;
-            case HouseType.MANSION:
-                return money >= House.cost;
-            case HouseType.STORE:
-                return money >= House.cost;
-            default:
-                return false;
-        }
+        return money >= House.costs[(int)type];
     }
 
     public static void AddBurningHouse(House h) {

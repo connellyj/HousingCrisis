@@ -6,7 +6,13 @@ using System.Collections.Generic;
 public class House : Builder {
 
     // static info
-    public static readonly int cost = 10;
+    public static readonly int[] costs = new int[] { 
+        50,     // HOUSE
+        100,    // APARTMENT
+        100,    // MANSION
+        100,    // STORE
+        100,    // DONUT
+        100 };  // BANK
     public static readonly int MAX_STALL = 3;
     public static readonly int alertRadius = 5;
     protected static readonly int healingPerTap = 20;
@@ -37,8 +43,8 @@ public class House : Builder {
     protected bool hasSprinklers;
 
     // fire info
-    protected int burnState = 0;
-    private int totalDamage = 0;
+    public int burnState = 0;
+    public int totalDamage = 0;
     private List<GameObject> fires = new List<GameObject>();
     private Vector3 fireOffset = new Vector3(0,0.4f,0);
     private GameObject firePrefab;
@@ -115,7 +121,7 @@ public class House : Builder {
     }
 
     public void Buy() {
-        GameManager.UpdateMoney(-1 * cost);
+        GameManager.UpdateMoney(-1 * costs[(int)type]);
     }
 
     public bool CanEat()
