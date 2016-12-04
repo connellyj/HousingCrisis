@@ -1,12 +1,10 @@
 Bug Log
 
 Unassigned
-- can’t click on plots after building is destroyed
 - when putting out fires it is easy to accidentally upgrade the building
 	tap => tap => tap => build menu opens => upgrade accidentally
 	SOLUTION: smoke animation after fire is put out
 - sometimes eating fails to remove the person
-- stores need to animate the pulse
 - should soldiers move from one house to the next closest house?
 
 Julia:
