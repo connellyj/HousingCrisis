@@ -10,8 +10,6 @@ Unassigned
 - builder on build method thing needed?
 
 Julia:
-- soldiers don't get pulled by stores
-- stores only pull normaly people 
 
 Connor:
 - people are still getting highlighted when houses are on fire

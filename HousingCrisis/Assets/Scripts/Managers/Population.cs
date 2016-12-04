@@ -128,7 +128,7 @@ public class Population : MonoBehaviour {
                 float dist = (p.transform.position - storePos).magnitude;
 
                 // if the person is within the alert radius and is not already stalled...
-                if(dist < House.alertRadius && p.state != Person.PersonState.STALL && !stalledPeople.Contains(p)) {
+                if((p.tag == "Person" || p.tag == personType) && dist < House.alertRadius && p.state != Person.PersonState.STALL && !stalledPeople.Contains(p)) {
                     // if the greatestIndex person is null or...
                     if(toBePulled[greatestIndex] == null ||
                         // if the person is the same type of person as the greatestIndex person
@@ -169,7 +169,7 @@ public class Population : MonoBehaviour {
         foreach(Person p in people) {
             if(p != null) {
                 float dist = (p.transform.position - storePos).magnitude;
-                if(p.state != Person.PersonState.STALL && dist < closestPeople[greatestIndex] && !stalledPeople.Contains(p)) {
+                if(p.tag == "Person" && p.state != Person.PersonState.STALL && dist < closestPeople[greatestIndex] && !stalledPeople.Contains(p)) {
                     closestPeople[greatestIndex] = dist;
                     toBePulled[greatestIndex] = p;
                     for(int i = 0; i < closestPeople.Length; i++) {
