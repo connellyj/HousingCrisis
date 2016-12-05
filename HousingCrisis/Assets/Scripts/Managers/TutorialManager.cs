@@ -5,14 +5,13 @@ public class TutorialManager : MonoBehaviour {
     public GameObject speechBubblePrefab;
 
     private SpeechBubble speechBubble;
-    //private int moneyToPopAt = 
 
     private bool hasShownFirstMessage = false;
     private bool hasShownSecondMessage = false;
     private bool hasShownThirdMessage = false;
 
     void Start() {
-        MessagePlayer("Hello there! My name is Hubert Houserton! *insert euphamism* Click on a plot " +
+        MessagePlayer("Hello there! My name is Hubert Houserton! Click on a plot " +
             "of land to build a house, then click on those silly people as they walk by!");
     }
 
