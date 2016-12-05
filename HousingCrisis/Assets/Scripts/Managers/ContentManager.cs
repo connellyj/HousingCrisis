@@ -22,7 +22,7 @@ public class ContentManager : MonoBehaviour {
         return instance.startingMoney;
     }
 
-    // Returns how much money is needed to win
+    // Returns how many people are needed to win
     public static int PeopleEatenToWin() {
         return instance.peopleEatenToWin;
     }
