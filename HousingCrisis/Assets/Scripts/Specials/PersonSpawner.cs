@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections;
 
 public class PersonSpawner : MonoBehaviour {
 
@@ -15,37 +16,35 @@ public class PersonSpawner : MonoBehaviour {
     public GameObject policePrefab;
     public GameObject bankerPrefab;
 
-    // Spawns people randomly based on provided chances
-    private int spawnCounter = 0; 
+    void Start() {
+        StartCoroutine(SpawnPeople());
+    }
 
-	void Update () {
-		spawnCounter++;
-		if (spawnCounter == 60)
-		{
-			spawnCounter = 0;
-			if (spawnChance > Random.value) {
+    private IEnumerator SpawnPeople() {
+        while(true) {
+            yield return new WaitForSeconds(1);
+            if(spawnChance > Random.value) {
                 float rand = Random.value;
-                if (rand < robberChance) {
-                    if (HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()) {
+                if(rand < robberChance) {
+                    if(HouseManager.houses.Count > 0 && HouseManager.AnyHousesNotBurning()) {
                         Instantiate(robberPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                        return;
+                        continue;
                     }
                 } else if(rand < policeChance + robberChance) {
-                    if (HouseManager.houses.Count > 0) {
+                    if(HouseManager.houses.Count > 0) {
                         Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                        return;
+                        continue;
                     }
                 } else if(rand < soldierChance + policeChance + robberChance) {
-                    if (HouseManager.houses.Count > 0) {
+                    if(HouseManager.houses.Count > 0) {
                         Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                        return;
+                        continue;
                     }
                 } else if(rand < bankerChance + soldierChance + policeChance + robberChance) {
                     Instantiate(bankerPrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                    return;
+                    continue;
                 }
                 SpawnPedestrian();
-                return;
             }
         }
     }

@@ -45,6 +45,7 @@ public abstract class Person : MonoBehaviour {
     public int attackValue;
     public int attackStallTime;
     public GameObject fireball;
+    protected List<House> stalledAt;
 
     public enum PersonState { WANDER, PANIC, TARGET_RANDOM, NONE, STALL, TARGET_SET, ATTACK, WANDER_SET, TARGET_RANDOM_NOTBURNING }
 
@@ -70,6 +71,7 @@ public abstract class Person : MonoBehaviour {
         gameObject.layer = 2;
         // add the person to the population
         Population.AddPerson(this);
+        stalledAt = new List<House>();
     }
 
     protected abstract void CompletePath();
@@ -136,8 +138,10 @@ public abstract class Person : MonoBehaviour {
             House h = HouseManager.houses[goalIndex];
             if(h.HasAvailableStallSpace()) {
                 MoveToPosition(h.AddStalledPerson(this));
+                stalledAt.Add(h);
                 yield return new WaitForSeconds(stallTime);
                 h.RemoveStalledPerson(this);
+                stalledAt.Remove(h);
                 if(spriteRenderer.color == storeColor) UnHighlight();
                 CompletePath();
             } else CompletePath();
@@ -294,6 +298,9 @@ public abstract class Person : MonoBehaviour {
     public void OnEaten() {
         if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
         else GameManager.UpdateMoney(value);
+        foreach(House h in stalledAt) {
+            h.RemoveStalledPerson(this);
+        }
         GameManager.UpdatePeopleEaten(1);
         RemovePerson();
     }

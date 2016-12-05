@@ -21,7 +21,7 @@ public class House : Builder {
     public Sprite eatingSprite;
     public Sprite[] chewingSprites = new Sprite[4];
     // stalled people info
-    protected List<Person> stalledPeople;
+    [HideInInspector] public List<Person> stalledPeople;
     protected Dictionary<int, Vector3[]> stalledPositions;
     [HideInInspector] public int numStalled = 0;
     // house info
@@ -350,26 +350,14 @@ public class House : Builder {
 
     // Returns the location the new stalled person should move to
     public Vector3 AddStalledPerson(Person p) {
-        //foreach(Person p in stalledPeople) {
-
-        //}
+        stalledPeople.Add(p);
         numStalled++;
-        for(int i = 0; i < stalledPeople.Count; i++) {
-            if(stalledPeople[i] == null) {
-                stalledPeople[i] = p;
-                Vector3[] value;
-                if(stalledPositions.TryGetValue(GridManager.CoordsToIndex(p.X(), p.Y()), out value)) return value[i];
-            }
-        }
-        return p.transform.position;
+        return stalledPositions[GridManager.CoordsToIndex(p.X(), p.Y())][numStalled - 1];
     }
 
     // Removes the given person when they're no longer stalled
     public void RemoveStalledPerson(Person p) {
-        numStalled--;
-        for(int i = 0; i < stalledPeople.Count; i++) {
-            if(stalledPeople[i] == p) stalledPeople[i] = null;
-        }
+        if(stalledPeople.Remove(p)) numStalled--;
     }
 
     // Turns the sprinklers on or off based on whether the house has sprinklers
