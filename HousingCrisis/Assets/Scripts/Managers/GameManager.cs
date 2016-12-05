@@ -107,7 +107,7 @@ public class GameManager : MonoBehaviour {
     // Loads the next scene
     public static void LoadNextLevel() {
         instance.currentScene++;
-        SceneManager.LoadScene(instance.currentScene);
+        SceneManager.LoadScene(instance.currentScene % SceneManager.sceneCount);
     }
 
     // Reloads the current scene
