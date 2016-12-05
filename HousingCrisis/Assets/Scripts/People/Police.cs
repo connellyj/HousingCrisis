@@ -20,6 +20,7 @@ public class Police : Person {
             House h = HouseManager.houses[goalIndex];
             if(h.HasAvailableStallSpace()) {
                 MoveToPosition(h.AddStalledPerson(this));
+                stalledAt.Add(h);
                 StartCoroutine(Shoot(h));
             } else CompletePath();
         } else CompletePath();
@@ -33,6 +34,7 @@ public class Police : Person {
             yield return new WaitForSeconds(attackStallTime);
         }
         h.RemoveStalledPerson(this);
+        stalledAt.Remove(h);
         CompletePath();
     }
 
