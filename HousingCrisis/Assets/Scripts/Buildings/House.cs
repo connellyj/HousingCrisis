@@ -348,6 +348,9 @@ public class House : Builder {
 
     // Returns the location the new stalled person should move to
     public Vector3 AddStalledPerson(Person p) {
+        //foreach(Person p in stalledPeople) {
+
+        //}
         numStalled++;
         for(int i = 0; i < stalledPeople.Count; i++) {
             if(stalledPeople[i] == null) {

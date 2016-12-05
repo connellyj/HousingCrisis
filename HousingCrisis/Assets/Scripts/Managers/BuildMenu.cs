@@ -70,7 +70,8 @@ public class BuildMenu : MonoBehaviour {
             	GUI.Box(firstBuildRect, "LOCKED", textStyle);
             } else {
             	if (HouseManager.CanBuild(firstType)) {
-                    if (GUI.Button(firstBuildRect, firstType.ToString() + "\n$" + HouseManager.GetCost(firstType))) {
+                    if(GUI.Button(closeRect, "x")) Close();
+                    else if (GUI.Button(firstBuildRect, firstType.ToString() + "\n$" + HouseManager.GetCost(firstType))) {
                     	Close();
                     	Build(firstType);
                     }
@@ -82,7 +83,7 @@ public class BuildMenu : MonoBehaviour {
             	GUI.Box(secondBuildRect, "LOCKED", textStyle);
             } else {
             	if (HouseManager.CanBuild(secondType)) {
-                    if (GUI.Button(secondBuildRect, secondType.ToString() + "\n" + HouseManager.GetCost(secondType))) {
+                    if (GUI.Button(secondBuildRect, secondType.ToString() + "\n$" + HouseManager.GetCost(secondType))) {
                     	Close();
                     	Build(secondType);
                     }
@@ -90,7 +91,6 @@ public class BuildMenu : MonoBehaviour {
                 	GUI.Box(secondBuildRect, "NEED $$$", textStyle);
                 }
         	}
-            if(GUI.Button(closeRect, "x")) Close();
         }
     }
 
