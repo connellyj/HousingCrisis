@@ -137,6 +137,11 @@ public class GameManager : MonoBehaviour {
         instance.levelUI.UpdatePeopleEaten(instance.peopleEaten);
     }
 
+    public static void UpdateBankerChance(int change)
+    {
+        instance.difficultyManager.UpdateBankerChance(change);
+    }
+
     // Returns the amount of money
     public static int GetMoney() {
         return instance.moneyAmount;

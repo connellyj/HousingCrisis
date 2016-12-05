@@ -337,6 +337,7 @@ public class House : Builder {
     // Removes and destroys the house
     protected virtual void RemoveHouse() {
         HouseManager.RemoveHouse(this);
+        if (type == HouseManager.HouseType.BANK) GameManager.UpdateBankerChance(-1);
         foreach(Person p in stalledPeople) if(p != null) p.UnHighlight();
         Destroy(gameObject);
     }
