@@ -129,8 +129,7 @@ public class GameManager : MonoBehaviour {
     // Updates the escapeCount by the given amount which updates the wanted level accordingly
     public static void UpdateWantedLevel(int change) {
         instance.difficultyManager.ChangeProgressCount(change);
-        instance.levelUI.UpdateWantedLevelAndProgress(instance.difficultyManager.wantedLevel.ToString(), 
-                                           instance.difficultyManager.progressCount.ToString());
+        instance.levelUI.UpdateWantedLevelAndProgress(instance.difficultyManager.wantedLevel);
     }
 
     public static int GetWantedLevel() {

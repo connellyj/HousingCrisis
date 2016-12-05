@@ -5,10 +5,10 @@ public class LevelUIController : MonoBehaviour {
 
     // Onscreen info and buttons
     public Text moneyText;
-    public Text wantedLevelText;
     public Text startWinButtonText;
     public Button startWinButton;
     public Button helpButton;
+    public GameObject[] stars;
     // Game state info
     private bool paused = false;
     private bool wonLevel = false;
@@ -36,6 +36,7 @@ public class LevelUIController : MonoBehaviour {
 
     void Start() {
         UnPause();
+        foreach(GameObject s in stars) s.SetActive(false);
         InitButtons();
         InitPauseRects();
         InitHelpRects();
@@ -142,8 +143,10 @@ public class LevelUIController : MonoBehaviour {
     }
 
     // Updates the onscreen wanted value
-    public void UpdateWantedLevelAndProgress(string wantedLevel, string progress) {
-        wantedLevelText.text = string.Format("{0} . {1}", wantedLevel, progress);
+    public void UpdateWantedLevelAndProgress(int wantedLevel) {
+        for(int i = 0; i < wantedLevel; i++) {
+            stars[i].SetActive(true);
+        }
     }
 
     // Ends the level
