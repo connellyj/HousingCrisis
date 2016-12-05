@@ -19,7 +19,9 @@ public class Store : House {
         {
             s.color = Color.black;
             GameManager.UpdateBankerChance(1);
+            spriteWrapper.transform.position += new Vector3(0,0.15f,0);
         }
+        if(type == HouseManager.HouseType.DONUT) spriteWrapper.transform.position += new Vector3(0,0.15f,0);
         if(type == HouseManager.HouseType.STORE) s.color = Color.blue;
         StartCoroutine(Pulse());
     }
