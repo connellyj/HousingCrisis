@@ -106,6 +106,7 @@ public class GameManager : MonoBehaviour {
 
     // Loads the next scene
     public static void LoadNextLevel() {
+        instance.StopAllCoroutines();
         instance.currentScene++;
         if(instance.currentScene == 8) instance.currentScene = 0;
         SceneManager.LoadScene(instance.currentScene);
@@ -113,6 +114,7 @@ public class GameManager : MonoBehaviour {
 
     // Reloads the current scene
     public static void RestartLevel() {
+        instance.StopAllCoroutines();
         SceneManager.LoadScene(instance.currentScene);
     }
 
