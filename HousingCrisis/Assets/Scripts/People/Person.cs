@@ -294,6 +294,7 @@ public abstract class Person : MonoBehaviour {
     public void OnEaten() {
         if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
         else GameManager.UpdateMoney(value);
+        GameManager.UpdatePeopleEaten(1);
         RemovePerson();
     }
 

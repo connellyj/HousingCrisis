@@ -16,8 +16,6 @@ public class DifficultyManager : MonoBehaviour {
 	public float[] soldierChances = new float[maxWantedLevel + 1];
 	public float[] bankerChances = new float[maxWantedLevel + 1];
 
-	private int frameCounter = 0;
-
 	void Awake () {
 		UpdateSpawnPoints();
 	}

@@ -9,7 +9,7 @@ public class ContentManager : MonoBehaviour {
 	public bool mansionUnlocked;
 	public bool bankUnlocked;
     public int startingMoney;
-    public int moneyToWin;
+    public int peopleEatenToWin;
 
     private static ContentManager instance;
 
@@ -23,8 +23,8 @@ public class ContentManager : MonoBehaviour {
     }
 
     // Returns how much money is needed to win
-    public static int MoneyToWin() {
-        return instance.moneyToWin;
+    public static int PeopleEatenToWin() {
+        return instance.peopleEatenToWin;
     }
 
     // Returns whether or not the given house type is unlocked
