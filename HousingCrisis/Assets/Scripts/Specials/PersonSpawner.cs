@@ -17,7 +17,7 @@ public class PersonSpawner : MonoBehaviour {
 
     // Spawns people randomly based on provided chances
     private int spawnCounter = 0; 
-    
+
 	void Update () {
 		spawnCounter++;
 		if (spawnCounter == 60)
@@ -31,8 +31,10 @@ public class PersonSpawner : MonoBehaviour {
                         return;
                     }
                 } else if(rand < policeChance + robberChance) {
-                    Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
-                    return;
+                    if (HouseManager.houses.Count > 0) {
+                        Instantiate(policePrefab, transform.position + Person.positionOffset, Quaternion.identity);
+                        return;
+                    }
                 } else if(rand < soldierChance + policeChance + robberChance) {
                     if (HouseManager.houses.Count > 0) {
                         Instantiate(soldierPrefab, transform.position + Person.positionOffset, Quaternion.identity);
