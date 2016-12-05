@@ -133,6 +133,10 @@ public class GameManager : MonoBehaviour {
                                            instance.difficultyManager.progressCount.ToString());
     }
 
+    public static int GetWantedLevel() {
+        return instance.difficultyManager.wantedLevel;
+    }
+
     // Updates the money amount based on the given amount
     public static void UpdateMoney(int change) {
         if(instance.moneyAmount + change < 0) instance.moneyAmount = 0;
@@ -144,6 +148,10 @@ public class GameManager : MonoBehaviour {
     {
         instance.peopleEaten += change;
         instance.levelUI.UpdatePeopleEaten(instance.peopleEaten);
+    }
+
+    public static int GetPeopleEaten() {
+        return instance.peopleEaten;
     }
 
     public static void UpdateBankerChance(int change)

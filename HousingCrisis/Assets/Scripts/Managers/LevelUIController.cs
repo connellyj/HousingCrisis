@@ -138,7 +138,7 @@ public class LevelUIController : MonoBehaviour {
 
     // Changes the onscreen people eaten value to the provided string
     public void UpdatePeopleEaten(int peopleEaten) {
-        startWinButtonText.text = peopleEaten + "/" + ContentManager.PeopleEatenToWin() + "People Eaten";
+        startWinButtonText.text = peopleEaten + "/" + ContentManager.PeopleEatenToWin() + " People Eaten";
     }
 
     // Updates the onscreen wanted value
