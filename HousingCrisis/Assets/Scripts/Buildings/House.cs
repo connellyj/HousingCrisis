@@ -13,7 +13,7 @@ public class House : Builder {
     protected static readonly float attritionDPS = 20f;
     public static readonly float eatRadius = 0.5f;
     private static readonly float personStallOffset = 0.3f;
-    private static readonly float houseStallOffset = 0.7f;
+    private static readonly float houseStallOffset = 0.9f;
     // sprites and renderer
     protected SpriteRenderer spriteRenderer;
     public GameObject spriteWrapper;
