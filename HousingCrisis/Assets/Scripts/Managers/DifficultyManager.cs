@@ -17,7 +17,6 @@ public class DifficultyManager : MonoBehaviour {
 	public float[] bankerChances = new float[maxWantedLevel + 1];
 
 	private int frameCounter = 0;
-	private bool isSpawning = false;
 
 	void Awake () {
 		UpdateSpawnPoints();
@@ -30,7 +29,6 @@ public class DifficultyManager : MonoBehaviour {
 			PersonSpawner spawner = transform.GetChild(i).GetComponent<PersonSpawner>();
 			spawner.gameObject.SetActive(true);
 		}
-		isSpawning = true;
 	}
 
 	public void ChangeProgressCount(int amount)
