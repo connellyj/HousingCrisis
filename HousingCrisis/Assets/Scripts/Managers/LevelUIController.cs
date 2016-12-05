@@ -12,7 +12,6 @@ public class LevelUIController : MonoBehaviour {
     // Game state info
     private bool paused = false;
     private bool wonLevel = false;
-    private bool canWinLevel = false;
     private bool levelStarted = false;
     private bool helpMenuOpen = false;
     private int numHelpDisplayed = 0;
@@ -85,10 +84,9 @@ public class LevelUIController : MonoBehaviour {
     // Adds listeners to the start/win button and help button
     private void InitButtons() {
         startWinButton.onClick.AddListener(() => {
-            if(canWinLevel) WinLevel();
             if(!levelStarted) {
                 levelStarted = true;
-                startWinButtonText.text = "Goal:\n$" + ContentManager.MoneyToWin();
+                startWinButtonText.text = "0/" + ContentManager.PeopleEatenToWin() + "People Eaten";
                 GameManager.BeginSpawning();
             }
         });
@@ -138,6 +136,11 @@ public class LevelUIController : MonoBehaviour {
         moneyText.text = "$" + money;
     }
 
+    // Changes the onscreen people eaten value to the provided string
+    public void UpdatePeopleEaten(int peopleEaten) {
+        startWinButtonText.text = peopleEaten + "/" + ContentManager.PeopleEatenToWin() + "People Eaten";
+    }
+
     // Updates the onscreen wanted value
     public void UpdateWantedLevelAndProgress(string wantedLevel, string progress) {
         wantedLevelText.text = string.Format("{0} . {1}", wantedLevel, progress);
@@ -147,12 +150,6 @@ public class LevelUIController : MonoBehaviour {
     public void LoseLevel() {
         menuText = "Level Failed";
         Pause();
-    }
-
-    // Activates the win button
-    public void SetCanWinLevel() {
-        canWinLevel = true;
-        startWinButtonText.text = "WIN!";
     }
 
     // Wins the level

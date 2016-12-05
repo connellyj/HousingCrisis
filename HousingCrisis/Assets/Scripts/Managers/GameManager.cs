@@ -5,6 +5,7 @@ public class GameManager : MonoBehaviour {
 
     private static GameManager instance;
 
+    public int peopleEaten;
     private int currentScene;
     private int moneyAmount;
     private bool levelStarted = false;
@@ -31,7 +32,7 @@ public class GameManager : MonoBehaviour {
         if(InLevel()) {
             if(levelStarted) {
                 if(HouseManager.houses.Count == 0) LoseLevel();
-                if(moneyAmount >= ContentManager.MoneyToWin()) WinLevel();
+                if(peopleEaten >= ContentManager.PeopleEatenToWin()) WinLevel();
                 frameCounter++;
                 if (frameCounter > 60) 
                 {
@@ -57,6 +58,7 @@ public class GameManager : MonoBehaviour {
     private void UpdateLevel() {
         levelStarted = false;
         moneyAmount = 0;
+        peopleEaten = 0;
         UpdateMoney(ContentManager.StartingMoney());
         UpdateDiffManager();
     }
@@ -68,7 +70,7 @@ public class GameManager : MonoBehaviour {
 
     // Wins the level
     private void WinLevel() {
-        levelUI.SetCanWinLevel();
+        levelUI.WinLevel();
     }
 
     // Updates the UI when a new level starts
@@ -127,6 +129,17 @@ public class GameManager : MonoBehaviour {
         if(instance.moneyAmount + change < 0) instance.moneyAmount = 0;
         else instance.moneyAmount += change;
         instance.levelUI.UpdateMoney(instance.moneyAmount);
+    }
+
+    public static void UpdatePeopleEaten(int change)
+    {
+        instance.peopleEaten += change;
+        instance.levelUI.UpdatePeopleEaten(instance.peopleEaten);
+    }
+
+    public static void UpdateBankerChance(int change)
+    {
+        instance.difficultyManager.UpdateBankerChance(change);
     }
 
     // Returns the amount of money

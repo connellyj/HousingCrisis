@@ -14,9 +14,8 @@ public class DifficultyManager : MonoBehaviour {
 	public float[] robberChances = new float[maxWantedLevel + 1];
 	public float[] policeChances = new float[maxWantedLevel + 1];
 	public float[] soldierChances = new float[maxWantedLevel + 1];
-	public float[] bankerChances = new float[maxWantedLevel + 1];
-
-	private int frameCounter = 0;
+	private float bankerChance = 0;
+	private float bankerChanceCoefficient = .08f;
 
 	void Awake () {
 		UpdateSpawnPoints();
@@ -53,8 +52,13 @@ public class DifficultyManager : MonoBehaviour {
 			spawner.robberChance = robberChances[wantedLevel];
 			spawner.policeChance = policeChances[wantedLevel];
 			spawner.soldierChance = soldierChances[wantedLevel];
-			spawner.bankerChance = bankerChances[wantedLevel];
+			spawner.bankerChance = bankerChance;
 		}
+	}
+
+	public void UpdateBankerChance(int change)
+	{
+		bankerChance += change * bankerChanceCoefficient;
 	}
 
 	/*

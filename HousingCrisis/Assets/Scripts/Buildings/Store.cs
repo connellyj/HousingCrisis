@@ -15,7 +15,11 @@ public class Store : House {
     protected override void Start() {
         base.Start();
         SpriteRenderer s = pulseSpriteObject.GetComponent<SpriteRenderer>();
-        if(type == HouseManager.HouseType.BANK) s.color = Color.black;
+        if(type == HouseManager.HouseType.BANK) 
+        {
+            s.color = Color.black;
+            GameManager.UpdateBankerChance(1);
+        }
         if(type == HouseManager.HouseType.STORE) s.color = Color.blue;
         StartCoroutine(Pulse());
     }

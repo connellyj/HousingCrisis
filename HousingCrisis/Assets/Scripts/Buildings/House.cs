@@ -70,7 +70,8 @@ public class House : Builder {
     void OnMouseDown() {
         if(burnState <= 0 && !isSmoking) {
             // display build options
-            BuildMenu.Open(this);
+            if (type == HouseManager.HouseType.HOUSE || 
+                type == HouseManager.HouseType.STORE) BuildMenu.Open(this);
         } else {
             // put out fire
             HealHouse(healingPerTap);
@@ -337,6 +338,7 @@ public class House : Builder {
     // Removes and destroys the house
     protected virtual void RemoveHouse() {
         HouseManager.RemoveHouse(this);
+        if (type == HouseManager.HouseType.BANK) GameManager.UpdateBankerChance(-1);
         foreach(Person p in stalledPeople) if(p != null) p.UnHighlight();
         Destroy(gameObject);
     }

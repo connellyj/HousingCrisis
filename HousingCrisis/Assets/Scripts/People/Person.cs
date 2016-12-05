@@ -301,6 +301,7 @@ public abstract class Person : MonoBehaviour {
         foreach(House h in stalledAt) {
             h.RemoveStalledPerson(this);
         }
+        GameManager.UpdatePeopleEaten(1);
         RemovePerson();
     }
 
