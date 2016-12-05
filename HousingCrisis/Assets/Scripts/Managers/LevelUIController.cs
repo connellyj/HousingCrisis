@@ -26,6 +26,7 @@ public class LevelUIController : MonoBehaviour {
     // Help menu
     public Texture[] houseImages;
     public string[] houseInfo;
+    public HouseManager.HouseType[] houseTypes;
     private Rect helpBackgroundRect;
     private Rect helpViewRect;
     private Rect closeHelpRect;
@@ -76,7 +77,7 @@ public class LevelUIController : MonoBehaviour {
             for(int i = 0; i < numHelpDisplayed; i++) {
                 GUI.Box(houseImageRects[i], houseImages[i]);
                 GUI.Box(houseInfoRects[i], houseInfo[i]);
-                GUI.Box(houseNameRects[i], ((HouseManager.HouseType)i).ToString());
+                GUI.Box(houseNameRects[i], (houseTypes[i]).ToString());
             }
             GUI.EndScrollView();
         }
@@ -114,7 +115,7 @@ public class LevelUIController : MonoBehaviour {
     // Initializes the rects for the help menu
     private void InitHelpRects() {
         for(int i = 0; i < 6; i++) {
-            if(ContentManager.IsBuildingUnlocked((HouseManager.HouseType) i)) numHelpDisplayed++;
+            if(ContentManager.IsBuildingUnlocked(houseTypes[i])) numHelpDisplayed++;
         }
         int viewHeight = Screen.height / 4 * numHelpDisplayed;
         int infoWidth = Screen.height / 4;
