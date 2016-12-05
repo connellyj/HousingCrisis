@@ -15,7 +15,7 @@ public class DifficultyManager : MonoBehaviour {
 	public float[] policeChances = new float[maxWantedLevel + 1];
 	public float[] soldierChances = new float[maxWantedLevel + 1];
 	private float bankerChance = 0;
-	private float bankerChanceCoefficient = .07f;
+	private float bankerChanceCoefficient = .08f;
 
 	void Awake () {
 		UpdateSpawnPoints();

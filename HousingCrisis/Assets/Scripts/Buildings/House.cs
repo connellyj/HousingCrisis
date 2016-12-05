@@ -70,7 +70,8 @@ public class House : Builder {
     void OnMouseDown() {
         if(burnState <= 0 && !isSmoking) {
             // display build options
-            BuildMenu.Open(this);
+            if (type == HouseManager.HouseType.HOUSE || 
+                type == HouseManager.HouseType.STORE) BuildMenu.Open(this);
         } else {
             // put out fire
             HealHouse(healingPerTap);
