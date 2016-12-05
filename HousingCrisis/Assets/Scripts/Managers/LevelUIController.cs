@@ -86,8 +86,8 @@ public class LevelUIController : MonoBehaviour {
         startWinButton.onClick.AddListener(() => {
             if(!levelStarted) {
                 levelStarted = true;
-                startWinButtonText.text = "0/" + ContentManager.PeopleEatenToWin() + "People Eaten";
-                GameManager.BeginSpawning();
+                startWinButtonText.text = "0/" + ContentManager.PeopleEatenToWin() + " People Eaten";
+                GameManager.StartLevel();
             }
         });
         helpButton.onClick.AddListener(() => {

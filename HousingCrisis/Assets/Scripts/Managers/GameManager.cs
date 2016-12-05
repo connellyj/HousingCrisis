@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameManager : MonoBehaviour {
 
@@ -9,7 +10,6 @@ public class GameManager : MonoBehaviour {
     private int currentScene;
     private int moneyAmount;
     private bool levelStarted = false;
-    private int frameCounter = 0;
     private LevelUIController levelUI;
     private DifficultyManager difficultyManager;
 
@@ -33,13 +33,23 @@ public class GameManager : MonoBehaviour {
             if(levelStarted) {
                 if(HouseManager.houses.Count == 0) LoseLevel();
                 if(peopleEaten >= ContentManager.PeopleEatenToWin()) WinLevel();
-                frameCounter++;
-                if (frameCounter > 60) 
-                {
-                    frameCounter = 0;
-                    GameManager.UpdateWantedLevel(1);
-                }
             } else if(HouseManager.houses.Count > 0) levelStarted = true;
+        }
+    }
+
+    public static void StartLevel() {
+        instance.StartWantedLevelCounter();
+        instance.BeginSpawning();
+    }
+
+    private void StartWantedLevelCounter() {
+        StartCoroutine(IncreaseWantedLevel());
+    }
+
+    private IEnumerator IncreaseWantedLevel() {
+        while(true) {
+            yield return new WaitForSeconds(1);
+            UpdateWantedLevel(1);
         }
     }
 
@@ -90,9 +100,8 @@ public class GameManager : MonoBehaviour {
     }
 
     // tells DifficultyManager to tell spawnpoints to start spawning
-    public static void BeginSpawning()
-    {
-        instance.difficultyManager.ActivateSpawners();
+    private void BeginSpawning() {
+        difficultyManager.ActivateSpawners();
     }
 
     // Loads the next scene

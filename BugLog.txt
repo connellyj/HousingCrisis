@@ -3,6 +3,7 @@ Bug Log
 Unassigned 
 - sometimes eating fails to remove the person
 - show $ to win in win button text
+- stop spawning people and counting wanted level when level ends and when paused
 
 Refactoring Notes
 - fire instantiating maybe terrible?
