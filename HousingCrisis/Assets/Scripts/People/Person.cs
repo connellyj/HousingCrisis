@@ -15,6 +15,7 @@ public abstract class Person : MonoBehaviour {
     protected static readonly Color eatColor = Color.red;
     protected static readonly Color storeColor = Color.blue;
     protected static readonly Color normalColor = Color.white;
+    protected static readonly int bankerCostMultiplier = 4;
     // script component variables
     [HideInInspector] public Direction direction;
     protected int goalIndex;
@@ -296,7 +297,7 @@ public abstract class Person : MonoBehaviour {
 
     // When eaten, updates the money and removes the person
     public void OnEaten() {
-        if(tag == "PersonBanker") GameManager.UpdateMoney(value * 2);
+        if(tag == "PersonBanker") GameManager.UpdateMoney(value * bankerCostMultiplier);
         else GameManager.UpdateMoney(value);
         foreach(House h in stalledAt) {
             h.RemoveStalledPerson(this);
