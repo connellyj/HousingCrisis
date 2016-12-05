@@ -2,7 +2,6 @@ Bug Log
 
 Unassigned 
 - sometimes eating fails to remove the person
-- show $ to win in win button text
 
 Refactoring Notes
 - fire instantiating maybe terrible?
@@ -14,8 +13,6 @@ Julia
 Connor
 - people are still getting highlighted when houses are on fire
 - apartments can eat when there are no people to eat
-- tapping houses to put out fires or build doesn’t always work
-	- could be that the tapable colliders get covered removed somehow
-- build menus still open for fully upgraded buildings
+
 
 - water drops don’t disappear on transition from burnState -1 => 1
