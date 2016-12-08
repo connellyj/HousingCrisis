@@ -44,7 +44,7 @@ public class TutorialManager : MonoBehaviour {
                 hasShownSecondMessage = true;
             } else if (GameManager.GetPeopleEaten() >= 10 && hasShownSecondMessage) {
                 MessagePlayer("I'm gonna let you in on a little secret, our top laboratories have been working on something new," +
-                    " something big, but we're running out of specimens. We need you to snatch up 20 more.");
+                    " something big, but we're running out of specimens. We need you to snatch up 5 more.");
                 hasShownThirdMessage = true;
             }
         }
