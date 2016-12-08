@@ -40,7 +40,7 @@ public class TutorialManager : MonoBehaviour {
                     "Since they have made it clear they won't negotiate peacefully with us, they will " +
                     "likely try to damage the houses. Tap on them to put out any fires.");
                 hasShownSecondMessage = true;
-            } else if (GameManager.GetPeopleEaten() >= 20 && hasShownSecondMessage) {
+            } else if (GameManager.GetPeopleEaten() >= 10 && hasShownSecondMessage) {
                 MessagePlayer("There's no chance for peace now, the only way we can keep the homes safe is to " +
                     "get rid of the careless humans!");
                 hasShownThirdMessage = true;
