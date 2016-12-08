@@ -8,7 +8,7 @@ public class House : Builder {
     // static info
     public static readonly int MAX_STALL = 3;
     public static readonly int alertRadius = 5;
-    protected static readonly int healingPerTap = 20;
+    protected static readonly int healingPerTap = 80;
     protected static readonly float chewingTime = 5;
     protected static readonly float attritionDPS = 20f;
     public static readonly float eatRadius = 0.5f;
